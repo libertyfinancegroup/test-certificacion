@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de Certificación PBA — Liberty Finance</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════════════
+   LIBERTY FINANCE — BRAND TOKENS (Light Theme)
+   Navy     #001337   primary / text
+   Taslan   #264567   secondary blue
+   Gold     #938565   Rich Gold accent
+   Charcoal #AAAAAA   muted text
+   BG       #F5F4F0   off-white background
+   Surface  #FFFFFF   white cards
+   Deep     #3F362D   Simply Taupe (dark borders)
+═══════════════════════════════════════════════════════ */
+:root{
+  --navy:        #001337;
+  --navy-light:  #1a2f55;
+  --taslan:      #264567;
+  --gold:        #938565;
+  --gold-dark:   #7a6d52;
+  --gold-light:  #b8a882;
+  --gold-pale:   #f7f4ee;
+  --gold-border: #d4c9aa;
+  --charcoal:    #AAAAAA;
+  --taupe:       #3F362D;
+  --bg:          #F5F4F0;
+  --bg-2:        #ECEAE4;
+  --white:       #FFFFFF;
+  --text:        #001337;
+  --text-2:      #264567;
+  --text-muted:  #6b7280;
+  --border:      rgba(0,19,55,.10);
+  --border-md:   rgba(0,19,55,.18);
+  --border-strong: rgba(0,19,55,.28);
+  --green:       #1a5c35;
+  --green-bg:    #eaf5ef;
+  --green-bd:    #a8d5bb;
+  --amber:       #7a5c1e;
+  --amber-bg:    #fef8ee;
+  --amber-bd:    #e8c870;
+  --red:         #8b2020;
+  --red-bg:      #fdf0f0;
+  --red-bd:      #e8aaaa;
+  --r-sm:4px; --r-md:8px; --r-lg:14px; --r-xl:22px;
+  --font-title: 'Montserrat', sans-serif;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --shadow-sm:  0 1px 4px rgba(0,19,55,.07);
+  --shadow-md:  0 4px 16px rgba(0,19,55,.10);
+  --shadow-lg:  0 8px 32px rgba(0,19,55,.13);
+  --trans: 0.18s ease;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-title);
+  font-size:14px;
+  font-weight:400;
+  line-height:1.65;
+  color:var(--text);
+  background:var(--bg);
+  min-height:100vh;
+}
+
+/* ── TOPBAR ─────────────────────────────────────────── */
+.topbar{
+  background:var(--navy);
+  border-bottom:2px solid var(--gold);
+  padding:0 28px;
+  height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:200;
+  box-shadow:0 2px 16px rgba(0,19,55,.25);
+}
+.logo{display:flex;align-items:center;gap:12px}
+.logo-mark{flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;line-height:1}
+.logo-liberty{font-family:var(--font-title);font-size:18px;font-weight:700;letter-spacing:.08em;color:#fff}
+.logo-finance{font-family:var(--font-title);font-size:9px;font-weight:400;letter-spacing:.22em;color:var(--charcoal);margin-top:2px}
+.topbar-center{font-family:var(--font-serif);font-size:13px;color:rgba(255,255,255,.55);letter-spacing:.04em;font-style:italic}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.timer-pill{
+  font-family:var(--font-title);font-size:15px;font-weight:600;letter-spacing:.06em;
+  color:var(--gold-light);
+  background:rgba(147,133,101,.15);border:1px solid rgba(147,133,101,.4);
+  border-radius:var(--r-md);padding:5px 16px;
+  transition:color var(--trans),background var(--trans);
+}
+.timer-pill.danger{color:#ef9a9a;background:rgba(239,154,154,.12);border-color:rgba(239,154,154,.4)}
+.pba-chip{
+  font-size:11px;font-weight:600;letter-spacing:.05em;
+  color:var(--gold-light);
+  background:rgba(147,133,101,.15);border:1px solid rgba(147,133,101,.3);
+  border-radius:20px;padding:4px 12px;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────── */
+.app{max-width:860px;margin:0 auto;padding:0 20px 80px}
+.screen{display:none}
+.screen.active{display:block;animation:fadeUp .25s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── GOLD RULE  (decorative horizontal line) ─────────── */
+.gold-rule{height:2px;background:linear-gradient(90deg,var(--gold),transparent);border:none;margin:0}
+
+/* ── HERO ───────────────────────────────────────────── */
+.hero{padding:56px 0 44px}
+.hero-eyebrow{
+  font-family:var(--font-serif);font-size:14px;font-style:italic;font-weight:300;
+  color:var(--gold-dark);letter-spacing:.04em;margin-bottom:14px;
+}
+.hero-title{
+  font-family:var(--font-title);font-size:44px;font-weight:700;letter-spacing:-.02em;
+  color:var(--navy);line-height:1.05;margin-bottom:10px;
+}
+.hero-title span{color:var(--gold-dark)}
+.hero-subtitle{font-size:14px;font-weight:400;color:var(--text-muted);max-width:520px;line-height:1.7;margin-bottom:10px}
+.tagline{font-family:var(--font-serif);font-size:12px;font-style:italic;color:var(--gold);letter-spacing:.1em;margin-bottom:28px}
+
+/* pills */
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:40px}
+.pill{
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  padding:4px 14px;border-radius:20px;border:1px solid;
+}
+.pill-navy{color:var(--white);background:var(--navy);border-color:var(--navy)}
+.pill-gold{color:var(--gold-dark);background:var(--gold-pale);border-color:var(--gold-border)}
+.pill-red{color:var(--red);background:var(--red-bg);border-color:var(--red-bd)}
+
+/* formula banner */
+.formula-banner{
+  background:var(--navy);
+  border-radius:var(--r-xl);
+  padding:28px 36px;
+  display:grid;grid-template-columns:1fr 28px 1fr 28px 1fr;
+  align-items:center;gap:0;margin-bottom:44px;
+  box-shadow:var(--shadow-lg);
+  position:relative;overflow:hidden;
+}
+.formula-banner::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--gold) 0%,transparent 100%);
+}
+.f-part{text-align:center}
+.f-big{font-family:var(--font-serif);font-size:40px;font-weight:300;color:var(--gold-light);line-height:1;margin-bottom:4px}
+.f-label{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.45)}
+.f-op{text-align:center;font-size:20px;color:rgba(255,255,255,.2);font-weight:300}
+.f-result{background:rgba(147,133,101,.15);border:1px solid rgba(147,133,101,.35);border-radius:var(--r-lg);padding:16px 20px}
+.f-result .f-big{font-size:28px}
+.f-result .f-label{color:var(--gold-light)}
+
+/* role cards */
+.role-cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:12px}
+.role-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-xl);padding:28px 24px;cursor:pointer;
+  transition:all var(--trans);position:relative;overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.role-card::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:var(--gold);transform:scaleX(0);transform-origin:left;
+  transition:transform .25s ease;
+}
+.role-card:hover{border-color:var(--border-strong);box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.role-card:hover::after{transform:scaleX(1)}
+.role-icon{
+  width:46px;height:46px;border-radius:var(--r-md);
+  background:var(--bg);border:1px solid var(--border-md);
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:14px;font-size:20px;
+}
+.role-card h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:6px}
+.role-card p{font-size:12px;color:var(--text-muted);line-height:1.55}
+.role-arr{position:absolute;bottom:22px;right:22px;font-size:18px;color:var(--border-md);transition:color var(--trans),transform var(--trans)}
+.role-card:hover .role-arr{color:var(--gold);transform:translateX(4px)}
+
+/* divider */
+.divider{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--charcoal);letter-spacing:.08em;text-transform:uppercase;margin:10px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border-md)}
+
+/* ── PBA SELECTOR ───────────────────────────────────── */
+.pba-selector-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-xl);padding:28px;margin-bottom:20px;
+  box-shadow:var(--shadow-sm);
+}
+.pba-selector-title{font-family:var(--font-serif);font-size:22px;font-weight:400;color:var(--navy);margin-bottom:4px}
+.pba-selector-sub{font-size:12px;color:var(--text-muted);margin-bottom:20px}
+.pba-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.pba-btn{
+  background:var(--bg);border:1px solid var(--border-md);border-radius:var(--r-lg);
+  padding:16px 18px;cursor:pointer;transition:all var(--trans);
+  text-align:left;font-family:var(--font-title);
+  display:flex;align-items:center;gap:14px;
+}
+.pba-btn:hover{border-color:var(--gold-border);background:var(--gold-pale);box-shadow:var(--shadow-sm)}
+.pba-btn.sel{border-color:var(--navy);background:var(--navy);box-shadow:var(--shadow-md)}
+.pba-avatar{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--bg-2);border:1px solid var(--border-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:var(--taslan);flex-shrink:0;
+}
+.pba-btn.sel .pba-avatar{background:rgba(147,133,101,.25);border-color:var(--gold-light);color:var(--gold-light)}
+.pba-info-name{font-size:13px;font-weight:600;color:var(--navy)}
+.pba-info-level{font-size:11px;color:var(--text-muted);margin-top:2px}
+.pba-btn.sel .pba-info-name{color:var(--white)}
+.pba-btn.sel .pba-info-level{color:var(--gold-light)}
+.pba-check{
+  margin-left:auto;width:22px;height:22px;border:1.5px solid var(--border-md);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-size:10px;color:transparent;
+  transition:all var(--trans);flex-shrink:0;
+}
+.pba-btn.sel .pba-check{border-color:var(--gold);background:var(--gold);color:var(--navy)}
+.pba-selector-note{font-size:11px;color:var(--text-muted);text-align:center}
+
+/* ── INSTRUCTIONS ───────────────────────────────────── */
+.instr-wrap{padding:40px 0}
+.back-btn{
+  background:none;border:none;font-family:var(--font-title);
+  font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-muted);cursor:pointer;
+  display:inline-flex;align-items:center;gap:6px;
+  margin-bottom:32px;transition:color var(--trans);padding:0;
+}
+.back-btn:hover{color:var(--navy)}
+.instr-title{font-family:var(--font-serif);font-size:34px;font-weight:400;color:var(--navy);margin-bottom:6px}
+.instr-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px}
+.instr-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+}
+.instr-card-hdr{
+  padding:11px 20px;background:var(--navy);border-bottom:1px solid rgba(147,133,101,.3);
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--gold-light);display:flex;align-items:center;gap:8px;
+}
+.instr-card-hdr::before{content:'';width:3px;height:12px;background:var(--gold);border-radius:2px}
+.instr-card-body{padding:18px 20px}
+.instr-list{list-style:none}
+.instr-list li{
+  padding:9px 0;border-bottom:1px solid var(--border);
+  font-size:13px;color:var(--text-muted);
+  display:flex;gap:12px;align-items:flex-start;line-height:1.55;
+}
+.instr-list li:last-child{border-bottom:none}
+.instr-list li strong{color:var(--navy)}
+.i-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-top:8px;flex-shrink:0}
+.struct-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.struct-item{background:var(--bg);border:1px solid var(--border-md);border-radius:var(--r-md);padding:12px 14px}
+.s-num{font-size:10px;font-weight:700;color:var(--gold-dark);letter-spacing:.08em;text-transform:uppercase;margin-bottom:3px}
+.s-name{font-size:13px;font-weight:600;color:var(--navy)}
+.s-meta{font-size:11px;color:var(--text-muted);margin-top:2px}
+.rubric-item{padding:10px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start;font-size:13px;color:var(--text-muted)}
+.rubric-item:last-child{border-bottom:none}
+.r-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+
+/* ── EXAM ───────────────────────────────────────────── */
+.exam-wrap{padding:28px 0}
+.progress-strip{height:3px;background:var(--bg-2);border-radius:2px;margin-bottom:24px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--taslan),var(--gold));border-radius:2px;transition:width .35s ease}
+.section-tabs{
+  display:flex;gap:0;border-bottom:2px solid var(--border-md);margin-bottom:28px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.section-tabs::-webkit-scrollbar{display:none}
+.stab{
+  padding:10px 20px;font-size:12px;font-weight:600;letter-spacing:.03em;
+  color:var(--text-muted);cursor:pointer;
+  border-bottom:3px solid transparent;margin-bottom:-2px;
+  white-space:nowrap;background:none;border-top:none;border-left:none;border-right:none;
+  font-family:var(--font-title);transition:all var(--trans);
+}
+.stab:hover{color:var(--navy)}
+.stab.active{color:var(--navy);border-bottom-color:var(--gold)}
+
+/* name row */
+.name-row{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);padding:14px 20px;margin-bottom:24px;
+  display:flex;align-items:center;gap:16px;box-shadow:var(--shadow-sm);
+}
+.name-row label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.name-display{font-size:14px;font-weight:700;color:var(--navy);flex:1}
+.name-badge{
+  font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--gold-dark);background:var(--gold-pale);border:1px solid var(--gold-border);
+  padding:3px 10px;border-radius:10px;
+}
+.answered-cnt{font-size:12px;color:var(--text-muted)}
+
+/* section header */
+.sec-hdr{display:flex;gap:16px;align-items:flex-start;padding-bottom:20px;margin-bottom:24px;border-bottom:1px solid var(--border-md)}
+.sec-badge{
+  width:44px;height:44px;flex-shrink:0;background:var(--navy);
+  border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-serif);font-size:16px;color:var(--gold-light);
+}
+.sec-info h2{font-size:16px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.sec-info p{font-size:12px;color:var(--text-muted)}
+
+/* question card */
+.q-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px;
+  transition:border-color var(--trans),box-shadow var(--trans);
+  box-shadow:var(--shadow-sm);
+}
+.q-card.answered{border-color:var(--gold-border);box-shadow:0 0 0 2px var(--gold-pale)}
+.q-head{padding:16px 20px 12px;border-bottom:1px solid var(--border)}
+.q-tag{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;display:flex;justify-content:space-between}
+.q-pts{
+  font-size:10px;font-weight:700;background:var(--navy);color:var(--gold-light);
+  padding:2px 8px;border-radius:10px;
+}
+.q-text{font-size:13px;font-weight:600;color:var(--navy);line-height:1.55}
+.q-opts{padding:12px;display:flex;flex-direction:column;gap:6px}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;padding:10px 14px;
+  border:1px solid var(--border-md);border-radius:var(--r-md);cursor:pointer;
+  background:var(--bg);font-family:var(--font-title);font-size:13px;
+  color:var(--text-muted);line-height:1.45;text-align:left;width:100%;
+  transition:all var(--trans);
+}
+.opt:hover{background:var(--gold-pale);border-color:var(--gold-border);color:var(--navy)}
+.opt.sel{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.opt.correct{background:var(--green-bg);border-color:var(--green-bd);color:var(--green)}
+.opt.wrong{background:var(--red-bg);border-color:var(--red-bd);color:var(--red)}
+.opt-lbl{
+  font-family:var(--font-title);font-size:10px;font-weight:700;
+  width:22px;height:22px;border-radius:50%;border:1.5px solid currentColor;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;opacity:.5;
+}
+.opt:hover .opt-lbl{opacity:.8}
+.opt.sel .opt-lbl{opacity:1;border-color:var(--gold-light);color:var(--gold-light)}
+
+/* open question */
+.open-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:14px;
+  box-shadow:var(--shadow-sm);
+}
+.open-head{
+  background:var(--navy);padding:14px 20px;
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+}
+.open-code{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:3px}
+.open-tag{font-size:11px;color:rgba(255,255,255,.55)}
+.open-pts-badge{
+  font-size:10px;font-weight:700;background:rgba(147,133,101,.2);
+  color:var(--gold-light);border:1px solid rgba(147,133,101,.4);
+  padding:3px 10px;border-radius:10px;flex-shrink:0;
+}
+.open-q-text{
+  padding:14px 20px;font-size:13px;color:var(--text-muted);
+  line-height:1.6;border-bottom:1px solid var(--border-md);background:var(--bg);
+}
+.open-body{padding:16px 20px}
+.open-body textarea{
+  width:100%;min-height:120px;resize:vertical;
+  border:1px solid var(--border-md);border-radius:var(--r-md);
+  padding:12px 14px;font-family:var(--font-title);font-size:13px;
+  line-height:1.6;color:var(--navy);background:var(--white);
+  outline:none;transition:border-color var(--trans);
+}
+.open-body textarea:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-pale)}
+.open-body textarea::placeholder{color:var(--charcoal)}
+.score-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-top:12px;padding-top:12px;border-top:1px solid var(--border);
+}
+.score-row label{font-size:11px;color:var(--text-muted)}
+.score-btns{display:flex;gap:5px}
+.s-btn{
+  width:36px;height:36px;border:1.5px solid var(--border-md);border-radius:var(--r-md);
+  background:var(--bg);font-family:var(--font-title);font-size:12px;font-weight:600;
+  color:var(--text-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all var(--trans);
+}
+.s-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--white)}
+.s-btn.sel{background:var(--navy);border-color:var(--navy);color:var(--gold-light)}
+
+/* sticky footer */
+.sticky-bar{
+  position:sticky;bottom:0;
+  background:rgba(245,244,240,.96);backdrop-filter:blur(12px);
+  border-top:1px solid var(--border-md);
+  padding:12px 0;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+}
+.bar-info{font-size:12px;color:var(--text-muted)}
+.bar-info strong{color:var(--navy)}
+
+/* ── COACH FORM ─────────────────────────────────────── */
+.coach-wrap{padding:28px 0}
+.section-sep{
+  display:flex;align-items:center;gap:14px;
+  font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--navy);margin-bottom:16px;margin-top:28px;
+}
+.section-sep .c-badge{font-family:var(--font-title)}
+.section-sep::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--gold-border),transparent)}
+.c-badge{
+  font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 10px;border-radius:10px;border:1px solid;
+  background:var(--navy);color:var(--gold-light);border-color:var(--navy);
+}
+.perf-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:20px;
+  box-shadow:var(--shadow-sm);
+}
+.perf-card-hdr{
+  padding:12px 20px;background:var(--bg);border-bottom:1px solid var(--border-md);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.perf-card-hdr strong{font-size:13px;font-weight:700;color:var(--navy)}
+.pts-disp{font-size:12px;color:var(--text-muted)}
+.pts-disp span{font-size:18px;font-weight:700;color:var(--navy)}
+.perf-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;padding:20px}
+.pf label{
+  display:block;font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:7px;
+}
+.pf input,.pf select{
+  width:100%;padding:9px 12px;border:1.5px solid var(--border-md);border-radius:var(--r-md);
+  font-family:var(--font-title);font-size:13px;color:var(--navy);background:var(--white);
+  outline:none;transition:border-color var(--trans),box-shadow var(--trans);
+}
+.pf input:focus,.pf select:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-pale)}
+.pf-note{font-size:10px;color:var(--text-muted);margin-top:4px}
+.perf-result{
+  margin:0 20px 20px;padding:10px 14px;
+  background:var(--bg);border:1px solid var(--border-md);border-radius:var(--r-md);
+  font-size:12px;color:var(--text-muted);
+}
+.perf-result strong{color:var(--navy);font-size:15px;font-weight:700}
+
+/* week table */
+.wtbl{width:100%;border-collapse:collapse;font-size:13px}
+.wtbl th{
+  background:var(--bg);padding:9px 14px;font-weight:700;font-size:10px;
+  color:var(--text-muted);text-align:left;border-bottom:1px solid var(--border-md);
+  letter-spacing:.07em;text-transform:uppercase;
+}
+.wtbl td{padding:10px 14px;border-bottom:1px solid var(--border);vertical-align:middle;color:var(--text-muted)}
+.wtbl tr:last-child td{border-bottom:none}
+.wtbl input{
+  width:72px;padding:5px 8px;border:1.5px solid var(--border-md);border-radius:var(--r-sm);
+  font-family:var(--font-title);font-size:13px;color:var(--navy);background:var(--white);
+  outline:none;transition:border-color var(--trans);
+}
+.wtbl input:focus{border-color:var(--gold-border)}
+.pct-cell{font-weight:700;color:var(--navy)}
+
+/* attitude buttons */
+.att-list{padding:16px 20px}
+.att-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 0;border-bottom:1px solid var(--border);
+}
+.att-row:last-child{border-bottom:none}
+.att-lbl{flex:1;font-size:13px;color:var(--navy)}
+.att-pts{display:flex;gap:5px}
+.att-btn{
+  width:34px;height:34px;border:1.5px solid var(--border-md);border-radius:var(--r-md);
+  background:var(--bg);font-family:var(--font-title);font-size:11px;font-weight:600;
+  color:var(--text-muted);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all var(--trans);
+}
+.att-btn:hover{border-color:var(--navy);color:var(--navy);background:var(--white)}
+.att-btn.sel{background:var(--navy);border-color:var(--navy);color:var(--gold-light)}
+
+/* coach alert */
+.coach-alert{
+  background:var(--amber-bg);border:1px solid var(--amber-bd);
+  border-left:3px solid var(--gold);border-radius:var(--r-md);
+  padding:12px 16px;font-size:13px;color:var(--amber);margin-bottom:20px;
+  display:flex;gap:10px;align-items:flex-start;
+}
+.coach-alert::before{content:'!';font-weight:700;flex-shrink:0;font-size:14px}
+
+/* total B */
+.total-b{
+  background:var(--navy);border-radius:var(--r-xl);
+  padding:24px 28px;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:24px;box-shadow:var(--shadow-lg);
+}
+.tb-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:4px}
+.tb-val{font-family:var(--font-serif);font-size:36px;color:var(--gold-light);line-height:1}
+.tb-sub{font-size:11px;color:rgba(255,255,255,.35);margin-top:3px}
+.tb-breakdown{font-family:var(--font-title);font-size:12px;color:rgba(255,255,255,.4);text-align:right}
+
+/* obs */
+.cobs-wrap{padding:20px}
+.cobs-wrap label{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);display:block;margin-bottom:8px}
+.cobs-wrap textarea{
+  width:100%;min-height:90px;resize:vertical;
+  border:1.5px solid var(--border-md);border-radius:var(--r-md);
+  padding:12px;font-family:var(--font-title);font-size:13px;
+  color:var(--navy);background:var(--white);outline:none;
+  transition:border-color var(--trans),box-shadow var(--trans);
+}
+.cobs-wrap textarea:focus{border-color:var(--gold-border);box-shadow:0 0 0 3px var(--gold-pale)}
+.cobs-wrap textarea::placeholder{color:var(--charcoal)}
+
+/* ── RESULTS ────────────────────────────────────────── */
+.results-wrap{padding:28px 0}
+.verdict{
+  border-radius:var(--r-xl);padding:36px;margin-bottom:28px;border:1px solid;
+  text-align:center;position:relative;overflow:hidden;
+}
+.verdict::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.verdict.pass{background:var(--green-bg);border-color:var(--green-bd)}
+.verdict.pass::before{background:var(--green)}
+.verdict.warn{background:var(--amber-bg);border-color:var(--amber-bd)}
+.verdict.warn::before{background:var(--gold)}
+.verdict.fail{background:var(--red-bg);border-color:var(--red-bd)}
+.verdict.fail::before{background:var(--red)}
+.verdict-title{font-family:var(--font-serif);font-size:30px;font-weight:400;margin-bottom:8px}
+.verdict.pass .verdict-title{color:var(--green)}
+.verdict.warn .verdict-title{color:var(--amber)}
+.verdict.fail .verdict-title{color:var(--red)}
+.verdict-msg{font-size:13px;color:var(--text-muted);line-height:1.7;max-width:520px;margin:0 auto}
+.verdict-pba{
+  display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;
+  color:var(--navy);background:var(--white);border:1px solid var(--border-md);
+  border-radius:20px;padding:4px 14px;margin-bottom:16px;box-shadow:var(--shadow-sm);
+}
+
+/* summary */
+.sum-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
+.sum-card{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);padding:20px;text-align:center;box-shadow:var(--shadow-sm);
+}
+.sum-val{font-family:var(--font-serif);font-size:36px;font-weight:300;color:var(--navy);line-height:1;margin-bottom:4px}
+.sum-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.sum-sub{font-size:11px;color:var(--charcoal);margin-top:2px}
+
+/* breakdown */
+.breakdown{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);overflow:hidden;margin-bottom:24px;box-shadow:var(--shadow-sm);
+}
+.bd-hdr{
+  padding:11px 20px;background:var(--navy);
+  font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-light);
+}
+.brow{
+  display:flex;align-items:center;gap:12px;padding:12px 20px;
+  border-bottom:1px solid var(--border);font-size:12px;
+}
+.brow:last-child{border-bottom:none;background:var(--bg)}
+.brow-lbl{flex:1;color:var(--text-muted)}
+.brow:last-child .brow-lbl{color:var(--navy);font-weight:700}
+.brow-bar{width:110px;height:5px;background:var(--bg-2);border-radius:3px;overflow:hidden;flex-shrink:0}
+.brow-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.f-ok{background:var(--green)}.f-warn{background:var(--gold)}.f-fail{background:var(--red)}
+.brow-pts{font-size:12px;font-weight:700;color:var(--navy);min-width:58px;text-align:right}
+
+/* wrong answers */
+.wrong-wrap{margin-bottom:24px}
+.wrong-ttl{
+  font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-muted);margin-bottom:14px;display:flex;align-items:center;gap:14px;
+}
+.wrong-ttl::after{content:'';flex:1;height:1px;background:var(--border-md)}
+.wrong-item{
+  border:1px solid var(--red-bd);border-left:3px solid var(--red);
+  border-radius:var(--r-md);padding:14px 16px;margin-bottom:10px;
+  font-size:12px;background:var(--white);
+}
+.wq-num{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--charcoal);margin-bottom:5px}
+.wq-text{font-weight:700;color:var(--navy);margin-bottom:8px;line-height:1.45;font-size:13px}
+.wq-correct{color:var(--green);margin-bottom:3px;display:flex;gap:6px}
+.wq-given{color:var(--red);display:flex;gap:6px}
+.wq-lbl{font-weight:700;flex-shrink:0}
+
+/* perf detail */
+.perf-det{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);padding:20px;margin-bottom:24px;box-shadow:var(--shadow-sm);
+}
+.pdet-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:12px}
+.pdet{text-align:center;padding:12px;background:var(--bg);border-radius:var(--r-md);border:1px solid var(--border)}
+.pdet-v{font-family:var(--font-serif);font-size:22px;font-weight:400;color:var(--navy)}
+.pdet-l{font-size:10px;color:var(--text-muted);margin-top:3px;font-weight:600;letter-spacing:.04em}
+
+/* obs result */
+.obs-block{
+  background:var(--white);border:1px solid var(--border-md);
+  border-radius:var(--r-lg);padding:20px;margin-bottom:24px;box-shadow:var(--shadow-sm);
+}
+.obs-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px}
+.obs-txt{font-size:13px;color:var(--text-muted);line-height:1.7}
+
+/* action bar */
+.action-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;padding:16px 0;border-top:1px solid var(--border-md);
+  margin-top:20px;flex-wrap:wrap;
+}
+
+/* ── BUTTONS ────────────────────────────────────────── */
+.btn{
+  padding:10px 22px;border:1.5px solid var(--border-md);border-radius:var(--r-md);
+  background:var(--white);font-family:var(--font-title);font-size:12px;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);
+  cursor:pointer;transition:all var(--trans);display:inline-flex;align-items:center;gap:8px;
+  box-shadow:var(--shadow-sm);
+}
+.btn:hover{border-color:var(--navy);color:var(--navy);box-shadow:var(--shadow-md)}
+.btn-gold{background:var(--gold);border-color:var(--gold);color:var(--white)}
+.btn-gold:hover{background:var(--gold-dark);border-color:var(--gold-dark);color:var(--white)}
+.btn-navy{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.btn-navy:hover{background:var(--taslan);border-color:var(--taslan);color:var(--white)}
+.btn-sm{padding:7px 16px;font-size:11px}
+
+/* ── RESPONSIVE ─────────────────────────────────────── */
+@media(max-width:620px){
+  .role-cards,.perf-grid,.sum-grid,.pdet-grid,.pba-grid,.struct-grid{grid-template-columns:1fr}
+  .formula-banner{grid-template-columns:1fr;text-align:center}
+  .f-op{display:none}
+  .hero-title{font-size:32px}
+  .brow-bar{width:60px}
+}
+@media print{
+  .topbar,.sticky-bar,.action-bar,.btn,.section-tabs{display:none!important}
+  .screen{display:block!important}
+  #s-start,#s-instr,#s-exam,#s-coach{display:none!important}
+  #s-results.active{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">
+    <svg class="logo-mark" width="32" height="28" viewBox="0 0 32 28" fill="none">
+      <rect x="0" y="22" width="32" height="6" rx="1" fill="#938565"/>
+      <rect x="4" y="14" width="24" height="6" rx="1" fill="#938565" opacity=".8"/>
+      <rect x="8" y="6" width="16" height="6" rx="1" fill="#938565" opacity=".6"/>
+      <rect x="12" y="0" width="8" height="4" rx="1" fill="#938565" opacity=".4"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-liberty">LIBERTY</span>
+      <span class="logo-finance">FINANCE</span>
+    </div>
+  </div>
+  <div class="topbar-center" id="topbar-title">Test de certificación · M13 · Online</div>
+  <div class="topbar-right" id="topbar-right"></div>
+</div>
+
+<div class="app">
+
+<!-- ═══════════════  START  ══════════════════════════ -->
+<div id="s-start" class="screen active">
+  <div class="hero">
+    <div class="hero-eyebrow">Private Banking Advisor — Módulo 13 · Fase 3</div>
+    <h1 class="hero-title">Test de<br><span>Certificación</span></h1>
+    <p class="hero-subtitle">Evaluación final del programa de onboarding Revenue-Driven · Modalidad 100% online vía Zoom. Coach en México · Nicolás Mandiola en Chile · Patricio Carrera en Perú.</p>
+    <p class="tagline">A legacy with future</p>
+    <div class="pills">
+      <span class="pill pill-red">Bloqueante</span>
+      <span class="pill pill-navy">25 preguntas + 4 abiertas</span>
+      <span class="pill pill-gold">90 minutos · Parte A</span>
+      <span class="pill pill-gold">≥70% para certificar</span>
+    </div>
+
+    <div class="formula-banner">
+      <div class="f-part"><div class="f-big">70%</div><div class="f-label">Parte A — Teórico</div></div>
+      <div class="f-op">×</div>
+      <div class="f-part"><div class="f-big" style="font-size:22px;color:rgba(184,168,130,.4)">45 pts</div><div class="f-label">múltiple + abierto</div></div>
+      <div class="f-op">+</div>
+      <div class="f-part f-result"><div class="f-big">30%</div><div class="f-label">Parte B — Performance</div></div>
+    </div>
+
+    <p style="font-size:12px;color:var(--text-muted);margin-bottom:16px;font-weight:500">Seleccioná tu rol para continuar:</p>
+    <div class="role-cards">
+      <div class="role-card" onclick="startAs('pba')">
+        <div class="role-icon">📝</div>
+        <h3>Soy el PBA</h3>
+        <p>Rendir la Parte A vía Zoom · 90 minutos · Cámara encendida · Pantalla compartida</p>
+        <span class="role-arr">→</span>
+      </div>
+      <div class="role-card" onclick="startAs('coach')">
+        <div class="role-icon">📊</div>
+        <h3>Soy el coach</h3>
+        <p>Completar evaluación de Performance (Parte B) y puntuar preguntas abiertas · Conducir sesión Zoom</p>
+        <span class="role-arr">→</span>
+      </div>
+    </div>
+    <div class="divider">o</div>
+    <p style="font-size:11px;color:var(--text-muted);text-align:center">
+      ¿Tenés ambas partes completas? <button class="btn btn-sm" style="display:inline-flex;margin-left:6px" onclick="showScreen('s-results');buildResults()">Ver resultados finales</button>
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════  INSTRUCTIONS  ══════════════════ -->
+<div id="s-instr" class="screen">
+  <div class="instr-wrap">
+    <button class="back-btn" onclick="showScreen('s-start')">← Volver</button>
+    <div id="instr-content"></div>
+    <div class="action-bar">
+      <button class="btn" onclick="showScreen('s-start')">Cancelar</button>
+      <button class="btn btn-gold" id="instr-go-btn">Comenzar →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════  EXAM  ════════════════════════════ -->
+<div id="s-exam" class="screen">
+  <div class="exam-wrap">
+    <div class="progress-strip"><div class="progress-fill" id="q-prog" style="width:0%"></div></div>
+    <div class="name-row">
+      <label>PBA</label>
+      <div class="name-display" id="exam-pba-name">—</div>
+      <span class="name-badge" id="exam-pba-level">—</span>
+      <span class="answered-cnt" id="ans-cnt">0 / 25</span>
+    </div>
+    <div class="section-tabs" id="stabs">
+      <button class="stab active" onclick="switchSec(0)">S1 — Fundamentos</button>
+      <button class="stab" onclick="switchSec(1)">S2 — Portafolio & VIP</button>
+      <button class="stab" onclick="switchSec(2)">S3 — CRM & Bonos</button>
+      <button class="stab" onclick="switchSec(3)">S4 — Abiertas</button>
+    </div>
+    <div id="exam-body"></div>
+    <div class="sticky-bar">
+      <div class="bar-info">Respondidas: <strong id="sticky-ans">0</strong> de 25</div>
+      <button class="btn btn-gold" onclick="submitExam()">Finalizar Parte A →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════  COACH  ══════════════════════════ -->
+<div id="s-coach" class="screen">
+  <div class="coach-wrap">
+    <button class="back-btn" onclick="showScreen('s-start')">← Volver</button>
+    <div style="margin-bottom:28px">
+      <p class="hero-eyebrow">Parte B — Evaluación de performance</p>
+      <h2 style="font-family:var(--font-serif);font-size:30px;font-weight:300;color:var(--navy);margin-bottom:4px">Performance Coach</h2>
+      <p style="font-size:13px;color:var(--text-muted)">Período: <strong style="color:var(--navy)">2 de marzo — 27 de marzo 2025</strong> · Completar <em>antes</em> de la sesión Zoom · Conducción 100% remota</p>
+    </div>
+    <div class="coach-alert">Completar con datos reales. Este formulario determina el 30% del puntaje final de certificación.</div>
+
+    <!-- PBA selector -->
+    <div class="pba-selector-card">
+      <div class="pba-selector-title">¿Qué PBA estás evaluando?</div>
+      <div class="pba-selector-sub">Seleccioná al asesor que rindió la Parte A</div>
+      <div class="pba-grid" id="coach-pba-grid"></div>
+      <div class="pba-selector-note">El nombre seleccionado aparecerá en el resultado final</div>
+    </div>
+
+    <!-- C1 -->
+    <div class="section-sep"><span class="c-badge">C1</span> Volumen de llamadas <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(máx 20 pts)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>Consultings y Sales Minimum</strong><div class="pts-disp">Pts: <span id="pts-c1">—</span> / 20</div></div>
+      <div class="perf-grid">
+        <div class="pf"><label>Consultings totales realizados</label><input type="number" id="p-calls" placeholder="Meta: 375" min="0" oninput="calcPerf()"><div class="pf-note">≥375=20 · ≥319=16 · ≥263=12 · ≥188=6</div></div>
+        <div class="pf"><label>Días con SM cumplido (de 20 días)</label><input type="number" id="p-smdays" placeholder="Meta: 20" min="0" max="20" oninput="calcPerf()"><div class="pf-note">≥20=20 · ≥16=16 · ≥12=10 · ≥8=5</div></div>
+      </div>
+      <div class="perf-result">Puntaje C1 (promedio de 2 métricas): <strong id="c1-r">—</strong> / 20</div>
+    </div>
+
+    <!-- C2 -->
+    <div class="section-sep"><span class="c-badge">C2</span> Conversión FTD <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(máx 20 pts)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>First-time deposits</strong><div class="pts-disp">Pts: <span id="pts-c2">—</span> / 20</div></div>
+      <div class="perf-grid">
+        <div class="pf"><label>FTDs asignados en el período</label><input type="number" id="p-ftd-t" placeholder="ej. 12" min="0" oninput="calcPerf()"></div>
+        <div class="pf"><label>FTDs que depositaron</label><input type="number" id="p-ftd-c" placeholder="ej. 5" min="0" oninput="calcPerf()"><div class="pf-note">Conversión: <span id="ftd-pct">—</span></div></div>
+      </div>
+      <div class="perf-result">≥50%=20 · ≥35%=16 · ≥20%=10 · ≥10%=5 · Pts: <strong id="c2-r">—</strong> / 20</div>
+    </div>
+
+    <!-- C3 -->
+    <div class="section-sep"><span class="c-badge">C3</span> Net Deposits <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(máx 20 pts)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>ND vs meta de nivel</strong><div class="pts-disp">Pts: <span id="pts-c3">—</span> / 20</div></div>
+      <div class="perf-grid">
+        <div class="pf"><label>Nivel del PBA</label>
+          <select id="p-level" onchange="calcPerf()">
+            <option value="">— seleccionar —</option>
+            <option value="40000">Junior — meta $40K USD/mes</option>
+            <option value="80000">Account — meta $80K USD/mes</option>
+            <option value="120000">Executive — meta $120K USD/mes</option>
+            <option value="200000">Senior — meta $200K USD/mes</option>
+          </select>
+        </div>
+        <div class="pf"><label>ND generados en el período (USD)</label><input type="number" id="p-nd" placeholder="ej. 32000" min="0" oninput="calcPerf()"><div class="pf-note">% vs meta: <span id="nd-pct">—</span></div></div>
+      </div>
+      <div class="perf-result">≥100%=20 · ≥80%=16 · ≥60%=12 · ≥40%=6 · Pts: <strong id="c3-r">—</strong> / 20</div>
+    </div>
+
+    <!-- C4 -->
+    <div class="section-sep"><span class="c-badge">C4</span> Cobertura de portafolio <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(máx 20 pts)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>% clientes contactados ≥1 vez por semana</strong><div class="pts-disp">Pts: <span id="pts-c4">—</span> / 20</div></div>
+      <div style="padding:0 20px"><table class="wtbl"><thead><tr><th>Semana</th><th>Clientes asignados</th><th>Contactados ≥1 vez</th><th>% cobertura</th></tr></thead><tbody id="week-tbody"></tbody></table></div>
+      <div class="perf-result">Promedio: <span id="cov-avg">—</span> · ≥90%=20 · ≥75%=16 · ≥60%=10 · ≥45%=5 · Pts: <strong id="c4-r">—</strong> / 20</div>
+    </div>
+
+    <!-- C5 -->
+    <div class="section-sep"><span class="c-badge">C5</span> Actitud y asistencia <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(máx 20 pts)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>Evaluación cualitativa (0–5 por criterio)</strong><div class="pts-disp">Pts: <span id="pts-c5">—</span> / 20</div></div>
+      <div class="att-list" id="att-list"></div>
+    </div>
+
+    <!-- S4 open scoring -->
+    <div class="section-sep"><span class="c-badge">S4</span> Puntaje preguntas abiertas <span style="font-size:10px;font-weight:400;color:var(--text-muted);letter-spacing:0">(0–3 por pregunta)</span></div>
+    <div class="perf-card">
+      <div class="perf-card-hdr"><strong>Coach califica cada respuesta escrita del PBA</strong></div>
+      <div class="att-list" id="open-scoring"></div>
+      <div class="perf-result">Total abiertas (ajustado a 10 pts): <strong id="open-adj">—</strong></div>
+    </div>
+
+    <!-- Obs -->
+    <div class="perf-card">
+      <div class="cobs-wrap">
+        <label>Observaciones del coach (opcional)</label>
+        <textarea id="coach-obs" placeholder="Fortalezas, áreas de mejora, contexto del período..."></textarea>
+      </div>
+    </div>
+
+    <div class="total-b">
+      <div>
+        <div class="tb-label">Total Parte B</div>
+        <div class="tb-val" id="tb-val">—</div>
+        <div class="tb-sub">de 100 pts · 30% del puntaje final</div>
+      </div>
+      <div><div class="tb-breakdown" id="tb-bd">—</div></div>
+    </div>
+
+    <div class="action-bar">
+      <button class="btn" onclick="showScreen('s-start')">Cancelar</button>
+      <button class="btn btn-gold" onclick="submitCoach()">Guardar y ver resultados →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════  RESULTS  ════════════════════════ -->
+<div id="s-results" class="screen">
+  <div class="results-wrap" id="results-body"></div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+/* ═══════ PBA LIST ═══════════════════════════════════════════ */
+const PBA_LIST=[
+  {id:'patricio',name:'Patricio Carrera', level:'PBA Executive · Perú (UTC-5)',initials:'PC'},
+  {id:'nicolas', name:'Nicolás Mandiola', level:'PBA Junior · Chile (UTC-3)', initials:'NM'},
+];
+
+/* ═══════ QUESTIONS ══════════════════════════════════════════ */
+const QS1=[
+  {q:'¿Cuál es el criterio PROHIBIDO al comunicarte con clientes según compliance de Liberty Finance?',opts:['Usar palabras como "históricamente" o "basado en análisis"','Garantizar rentabilidades o prometer que el cliente va a ganar','Mencionar que los mercados financieros conllevan riesgo','Comparar nuestros productos con los de la competencia'],ans:1,pts:1},
+  {q:'Un cliente pregunta la diferencia entre Copy Trading y un Expert Advisor (EA) en MT5. ¿Cuál es la respuesta correcta?',opts:['Son lo mismo, solo cambia el nombre según la plataforma','Copy Trading copia automáticamente a traders verificados en Libertex; los EAs son algoritmos ejecutados en MT5 según reglas programadas','Los EAs son más seguros porque están regulados directamente por Libertex','El Copy Trading solo está disponible para clientes VIP con SOT >47,500'],ans:1,pts:1},
+  {q:'¿Cuál es la secuencia correcta para manejar un FTD que aparece en tu CRM a las 4 PM?',opts:['Esperar al día siguiente para no parecer invasivo','Enviar un email de bienvenida y esperar respuesta antes de llamar','Llamar inmediatamente (mismo día), luego 1 WhatsApp y 1 email como follow-up en las siguientes 24h','Contactar solo si el FTD supera los $5,000 USD de depósito inicial'],ans:2,pts:1},
+  {q:'¿Cuáles son las funciones Bloomberg Terminal que un PBA debe dominar para análisis LatAm?',opts:['Solo FXIP para tipos de cambio; el resto es para traders institucionales','TOP para noticias, ECO para datos económicos, GP para gráficos y FXIP para divisas','Solo necesitas TradingView; Bloomberg es opcional para el PBA','ECO y FXIP son suficientes; TOP y GP son funciones avanzadas no necesarias'],ans:1,pts:1},
+  {q:'Un cliente en Perú reporta que su depósito fue rechazado. ¿Cuál es tu primer paso?',opts:['Decirle que espere 3–5 días hábiles porque es normal','Prometerle que el dinero aparecerá antes de fin del día','Verificar el método de pago usado, estado KYC y escalar a Finance CS si no podés resolver en la llamada','Pedirle que intente con otra tarjeta sin verificar el problema primero'],ans:2,pts:1},
+  {q:'¿Qué es el Noble Portfolio y para qué perfil de cliente es más adecuado?',opts:['Un portafolio de copy trading exclusivo para clientes con SOT >47,500','Cuenta premium de Libertex con bajas comisiones, dividendos y analítica avanzada; para clientes $20K+ que prefieren holding estratégico','El nombre del portafolio de acciones de la Bolsa de Santiago para clientes chilenos','Un producto de Life Academy para inversores con experiencia en gestión de portafolios'],ans:1,pts:1},
+  {q:'¿Cuál es el driver macroeconómico más importante que mueve el CLP y el IPSA?',opts:['Las tasas de interés de la Reserva Federal de EE.UU. solamente','El precio del petróleo Brent, ya que Chile es exportador de energía','El precio del cobre (>50% exportaciones de Chile) junto con las decisiones del Banco Central de Chile','El índice de confianza del consumidor estadounidense y los datos del S&P 500'],ans:2,pts:1},
+  {q:'¿Cuándo un PBA debe involucrar al Departamento VIP en lugar de manejar solo la situación?',opts:['Solo cuando el cliente amenaza con retirar todo su dinero','Cuando se necesita aprobar ofertas especiales, coordinar eventos o gestionar analítica prioritaria para clientes SOT 9,500+','Nunca: el PBA tiene autonomía total con clientes VIP','Solo cuando el cliente es nuevo y no tiene relación establecida con el asesor'],ans:1,pts:1},
+  {q:'¿Qué significa la regla de cobertura 80/20 en la gestión de portafolio PBA?',opts:['80% del tiempo en llamadas, 20% en análisis de mercados','Enfocar el 80% de la energía en el 20% de clientes que generan el mayor volumen (SOT más alto, más activos)','Hacer al menos 80 llamadas por semana y 20 reuniones presenciales por mes','Mantener 80% del portafolio en productos conservadores y 20% en alto riesgo'],ans:1,pts:1},
+  {q:'¿Cuál es la diferencia clave en la filosofía de onboarding entre un CAM y un PBA?',opts:['El CAM trabaja con VIP y el PBA con clientes nuevos solamente','No existe diferencia real: ambos siguen exactamente el mismo proceso','El CAM prioriza velocidad y volumen de leads; el PBA prioriza profundidad de relación y confianza, aunque ambos comparten el principio de acción primero','El PBA empieza a llamar clientes recién en la semana 3, mientras el CAM llama desde el día 1'],ans:2,pts:1}
+];
+const QS2=[
+  {q:'Un cliente molesto dice: "¿Esto es una estafa? Leí en internet que Libertex no paga los retiros." ¿Cuál es la respuesta más efectiva y compliant?',opts:['"No te preocupes, eso es mentira, Libertex es 100% seguro y sin riesgo"','"Entiendo tu preocupación — es totalmente válida. Te propongo que verifiquemos la regulación de Libertex juntos ahora mismo, y puedo mostrarte historial de retiros de clientes reales"','"Ese tipo de comentarios los hacen competidores. No les hagas caso"','"Si no confías, quizás otro broker te convenga mejor"'],ans:1,pts:1.5},
+  {q:'¿Cuál de estas acciones corresponde a las 7 estrategias de construcción de confianza PBA?',opts:['Llamar al cliente solo cuando hay una oportunidad de venta concreta','Enviar análisis de mercado y noticias relevantes de forma regular SIN pedir depósitos ni ventas en ese mensaje','Prometer al cliente resultados específicos para que se sienta seguro antes de invertir','Contactar al cliente solo por email para mantener registro formal'],ans:1,pts:1.5},
+  {q:'Un cliente VIP con SOT de 52,000 no ha sido contactado en 3 semanas. ¿Cuál es el plan de acción correcto?',opts:['Esperar a que el cliente contacte primero para no parecer invasivo','Enviar un email genérico de seguimiento','Contactar inmediatamente con apertura relacional, compartir análisis relevante a su portafolio y proponer reunión en la próxima semana','Escalar directamente al Departamento VIP sin intentar el contacto primero'],ans:2,pts:1.5},
+  {q:'¿Cuáles son los 3 pilares de la psicología del cliente LatAm que un PBA debe manejar?',opts:['Precio bajo, rapidez de respuesta y disponibilidad 24/7','Miedo al fraude/desconfianza histórica, preferencia por el vínculo personal ("primero confianza, después negocio") y preferencia por WhatsApp sobre email/teléfono','Preferencia por renta fija, aversión al riesgo y necesidad de aprobación familiar','Interés en criptomonedas, alta tolerancia al riesgo y preferencia por reuniones presenciales'],ans:1,pts:1.5},
+  {q:'¿Cuál es el framework correcto de los 7 pasos de una reunión PBA?',opts:['Bienvenida → Presentación productos → Pitch → Manejo objeciones → Cierre → Follow-up → Evaluación','Apertura cálida → Agenda → Situación actual (Punto A) → Metas (Punto B) → Solución A→B → Propuesta + próximos pasos → Plan de seguimiento','Introducción → Análisis de mercado → Recomendación → Firma → Depósito → MT5 → Cierre','Check-in → Review resultados → Objeciones → Nuevos productos → Precio → Cierre → WhatsApp'],ans:1,pts:1.5},
+  {q:'¿Cuál es la diferencia entre el Test Formativo (Día 10) y el Test de Certificación (Día 13–14)?',opts:['Son exactamente iguales, solo cambia el nombre según el momento','El Test Formativo es diagnóstico y NO bloqueante; el Test de Certificación es BLOQUEANTE y requiere ≥70% para autonomía total','El Test Formativo es más difícil porque cubre más módulos; el de Certificación es solo oral','El Test Formativo es para el coach y el de Certificación es para el director'],ans:1,pts:1.5},
+  {q:'¿Cuáles son las 5 Ofertas Especiales VIP disponibles para retención y crecimiento de clientes?',opts:['Descuento en comisiones, cuenta demo ilimitada, acceso a seminarios, regalo corporativo y reunión con el CEO','Reducción de spread, bono VIP en depósito, retiro prioritario, webinars/señales exclusivas e invitaciones a eventos (desayunos, padel, golf)','Cuenta Noble gratuita, Copy Trading sin comisión, acceso a Bloomberg, seguro de portafolio y garantía de retorno mínimo','Cashback mensual, eliminación de swap-free, acceso a MT5 Pro, asesor dedicado 24/7 y límite de retiro aumentado'],ans:1,pts:1.5},
+  {q:'Un cliente activo dice: "No necesito asesor, yo opero solo perfectamente." ¿Cómo manejás la objeción?',opts:['"Entiendo, entonces no tiene sentido que sigamos en contacto. Cualquier cosa me escribís"','"Perfecto, pero como tu asesor mi rol no es operarte — es ayudarte a ver oportunidades que quizás no ves solo, acceder a análisis del equipo estratega y optimizar tu portafolio. ¿Me permitís que te muestre un ejemplo?"','"Estadísticamente, los traders que trabajan solos pierden más dinero"','"Si operás solo, ¿por qué seguís siendo cliente de Libertex entonces?"'],ans:1,pts:1.5},
+  {q:'¿Qué significa "FOMO compliant" en el contexto de la venta PBA?',opts:['Usar lenguaje de urgencia extremo como "¡Última chance!" para cerrar ventas rápidas','Crear urgencia basada en eventos reales de mercado usando lenguaje de posibilidad ("podría", "oportunidad de posicionarse") sin garantizar resultados','Compartir análisis del equipo de Analytics sin mencionar que son recomendaciones de inversión','Enviar información de mercado solo a clientes VIP para crear exclusividad y urgencia'],ans:1,pts:1.5},
+  {q:'¿Cuáles son los criterios de la Escala de Probabilidad en el pipeline Zoho CRM para PBA?',opts:['0%=perdido, 25%=contactado, 50%=interesado, 75%=en proceso, 100%=cerrado','La Escala va del 20% al 100%: 20%=contacto inicial, 100%=depósito confirmado; el pipeline debe tener 7–15 entradas nuevas por semana','El CRM no usa porcentajes: solo estados cualitativos (Frío, Tibio, Caliente, Cerrado)','La probabilidad la asigna automáticamente el sistema según el historial de trading del cliente'],ans:1,pts:1.5}
+];
+const QS3=[
+  {q:'Un PBA Junior tiene: KPI ND=0.75, KPI BF=0.60, KPI AUM=0.50. Qcalls=1.05. SOT promedio $8,500. ¿Cuál es el KPI final y su impacto en el bono?',opts:['KPI final=(0.75+0.60+0.50)/3=0.617. Como es <70%, no hay bono','KPI final=(0.75×0.4)+(0.60×0.4)+(0.50×0.20)=0.64. Como no supera el umbral del 70%, el PBA no cobra bono este mes','KPI final=0.64=64%. El bono se paga reducido al 64% del valor base','KPI final=0.75 (solo se considera ND). El bono sería SOT×0.75×Qcalls'],ans:1,pts:2},
+  {q:'¿Cuál es la diferencia en las métricas de Sales Minimum (SM) entre un PBA y un CAM?',opts:['No existe diferencia; ambos tienen las mismas metas de 17 consultings/día y 85% calidad','PBA: 15 consultings/día, 170 min/día, calidad 88% · CAM: 17 consultings/día, calidad 85%','El PBA no tiene Sales Minimum porque trabaja con portafolio asignado; solo el CAM tiene metas diarias','PBA: 20 consultings/día · CAM: 15 consultings/día'],ans:1,pts:2},
+  {q:'¿Cuál es la meta de Net Deposits (ND) para un PBA Junior?',opts:['$20,000 USD/mes','$40,000 USD/mes','$100,000 USD/mes','$200,000 USD/mes'],ans:1,pts:2},
+  {q:'¿Cuándo y cómo se presenta el programa Referral a un cliente de forma efectiva?',opts:['En cada llamada, sin importar el momento, para maximizar referidos','Solo a clientes VIP con SOT >47,500','Después de una experiencia positiva, usando un enfoque natural: "¿Tenés amigos interesados en inversiones?"','Solo cuando el cliente pregunta específicamente; nunca iniciativa del PBA'],ans:2,pts:2},
+  {q:'¿Cuáles son las infracciones que afectan el bono del PBA según el reglamento de KPI?',opts:['Solo las infracciones de compliance comunicacional afectan el bono','No existen infracciones en el bono; el sistema solo premia','Existen infracciones menores y mayores; una infracción mayor agrega +5% al umbral de aprobación del bono','Cualquier infracción elimina automáticamente el 100% del bono del mes'],ans:2,pts:2}
+];
+const OPEN=[
+  {code:'A1',tag:'Compliance + objeciones',q:'Un cliente te llama muy molesto y dice: "Un asesor de otra empresa me ofreció un 15% de retorno mensual garantizado en oro. Ustedes no me ofrecen nada igual." ¿Cómo manejás esta situación? Describí qué decís, qué NO podés decir, y cómo intentás retener al cliente dentro de los límites de compliance.'},
+  {code:'A2',tag:'Gestión de portafolio + VIP',q:'Describí el ciclo completo de vida de un cliente en Liberty Finance, desde que llega como Lead hasta que se convierte en cliente VIP activo. Incluí: quién lo gestiona en cada etapa, qué acciones son críticas en cada transición y cuál es la regla de cobertura que aplica una vez en tu portafolio.'},
+  {code:'A3',tag:'Mercados + macro LatAm',q:'Un cliente ecuatoriano te pregunta por oportunidades de inversión dado el contexto económico de su país. Describí: 1) los 2–3 drivers macroeconómicos más relevantes de Ecuador, 2) qué instrumentos recomendarías y por qué, 3) cómo usarías Bloomberg/TradingView para respaldar tu recomendación.'},
+  {code:'A4',tag:'KPI + bono — cálculo práctico',q:'Datos del mes: SOT promedio=$12,000. KPI ND=0.85, KPI BF=0.90, KPI AUM=0.70. Qcalls=1.10. Sin infracciones. ¿Cuánto es tu KPI final ponderado? ¿Aprobás el umbral? ¿Cómo se calcula tu bono base? Mostrá el cálculo paso a paso.'}
+];
+const WEEKS=['Semana 1 (2–7 mar)','Semana 2 (10–14 mar)','Semana 3 (17–21 mar)','Semana 4 (24–27 mar)'];
+const ATT=['Puntualidad en sesiones de onboarding','Participación activa y calidad de preguntas','Entrega de entregables a tiempo (M1–M12)','Actitud general, proactividad y comunicación'];
+
+/* ═══════ STATE ══════════════════════════════════════════════ */
+let pbaAns={},openTexts={},openScores={0:0,1:0,2:0,3:0},
+    attScores=[0,0,0,0],perfData={},timerID=null,timeLeft=90*60,
+    selectedPBA=null,coachSelectedPBA=null;
+
+/* ═══════ NAV ════════════════════════════════════════════════ */
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ═══════ START ═════════════════════════════════════════════ */
+function startAs(role){
+  if(role==='pba'){
+    document.getElementById('instr-content').innerHTML=`
+      <p class="hero-eyebrow">Selección de PBA</p>
+      <div class="instr-title">¿Quién rinde el test?</div>
+      <p class="instr-sub">Seleccioná tu nombre antes de comenzar. El coach identificará tu resultado.</p>
+      <div class="pba-selector-card">
+        <div class="pba-selector-title">Identificación del PBA</div>
+        <div class="pba-selector-sub">Selección obligatoria para continuar</div>
+        <div class="pba-grid" id="pba-select-grid"></div>
+        <div class="pba-selector-note" id="pba-sel-note">Ningún PBA seleccionado</div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Requisitos técnicos — verificar el día anterior</div>
+        <div class="instr-card-body">
+          <ul class="instr-list">
+            <li><span class="i-dot"></span><strong>Nicolás (Chile, UTC-3):</strong> confirmar la hora con el coach en horario de Chile.</li>
+            <li><span class="i-dot"></span><strong>Patricio (Perú, UTC-5):</strong> confirmar la hora con el coach en horario de Perú.</li>
+            <li><span class="i-dot"></span>Necesitás: computador (no tablet/celular), internet estable, cámara funcional, micrófono, y hoja en blanco + lapicero para cálculos.</li>
+            <li><span class="i-dot"></span>Hacer una llamada de prueba de 5 min con el coach el día anterior para verificar audio y video.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Reglas del examen</div>
+        <div class="instr-card-body">
+          <ul class="instr-list">
+            <li><span class="i-dot"></span>Tenés <strong>90 minutos</strong> para completar las 25 preguntas. El temporizador corre desde que hacés clic en Comenzar.</li>
+            <li><span class="i-dot"></span><strong>Cámara y micrófono encendidos</strong> durante toda la sesión Zoom. Si la cámara se apaga, el coach puede pausar el test.</li>
+            <li><span class="i-dot"></span><strong>Compartir pantalla completa</strong> (no solo la ventana del HTML) desde el inicio hasta finalizar la Parte A. El coach ve todo lo que tenés abierto.</li>
+            <li><span class="i-dot"></span>Solo debe estar visible el HTML del test. <strong>Ninguna otra pestaña, app o documento</strong> puede estar abierto.</li>
+            <li><span class="i-dot"></span>Teléfono guardado y apagado. No se usa ni para WhatsApp ni para calcular.</li>
+            <li><span class="i-dot"></span>Podés usar una hoja en blanco para cálculos (especialmente S3 y A4).</li>
+            <li><span class="i-dot"></span>Marcá solo <strong>una opción</strong> por pregunta. Podés cambiarla hasta finalizar.</li>
+            <li><span class="i-dot"></span>Si tenés duda de interpretación, activá el micrófono y preguntá — el coach aclara sin dar pistas.</li>
+            <li><span class="i-dot"></span>Si perdés conexión: reconectate lo antes posible. Si tarda más de 10 min, el coach reagendará el test.</li>
+            <li><span class="i-dot"></span>Las preguntas abiertas (A1–A4) las evalúa el coach después de finalizar.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Estructura — 45 puntos totales</div>
+        <div class="instr-card-body">
+          <div class="struct-grid">
+            <div class="struct-item"><div class="s-num">Sección 1 · 10 pts</div><div class="s-name">Sistemas, Compliance, Productos y Mercados</div><div class="s-meta">10 preguntas × 1 pt</div></div>
+            <div class="struct-item"><div class="s-num">Sección 2 · 15 pts</div><div class="s-name">Portafolio, VIP, Psicología y Objeciones</div><div class="s-meta">10 preguntas × 1.5 pts</div></div>
+            <div class="struct-item"><div class="s-num">Sección 3 · 10 pts</div><div class="s-name">CRM, KPI, Bonos y Canales</div><div class="s-meta">5 preguntas × 2 pts</div></div>
+            <div class="struct-item"><div class="s-num">Sección 4 · 10 pts</div><div class="s-name">Preguntas abiertas</div><div class="s-meta">4 preguntas · coach asigna 0–3 c/u</div></div>
+          </div>
+        </div>
+      </div>`;
+    showScreen('s-instr');
+    buildPBASelector('pba-select-grid',false);
+    document.getElementById('instr-go-btn').onclick=()=>{
+      if(!selectedPBA){alert('Por favor seleccioná tu nombre antes de continuar.');return;}
+      showScreen('s-exam');buildExam();startTimer();
+    };
+  } else {
+    document.getElementById('instr-content').innerHTML=`
+      <p class="hero-eyebrow">Instrucciones</p>
+      <div class="instr-title">Guía del Coach</div>
+      <p class="instr-sub">Completar Parte B antes de mostrar resultados al PBA.</p>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Preparación previa — 48–72 horas antes</div>
+        <div class="instr-card-body">
+          <ul class="instr-list">
+            <li><span class="i-dot"></span>Completá la <strong>Parte B</strong> (los 5 criterios de Performance) con datos reales <em>antes</em> de iniciar el Zoom.</li>
+            <li><span class="i-dot"></span>Crear el Zoom con <strong>sala de espera habilitada</strong> y grabación automática en la nube.</li>
+            <li><span class="i-dot"></span>Enviar al PBA por WhatsApp: link Zoom, hora en su zona horaria local, y link al HTML del test.</li>
+            <li><span class="i-dot"></span>Hacer una <strong>llamada de prueba de 5 min</strong> el día anterior para verificar conectividad del PBA.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Durante el test</div>
+        <div class="instr-card-body">
+          <ul class="instr-list">
+            <li><span class="i-dot"></span>Admitir al PBA desde la sala de espera. Verificar cámara encendida y entorno adecuado (sin notas visibles).</li>
+            <li><span class="i-dot"></span>Pedir que comparta <strong>pantalla completa</strong> antes de hacer clic en Comenzar.</li>
+            <li><span class="i-dot"></span>Silenciar tu micrófono. Mantener cámara encendida y monitorear la pantalla compartida continuamente.</li>
+            <li><span class="i-dot"></span>Si el PBA pregunta: activar micrófono y aclarar sin dar pistas. Volver a silenciar.</li>
+            <li><span class="i-dot"></span><strong>Protocolo de corte:</strong> si el PBA pierde conexión >10 min, pausar y reagendar. Tiempo transcurrido se descuenta.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Tu tarea como coach</div>
+        <div class="instr-card-body">
+          <ul class="instr-list">
+            <li><span class="i-dot"></span>Completá los 5 criterios de Performance con datos reales del período 2–27 marzo.</li>
+            <li><span class="i-dot"></span>Calificá las respuestas abiertas del PBA (escala 0–3, rúbrica abajo).</li>
+            <li><span class="i-dot"></span>Este formulario determina el <strong>30% del puntaje final</strong>.</li>
+            <li><span class="i-dot"></span>Seleccioná el nombre del PBA evaluado dentro del formulario.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="instr-card">
+        <div class="instr-card-hdr">Rúbrica — preguntas abiertas (0–3 pts)</div>
+        <div class="instr-card-body">
+          <div class="rubric-item"><span class="r-dot" style="background:var(--green)"></span><span><strong>3 pts — Excelente:</strong> Respuesta completa, estructura clara, terminología correcta, sin errores de compliance.</span></div>
+          <div class="rubric-item"><span class="r-dot" style="background:var(--gold)"></span><span><strong>2 pts — Suficiente:</strong> Correcta en lo esencial pero falta detalle o una parte importante.</span></div>
+          <div class="rubric-item"><span class="r-dot" style="background:#E65100"></span><span><strong>1 pt — Parcial:</strong> Incompleta o con errores menores. Comprensión básica pero insuficiente.</span></div>
+          <div class="rubric-item"><span class="r-dot" style="background:var(--red)"></span><span><strong>0 pts — Insuficiente:</strong> No responde, fuera de contexto o error grave de compliance.</span></div>
+        </div>
+      </div>`;
+    showScreen('s-instr');
+    document.getElementById('instr-go-btn').onclick=()=>{showScreen('s-coach');buildCoach();};
+  }
+}
+
+/* ═══════ PBA SELECTOR ══════════════════════════════════════ */
+function buildPBASelector(containerId,isCoach){
+  const grid=document.getElementById(containerId);if(!grid)return;
+  grid.innerHTML='';
+  PBA_LIST.forEach(pba=>{
+    const btn=document.createElement('button');
+    btn.className='pba-btn';
+    const cur=isCoach?coachSelectedPBA:selectedPBA;
+    if(cur&&cur.id===pba.id)btn.classList.add('sel');
+    btn.innerHTML=`<div class="pba-avatar">${pba.initials}</div>
+      <div><div class="pba-info-name">${pba.name}</div><div class="pba-info-level">${pba.level}</div></div>
+      <div class="pba-check">✓</div>`;
+    btn.onclick=()=>{
+      if(isCoach){coachSelectedPBA=pba;document.querySelectorAll('#'+containerId+' .pba-btn').forEach(b=>b.classList.remove('sel'));}
+      else{
+        selectedPBA=pba;
+        document.querySelectorAll('#'+containerId+' .pba-btn').forEach(b=>b.classList.remove('sel'));
+        const tr=document.getElementById('topbar-right');
+        let chip=tr.querySelector('.pba-chip');
+        if(!chip){chip=document.createElement('div');chip.className='pba-chip';tr.appendChild(chip);}
+        chip.textContent=pba.name;
+        const note=document.getElementById('pba-sel-note');
+        if(note)note.textContent='Seleccionado: '+pba.name;
+      }
+      btn.classList.add('sel');
+    };
+    grid.appendChild(btn);
+  });
+}
+
+/* ═══════ EXAM ══════════════════════════════════════════════ */
+function buildExam(){
+  if(selectedPBA){
+    document.getElementById('exam-pba-name').textContent=selectedPBA.name;
+    document.getElementById('exam-pba-level').textContent=selectedPBA.level;
+  }
+  const body=document.getElementById('exam-body');body.innerHTML='';
+  const secDefs=[
+    {data:QS1,offset:1,badge:'I',title:'Sección 1 — Sistemas, Compliance, Productos y Mercados',sub:'10 preguntas · 1 punto cada una · Total: 10 pts'},
+    {data:QS2,offset:11,badge:'II',title:'Sección 2 — Portafolio, VIP, Psicología y Objeciones',sub:'10 preguntas · 1.5 puntos cada una · Total: 15 pts'},
+    {data:QS3,offset:21,badge:'III',title:'Sección 3 — CRM, KPI, Bonos y Canales',sub:'5 preguntas · 2 puntos cada una · Total: 10 pts'},
+    {data:null,offset:null,badge:'IV',title:'Sección 4 — Preguntas abiertas',sub:'4 preguntas · evaluadas por el coach (0–3 pts c/u) · Total ajustado: 10 pts'}
+  ];
+  secDefs.forEach((s,si)=>{
+    const div=document.createElement('div');div.id='sec-'+si;div.style.display=si===0?'block':'none';
+    div.innerHTML=`<div class="sec-hdr"><div class="sec-badge">${s.badge}</div><div class="sec-info"><h2>${s.title}</h2><p>${s.sub}</p></div></div>`;
+    if(si<3){
+      s.data.forEach((q,qi)=>{
+        const num=s.offset+qi;const card=document.createElement('div');
+        card.className='q-card';card.id='qcard-'+num;
+        card.innerHTML=`<div class="q-head"><div class="q-tag"><span>Pregunta ${num}</span><span class="q-pts">${q.pts} pt${q.pts!==1?'s':''}</span></div><div class="q-text">${q.q}</div></div>
+          <div class="q-opts">${q.opts.map((o,oi)=>`<button class="opt" id="opt-${num}-${oi}" onclick="selectOpt(${num},${oi},${si})"><span class="opt-lbl">${'ABCD'[oi]}</span>${o}</button>`).join('')}</div>`;
+        div.appendChild(card);
+      });
+    } else {
+      OPEN.forEach((oq,oi)=>{
+        const c=document.createElement('div');c.className='open-card';
+        c.innerHTML=`<div class="open-head"><div><div class="open-code">${oq.code}</div><div class="open-tag">${oq.tag}</div></div><span class="open-pts-badge">2.5 pts máx</span></div>
+          <div class="open-q-text">${oq.q}</div>
+          <div class="open-body"><textarea id="ot-${oi}" placeholder="Escribí tu respuesta aquí..." oninput="openTexts[${oi}]=this.value"></textarea>
+          <div class="score-row"><label>El coach asignará el puntaje después del examen</label><span style="font-size:11px;color:var(--charcoal)">0–3 pts</span></div></div>`;
+        div.appendChild(c);
+      });
+    }
+    body.appendChild(div);
+  });
+  updateProg();
+}
+
+function selectOpt(num,oi,si){
+  pbaAns[num]=oi;
+  for(let i=0;i<4;i++){const el=document.getElementById(`opt-${num}-${i}`);if(el)el.classList.toggle('sel',i===oi);}
+  const c=document.getElementById('qcard-'+num);if(c)c.classList.add('answered');
+  updateProg();
+}
+function updateProg(){
+  const n=Object.keys(pbaAns).length;
+  document.getElementById('q-prog').style.width=Math.round(n/25*100)+'%';
+  document.getElementById('ans-cnt').textContent=n+' / 25';
+  const si=document.getElementById('sticky-ans');if(si)si.textContent=n;
+}
+function switchSec(idx){
+  for(let i=0;i<4;i++){const b=document.getElementById('sec-'+i);if(b)b.style.display=i===idx?'block':'none';}
+  document.querySelectorAll('.stab').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  window.scrollTo(0,100);
+}
+
+/* ═══════ TIMER ═════════════════════════════════════════════ */
+function startTimer(){
+  if(timerID)clearInterval(timerID);timeLeft=90*60;
+  const tr=document.getElementById('topbar-right');
+  let pill=tr.querySelector('.timer-pill');
+  if(!pill){pill=document.createElement('div');pill.className='timer-pill';tr.insertBefore(pill,tr.firstChild);}
+  pill.textContent='90:00';
+  timerID=setInterval(()=>{
+    timeLeft--;
+    const m=Math.floor(timeLeft/60),s=timeLeft%60;
+    const el=tr.querySelector('.timer-pill');
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');if(timeLeft<300)el.classList.add('danger');}
+    if(timeLeft<=0){clearInterval(timerID);submitExam();}
+  },1000);
+}
+function stopTimer(){clearInterval(timerID);const el=document.querySelector('.timer-pill');if(el)el.style.opacity='.5';}
+
+/* ═══════ SUBMIT EXAM ═══════════════════════════════════════ */
+function submitExam(){
+  stopTimer();
+  const un=25-Object.keys(pbaAns).length;
+  if(un>0&&timeLeft>0&&!confirm(`Tenés ${un} preguntas sin responder. ¿Finalizar de todas formas?`))return;
+  showScreen('s-results');buildResults();
+}
+
+/* ═══════ COACH ═════════════════════════════════════════════ */
+function buildCoach(){
+  const g=document.getElementById('coach-pba-grid');if(g&&g.innerHTML==='')buildPBASelector('coach-pba-grid',true);
+  const tb=document.getElementById('week-tbody');
+  if(tb&&tb.innerHTML===''){
+    WEEKS.forEach((w,i)=>{tb.innerHTML+=`<tr><td style="color:var(--navy);font-weight:500">${w}</td>
+      <td><input type="number" id="ca-${i}" min="0" placeholder="total" oninput="calcPerf()"></td>
+      <td><input type="number" id="cc-${i}" min="0" placeholder="contactados" oninput="calcPerf()"></td>
+      <td class="pct-cell" id="cp-${i}">—</td></tr>`;});
+  }
+  const al=document.getElementById('att-list');
+  if(al&&al.innerHTML===''){
+    ATT.forEach((a,i)=>{
+      const r=document.createElement('div');r.className='att-row';
+      r.innerHTML=`<span class="att-lbl">${a}</span><div class="att-pts">${[0,1,2,3,4,5].map(v=>`<button class="att-btn${attScores[i]===v?' sel':''}" id="a-${i}-${v}" onclick="setAtt(${i},${v})">${v}</button>`).join('')}</div>`;
+      al.appendChild(r);
+    });
+  }
+  const os=document.getElementById('open-scoring');
+  if(os&&os.innerHTML===''){
+    OPEN.forEach((oq,oi)=>{
+      const r=document.createElement('div');r.className='att-row';
+      r.innerHTML=`<span class="att-lbl"><strong style="color:var(--navy)">${oq.code}</strong> — ${oq.tag}</span>
+        <div class="att-pts">${[0,1,2,3].map(v=>`<button class="s-btn${openScores[oi]===v?' sel':''}" id="os-${oi}-${v}" onclick="setOS(${oi},${v})">${v}</button>`).join('')}</div>`;
+      os.appendChild(r);
+    });
+  }
+}
+function setAtt(i,v){
+  attScores[i]=v;
+  for(let x=0;x<=5;x++){const b=document.getElementById(`a-${i}-${x}`);if(b)b.classList.toggle('sel',x===v);}
+  calcPerf();
+}
+function setOS(i,v){
+  openScores[i]=v;
+  for(let x=0;x<=3;x++){const b=document.getElementById(`os-${i}-${x}`);if(b)b.classList.toggle('sel',x===v);}
+  calcPerf();
+}
+function calcPerf(){
+  const calls=+document.getElementById('p-calls')?.value||0;
+  const sm=+document.getElementById('p-smdays')?.value||0;
+  const c1a=calls>=375?20:calls>=319?16:calls>=263?12:calls>=188?6:0;
+  const c1b=sm>=20?20:sm>=16?16:sm>=12?10:sm>=8?5:0;
+  const c1=Math.round((c1a+c1b)/2);_s('pts-c1',c1);_s('c1-r',c1);
+  const ft=+document.getElementById('p-ftd-t')?.value||0;
+  const fc=+document.getElementById('p-ftd-c')?.value||0;
+  const fp=ft>0?fc/ft:0;
+  const c2=ft>0?(fp>=.5?20:fp>=.35?16:fp>=.20?10:fp>=.10?5:0):0;
+  _s('ftd-pct',ft>0?Math.round(fp*100)+'%':'—');_s('pts-c2',c2);_s('c2-r',c2);
+  const lv=+document.getElementById('p-level')?.value||0;
+  const nd=+document.getElementById('p-nd')?.value||0;
+  let c3=0;
+  if(lv>0&&nd>0){const np=nd/lv;c3=np>=1?20:np>=.8?16:np>=.6?12:np>=.4?6:0;_s('nd-pct',Math.round(np*100)+'%');}
+  else _s('nd-pct','—');
+  _s('pts-c3',c3);_s('c3-r',c3);
+  let covPs=[];
+  WEEKS.forEach((w,i)=>{
+    const a=+document.getElementById(`ca-${i}`)?.value||0;
+    const c=+document.getElementById(`cc-${i}`)?.value||0;
+    const p=a>0?c/a:null;
+    _s(`cp-${i}`,p!==null?Math.round(p*100)+'%':'—');
+    if(p!==null)covPs.push(p);
+  });
+  const covA=covPs.length>0?covPs.reduce((a,b)=>a+b,0)/covPs.length:0;
+  const c4=covPs.length>0?(covA>=.9?20:covA>=.75?16:covA>=.60?10:covA>=.45?5:0):0;
+  _s('cov-avg',covPs.length>0?Math.round(covA*100)+'%':'—');_s('pts-c4',c4);_s('c4-r',c4);
+  const c5=attScores.reduce((a,b)=>a+b,0);_s('pts-c5',c5);
+  const oSum=Object.values(openScores).reduce((a,b)=>a+b,0);
+  const oAdj=+(oSum/12*10).toFixed(1);_s('open-adj',oAdj);
+  const tot=c1+c2+c3+c4+c5;_s('tb-val',tot);_s('tb-bd',`${c1} + ${c2} + ${c3} + ${c4} + ${c5}`);
+  perfData={c1,c2,c3,c4,c5,tot,oAdj,fp:ft>0?fp:null,covA:covPs.length>0?covA:null};
+}
+function _s(id,v){const el=document.getElementById(id);if(el)el.textContent=v;}
+function submitCoach(){calcPerf();showScreen('s-results');buildResults();}
+
+/* ═══════ RESULTS ═══════════════════════════════════════════ */
+function buildResults(){
+  let s1=0,s2=0,s3=0;
+  QS1.forEach((q,i)=>{if(pbaAns[i+1]===q.ans)s1+=q.pts;});
+  QS2.forEach((q,i)=>{if(pbaAns[i+11]===q.ans)s2+=q.pts;});
+  QS3.forEach((q,i)=>{if(pbaAns[i+21]===q.ans)s3+=q.pts;});
+  const oAdj=perfData.oAdj||0;
+  const totA=+(s1+s2+s3+oAdj).toFixed(1);
+  const pctA=totA/45;const totB=perfData.tot||0;const pctB=totB/100;
+  const comb=+(pctA*.70+pctB*.30);
+  const pass=comb>=.70,border=comb>=.60&&!pass;
+  const vClass=pass?'pass':border?'warn':'fail';
+  const vTitle=pass?'Certificado — Aprobado':border?'Borde — Decisión del Director':'Reprueba — Re-test requerido';
+  const vMsg=pass?'Puede firmar documentos hoy: Protocolo PBA v3 + Política Bonos + Matriz de Competencias. Asignar portafolio completo en Zoho. Agendar checkpoints Día 15/30/60/90.'
+    :border?'El director evalúa si procede con portafolio reducido. Programar 2 sesiones de refuerzo en los próximos 10 días hábiles.'
+    :'Sin portafolio completo hasta aprobar el re-test. Identificar módulos débiles. Re-estudio mínimo 1 día hábil. Re-test en exactamente 2 días hábiles. Si vuelve a reprobar: escalar al Director.';
+  const pba=selectedPBA||coachSelectedPBA;
+  const pbaName=pba?pba.name:'—';const pbaLevel=pba?pba.level:'—';
+  const today=new Date().toLocaleDateString('es-CL',{day:'2-digit',month:'long',year:'numeric'});
+  let wrongHTML='';
+  [[QS1,1],[QS2,11],[QS3,21]].forEach(([data,off])=>{
+    data.forEach((q,qi)=>{
+      const num=off+qi;
+      if(pbaAns[num]!==undefined&&pbaAns[num]!==q.ans){
+        wrongHTML+=`<div class="wrong-item">
+          <div class="wq-num">Pregunta ${num}</div>
+          <div class="wq-text">${q.q}</div>
+          <div class="wq-correct"><span class="wq-lbl">✓ Correcta:</span> ${'ABCD'[q.ans]}. ${q.opts[q.ans]}</div>
+          <div class="wq-given"><span class="wq-lbl">✗ Tu resp.:</span> ${'ABCD'[pbaAns[num]]}. ${q.opts[pbaAns[num]]}</div>
+        </div>`;
+      }
+    });
+  });
+  const fc=v=>v>=.7?'f-ok':v>=.5?'f-warn':'f-fail';
+  const obs=document.getElementById('coach-obs')?.value||'';
+  document.getElementById('results-body').innerHTML=`
+    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:28px;flex-wrap:wrap">
+      <div><p class="hero-eyebrow">Resultado final</p><h2 style="font-family:var(--font-serif);font-size:32px;font-weight:300;color:var(--navy)">Certificación PBA</h2></div>
+      <div style="text-align:right;font-size:12px;color:var(--text-muted)">
+        <div style="color:var(--navy);font-weight:700;font-size:14px">${pbaName}</div>
+        <div>${pbaLevel}</div><div style="margin-top:2px">${today}</div>
+      </div>
+    </div>
+    <div class="verdict ${vClass}">
+      <div class="verdict-pba">◆ ${pbaName}</div>
+      <div class="verdict-title">${pass?'✓ ':border?'⚠ ':'✗ '}${vTitle}</div>
+      <p class="verdict-msg">${vMsg}</p>
+    </div>
+    <div class="sum-grid">
+      <div class="sum-card"><div class="sum-val">${Math.round(comb*100)}%</div><div class="sum-lbl">Puntaje final</div><div class="sum-sub">mínimo: 70%</div></div>
+      <div class="sum-card"><div class="sum-val">${totA}<span style="font-size:16px;font-weight:300">/45</span></div><div class="sum-lbl">Parte A — Teórico</div><div class="sum-sub">${Math.round(pctA*100)}%</div></div>
+      <div class="sum-card"><div class="sum-val">${totB}<span style="font-size:16px;font-weight:300">/100</span></div><div class="sum-lbl">Parte B — Performance</div><div class="sum-sub">${Math.round(pctB*100)}%</div></div>
+    </div>
+    <div class="breakdown">
+      <div class="bd-hdr">Desglose por sección</div>
+      ${[['S1 — Sistemas, Compliance, Productos y Mercados',s1,10],['S2 — Portafolio, VIP, Psicología y Objeciones',s2,15],['S3 — CRM, KPI, Bonos y Canales',s3,10],['S4 — Preguntas abiertas (coach)',oAdj,10],['Parte B — Performance Coach (peso 30%)',totB,100]]
+        .map(([l,v,m])=>`<div class="brow"><span class="brow-lbl">${l}</span><div class="brow-bar"><div class="brow-fill ${fc(v/m)}" style="width:${Math.min(100,Math.round(v/m*100))}%"></div></div><span class="brow-pts">${typeof v==='number'&&v.toFixed?v.toFixed(1):v} / ${m}</span></div>`).join('')}
+      <div class="brow"><span class="brow-lbl">Puntaje combinado final (70%×A + 30%×B)</span><div class="brow-bar"><div class="brow-fill ${fc(comb)}" style="width:${Math.round(comb*100)}%"></div></div><span class="brow-pts">${Math.round(comb*100)}%</span></div>
+    </div>
+    ${perfData.tot!==undefined?`<div class="perf-det">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)">Detalle Parte B</div>
+      <div class="pdet-grid">${[['C1 Llamadas',perfData.c1],['C2 FTD',perfData.c2],['C3 Net Deposits',perfData.c3],['C4 Cobertura',perfData.c4],['C5 Actitud',perfData.c5]].map(([l,v])=>`<div class="pdet"><div class="pdet-v">${v!==undefined?v:'—'}/20</div><div class="pdet-l">${l}</div></div>`).join('')}</div>
+    </div>`:''}
+    ${wrongHTML?`<div class="wrong-wrap"><div class="wrong-ttl">Respuestas incorrectas</div>${wrongHTML}</div>`:''}
+    ${Object.keys(pbaAns).length>0&&!wrongHTML?`<div style="background:var(--green-bg);border:1px solid var(--green-bd);border-left:3px solid var(--green);border-radius:var(--r-md);padding:12px 16px;font-size:13px;color:var(--green);margin-bottom:24px;font-weight:500">✓ Todas las preguntas de opción múltiple respondidas correctamente.</div>`:''}
+    ${obs?`<div class="obs-block"><div class="obs-lbl">Observaciones del coach</div><div class="obs-txt">${obs}</div></div>`:''}
+    <div class="action-bar">
+      <button class="btn" onclick="location.reload()">Nuevo test</button>
+      <button class="btn btn-gold" onclick="window.print()">Imprimir / Guardar PDF</button>
+    </div>`;
+}
+</script>
+</body>
+</html>
