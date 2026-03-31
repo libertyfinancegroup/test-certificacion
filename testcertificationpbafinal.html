@@ -1335,15 +1335,7 @@ function buildResults(isPBA){
         <div>${pbaLevel}</div><div style="margin-top:2px">${today}</div>
       </div>
     </div>
-    ${isPBA ? ${isPBA ? getExportBanner() : ''}
-      <div class="handoff-icon">📤</div>
-      <div class="handoff-text">
-        <strong>Paso siguiente: enviá este archivo al coach</strong>
-        <span>El coach necesita tu archivo para completar la Parte B y ver el resultado final combinado.</span>
-      </div>
-      <div class="handoff-btns">
-        <button class="btn-export" onclick="exportPBAAnswers()">⬇ Exportar respuestas (Parte A)</button>
-      </div>
+    ${isPBA ? getExportBanner() : ''}
     <div class="verdict ${vClass}">
       <div class="verdict-pba">◆ ${pbaName}</div>
       <div class="verdict-title">${pass?'✓ ':border?'⚠ ':'✗ '}${vTitle}</div>
