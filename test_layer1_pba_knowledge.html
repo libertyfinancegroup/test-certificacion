@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PBA Executive — Evaluación de Conocimientos · Liberty Finance</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#001337;--navy2:#0a1f4e;--navy3:#152c6b;
+  --gold:#938565;--gold2:#b8a882;--gold3:#c9bb9a;
+  --bg:#F5F4F0;--bg2:#EDECEA;--white:#fff;
+  --text:#1a1a2e;--text2:#4a4a6a;--text3:#888;
+  --ok:#1D9E75;--ok2:#E1F5EE;--err:#C04828;--err2:#FAECE7;
+  --warn:#BA7517;--warn2:#FAEEDA;
+  --mono:'Montserrat',sans-serif;
+  --serif:'Cormorant Garamond',serif;
+  --radius:10px;
+}
+body{font-family:var(--mono);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── Screens ── */
+.screen{display:none;min-height:100vh;animation:fadeIn .4s ease}
+.screen.active{display:flex;flex-direction:column}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* ── INTRO ── */
+#screen-intro{align-items:center;justify-content:center;padding:40px 20px}
+.intro-card{background:var(--white);border-radius:16px;max-width:620px;width:100%;overflow:hidden;box-shadow:0 4px 40px rgba(0,19,55,.12)}
+.intro-header{background:var(--navy);padding:40px 48px 32px;position:relative;overflow:hidden}
+.intro-header::after{content:'';position:absolute;bottom:-40px;right:-40px;width:200px;height:200px;border-radius:50%;border:2px solid rgba(147,133,101,.2)}
+.intro-header::before{content:'';position:absolute;top:-60px;left:-30px;width:160px;height:160px;border-radius:50%;border:1.5px solid rgba(147,133,101,.12)}
+.brand-tag{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--gold);margin-bottom:16px;text-transform:uppercase}
+.intro-title{font-family:var(--serif);font-size:38px;color:var(--white);line-height:1.2;margin-bottom:8px}
+.intro-subtitle{font-size:13px;color:rgba(255,255,255,.55);font-weight:400}
+.intro-body{padding:36px 48px}
+.meta-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.meta-chip{background:var(--bg);border-radius:8px;padding:14px 16px}
+.meta-chip-label{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:4px}
+.meta-chip-val{font-size:16px;font-weight:600;color:var(--navy)}
+.domains-list{margin-bottom:28px}
+.domains-label{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;margin-bottom:12px}
+.domain-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.domain-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.domain-name{font-size:13px;color:var(--text);font-weight:500;flex:1}
+.domain-q{font-size:12px;color:var(--text3);font-weight:400}
+.form-group{margin-bottom:16px}
+.form-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text2);margin-bottom:6px;display:block}
+.form-input{width:100%;padding:12px 14px;border:1.5px solid #ddd;border-radius:8px;font-family:var(--mono);font-size:14px;color:var(--text);background:var(--white);transition:border-color .2s}
+.form-input:focus{outline:none;border-color:var(--navy)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn-start{width:100%;padding:16px;background:var(--navy);color:var(--white);border:none;border-radius:10px;font-family:var(--mono);font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.06em;margin-top:8px;transition:background .2s}
+.btn-start:hover{background:var(--navy2)}
+.notice{font-size:12px;color:var(--text3);margin-top:12px;line-height:1.6;text-align:center}
+
+/* ── TEST ── */
+#screen-test{flex-direction:column}
+.test-topbar{background:var(--navy);padding:0 32px;height:60px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:10px}
+.topbar-logo{font-family:var(--serif);font-size:18px;color:var(--white)}
+.topbar-sep{width:1px;height:20px;background:rgba(255,255,255,.2)}
+.topbar-title{font-size:11px;color:rgba(255,255,255,.5);font-weight:500;letter-spacing:.06em}
+.topbar-right{display:flex;align-items:center;gap:20px}
+.timer-wrap{display:flex;align-items:center;gap:8px}
+.timer-icon{font-size:14px;color:var(--gold)}
+.timer-val{font-size:16px;font-weight:700;color:var(--white);font-variant-numeric:tabular-nums;letter-spacing:.04em}
+.timer-val.warn{color:#EF9F27}
+.timer-val.crit{color:#E24B4A;animation:blink 1s infinite}
+@keyframes blink{50%{opacity:.4}}
+.progress-bar-outer{height:3px;background:rgba(255,255,255,.12);position:absolute;bottom:0;left:0;right:0}
+.progress-bar-inner{height:100%;background:var(--gold);transition:width .4s ease}
+
+.test-layout{display:grid;grid-template-columns:220px 1fr;flex:1;min-height:0}
+.sidebar{background:var(--white);border-right:1px solid #e8e6e2;overflow-y:auto;padding:20px 16px}
+.sidebar-section{margin-bottom:20px}
+.sidebar-label{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);margin-bottom:10px;padding:0 4px}
+.q-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:5px}
+.q-btn{width:100%;aspect-ratio:1;border:1.5px solid #ddd;border-radius:6px;background:var(--white);cursor:pointer;font-family:var(--mono);font-size:12px;font-weight:600;color:var(--text2);transition:all .15s}
+.q-btn:hover{border-color:var(--navy);color:var(--navy)}
+.q-btn.active{background:var(--navy);color:var(--white);border-color:var(--navy)}
+.q-btn.answered{background:var(--bg);border-color:#aaa;color:var(--text)}
+.q-btn.answered.active{background:var(--navy);color:var(--white)}
+.q-btn.flagged::after{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--gold);position:absolute;top:3px;right:3px}
+.q-btn{position:relative}
+.sidebar-domain{padding:6px 8px;border-radius:6px;margin-bottom:4px;font-size:11px;font-weight:500;cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--text2)}
+.sidebar-domain:hover{background:var(--bg)}
+.sidebar-domain.active-dom{background:var(--navy);color:var(--white)}
+.dom-badge{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.sidebar-stats{background:var(--bg);border-radius:8px;padding:12px;font-size:12px;color:var(--text2);line-height:1.9}
+.sidebar-stats strong{color:var(--navy);font-weight:600}
+
+.question-area{overflow-y:auto;padding:40px 48px;display:flex;flex-direction:column}
+.q-domain-badge{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:20px;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;margin-bottom:24px}
+.q-counter{font-size:12px;color:var(--text3);margin-bottom:12px;font-weight:500}
+.q-text{font-family:var(--serif);font-size:26px;line-height:1.5;color:var(--navy);margin-bottom:32px;max-width:680px}
+.options-list{display:flex;flex-direction:column;gap:10px;max-width:680px;margin-bottom:32px}
+.option{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:1.5px solid #ddd;border-radius:10px;cursor:pointer;background:var(--white);transition:all .18s;font-size:14px;color:var(--text);line-height:1.5;text-align:left;width:100%}
+.option:hover:not(:disabled){border-color:var(--navy2);background:#f0f2f8}
+.option.selected{border-color:var(--navy);background:#eef1f9;color:var(--navy)}
+.option.correct{border-color:var(--ok);background:var(--ok2);color:#054535;pointer-events:none}
+.option.wrong{border-color:var(--err);background:var(--err2);color:#5c1a0a;pointer-events:none}
+.option.reveal{border-color:var(--ok);background:var(--ok2);color:#054535;pointer-events:none}
+.option:disabled{cursor:default}
+.opt-key{width:24px;height:24px;border-radius:6px;background:var(--bg);border:1.5px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;color:var(--text2);transition:all .18s}
+.option.selected .opt-key{background:var(--navy);border-color:var(--navy);color:var(--white)}
+.option.correct .opt-key{background:var(--ok);border-color:var(--ok);color:#fff}
+.option.wrong .opt-key{background:var(--err);border-color:var(--err);color:#fff}
+.option.reveal .opt-key{background:var(--ok);border-color:var(--ok);color:#fff}
+.feedback-box{max-width:680px;padding:14px 18px;border-radius:10px;font-size:13px;line-height:1.6;margin-bottom:24px;display:none}
+.feedback-box.show{display:block}
+.feedback-box.ok{background:var(--ok2);border:1px solid #5DCAA5;color:#054535}
+.feedback-box.err{background:var(--err2);border:1px solid #F0997B;color:#5c1a0a}
+.feedback-title{font-weight:700;margin-bottom:4px}
+
+.q-actions{display:flex;gap:12px;max-width:680px;margin-top:auto;padding-top:20px;border-top:1px solid #eee;flex-wrap:wrap}
+.btn-nav{padding:12px 22px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;border:none}
+.btn-prev{background:var(--bg);color:var(--text2)}
+.btn-prev:hover{background:#ddd}
+.btn-flag{background:var(--warn2);color:var(--warn);border:1px solid #EF9F27}
+.btn-next{background:var(--navy);color:var(--white)}
+.btn-next:hover{background:var(--navy2)}
+.btn-submit-test{background:var(--gold);color:var(--white);margin-left:auto}
+.btn-submit-test:hover{background:var(--gold2)}
+
+/* ── RESULTS ── */
+#screen-results{align-items:center;justify-content:flex-start;padding:40px 20px;background:var(--bg)}
+.results-wrap{max-width:860px;width:100%}
+.results-header{background:var(--navy);border-radius:16px 16px 0 0;padding:40px 48px;position:relative;overflow:hidden}
+.results-header::after{content:'';position:absolute;right:-60px;bottom:-60px;width:220px;height:220px;border-radius:50%;border:2px solid rgba(147,133,101,.15)}
+.res-brand{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--gold);margin-bottom:12px;text-transform:uppercase}
+.res-title{font-family:var(--serif);font-size:34px;color:var(--white);margin-bottom:4px}
+.res-meta{font-size:13px;color:rgba(255,255,255,.45)}
+.results-body{background:var(--white);border-radius:0 0 16px 16px;padding:40px 48px;box-shadow:0 8px 40px rgba(0,19,55,.1)}
+
+.score-hero{display:flex;align-items:center;gap:40px;padding:32px 0;border-bottom:1px solid #eee;margin-bottom:32px}
+.score-circle{width:120px;height:120px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;position:relative}
+.score-circle::before{content:'';position:absolute;inset:-4px;border-radius:50%;z-index:-1}
+.score-pct{font-family:var(--serif);font-size:44px;font-weight:600;line-height:1}
+.score-label{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-top:2px}
+.score-pass{background:#E1F5EE;color:#04342C}.score-pass::before{background:conic-gradient(#1D9E75 var(--pct),#9FE1CB var(--pct))}
+.score-warn{background:#FAEEDA;color:#633806}.score-warn::before{background:conic-gradient(#EF9F27 var(--pct),#FAC775 var(--pct))}
+.score-fail{background:#FCEBEB;color:#501313}.score-fail::before{background:conic-gradient(#E24B4A var(--pct),#F7C1C1 var(--pct))}
+.score-details{flex:1}
+.score-verdict{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--navy);margin-bottom:6px}
+.score-summary{font-size:14px;color:var(--text2);line-height:1.7}
+.score-chips{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.sc{padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600}
+.sc-ok{background:var(--ok2);color:#054535}
+.sc-err{background:var(--err2);color:#5c1a0a}
+.sc-warn{background:var(--warn2);color:#633806}
+
+.domains-breakdown{margin-bottom:32px}
+.breakdown-title{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.domain-result{margin-bottom:14px}
+.dr-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.dr-name{font-size:14px;font-weight:600;color:var(--navy);display:flex;align-items:center;gap:8px}
+.dr-score{font-size:13px;font-weight:700}
+.dr-bar-outer{height:10px;background:var(--bg);border-radius:5px;overflow:hidden}
+.dr-bar-inner{height:100%;border-radius:5px;transition:width .8s ease}
+
+.wrong-list{margin-bottom:32px}
+.wl-title{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:16px}
+.wrong-item{background:var(--err2);border:1px solid #F0997B;border-radius:10px;padding:16px 18px;margin-bottom:10px}
+.wi-q{font-size:13px;font-weight:600;color:#5c1a0a;margin-bottom:8px;line-height:1.5}
+.wi-row{display:flex;gap:8px;font-size:12px;margin-bottom:4px}
+.wi-label{font-weight:600;min-width:80px;color:#A32D2D}
+.wi-val{color:#5c1a0a;line-height:1.5}
+.wi-correct{color:var(--ok);font-weight:600}
+
+.res-actions{display:flex;gap:12px;padding-top:24px;border-top:1px solid #eee;flex-wrap:wrap}
+.btn-print{padding:13px 24px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--bg);color:var(--text2)}
+.btn-export{padding:13px 24px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--gold);color:var(--white)}
+.btn-restart{padding:13px 24px;border-radius:8px;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;border:none;background:var(--navy);color:var(--white)}
+
+/* ── Confirm modal ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;display:flex;align-items:center;justify-content:center;display:none}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--white);border-radius:14px;padding:36px;max-width:420px;width:100%;margin:20px}
+.modal-title{font-family:var(--serif);font-size:24px;color:var(--navy);margin-bottom:8px}
+.modal-text{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:24px}
+.modal-actions{display:flex;gap:12px}
+.btn-modal-cancel{flex:1;padding:12px;border-radius:8px;border:1.5px solid #ddd;background:none;font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer;color:var(--text2)}
+.btn-modal-ok{flex:1;padding:12px;border-radius:8px;border:none;background:var(--navy);color:var(--white);font-family:var(--mono);font-size:13px;font-weight:600;cursor:pointer}
+
+@media print{
+  .test-topbar,.sidebar,.q-actions,.res-actions{display:none!important}
+  .test-layout{grid-template-columns:1fr}
+  .question-area{padding:20px}
+  #screen-results{padding:0}
+  .results-wrap{max-width:100%}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ INTRO ═══════════════════ -->
+<div id="screen-intro" class="screen active">
+  <div class="intro-card">
+    <div class="intro-header">
+      <div class="brand-tag">Liberty Finance · Evaluación Técnica</div>
+      <div class="intro-title">Conocimientos<br>PBA Executive</div>
+      <div class="intro-subtitle">Capa 1 del sistema de evaluación 360° · Versión 1.0 – 2026</div>
+    </div>
+    <div class="intro-body">
+      <div class="meta-row">
+        <div class="meta-chip"><div class="meta-chip-label">Preguntas</div><div class="meta-chip-val">40</div></div>
+        <div class="meta-chip"><div class="meta-chip-label">Tiempo límite</div><div class="meta-chip-val">45 min</div></div>
+        <div class="meta-chip"><div class="meta-chip-label">Puntaje mínimo</div><div class="meta-chip-val">70%</div></div>
+        <div class="meta-chip"><div class="meta-chip-label">Formato</div><div class="meta-chip-val">Opción múltiple</div></div>
+      </div>
+      <div class="domains-list">
+        <div class="domains-label">Dominios evaluados</div>
+        <div class="domain-row"><div class="domain-dot" style="background:#185FA5"></div><div class="domain-name">Productos y Plataforma</div><div class="domain-q">10 preguntas</div></div>
+        <div class="domain-row"><div class="domain-dot" style="background:#0F6E56"></div><div class="domain-name">Mercados y Análisis</div><div class="domain-q">12 preguntas</div></div>
+        <div class="domain-row"><div class="domain-dot" style="background:#938565"></div><div class="domain-name">Analítica y Gestión KPIs</div><div class="domain-q">8 preguntas</div></div>
+        <div class="domain-row"><div class="domain-dot" style="background:#3C3489"></div><div class="domain-name">Regulatorio y Compliance</div><div class="domain-q">10 preguntas</div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Nombre completo</label><input class="form-input" id="inp-name" placeholder="Javier Monardes Ramos" autocomplete="off"></div>
+        <div class="form-group"><label class="form-label">Cargo</label><input class="form-input" id="inp-role" value="PBA Executive" autocomplete="off"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Evaluador / Coach</label><input class="form-input" id="inp-coach" placeholder="Karen Garcia" autocomplete="off"></div>
+        <div class="form-group"><label class="form-label">Fecha</label><input class="form-input" id="inp-date" type="date"></div>
+      </div>
+      <button class="btn-start" onclick="startTest()">Comenzar evaluación →</button>
+      <div class="notice">Una vez iniciada la evaluación, el temporizador no se puede pausar. Asegurate de tener 45 minutos disponibles sin interrupciones.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ TEST ═══════════════════ -->
+<div id="screen-test" class="screen">
+  <div class="test-topbar" style="position:relative">
+    <div class="topbar-brand">
+      <div class="topbar-logo">Liberty Finance</div>
+      <div class="topbar-sep"></div>
+      <div class="topbar-title">EVALUACIÓN PBA EXECUTIVE · CAPA 1</div>
+    </div>
+    <div class="topbar-right">
+      <div class="timer-wrap">
+        <span class="timer-icon">⏱</span>
+        <span class="timer-val" id="timer-display">45:00</span>
+      </div>
+      <button class="btn-nav btn-submit-test" onclick="confirmSubmit()">Finalizar</button>
+    </div>
+    <div class="progress-bar-outer"><div class="progress-bar-inner" id="progress-bar" style="width:0%"></div></div>
+  </div>
+
+  <div class="test-layout">
+    <div class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Navegación</div>
+        <div class="q-grid" id="q-nav-grid"></div>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Dominios</div>
+        <button class="sidebar-domain active-dom" onclick="filterDomain(null,this)"><span class="dom-badge" style="background:var(--navy)"></span>Todos</button>
+        <button class="sidebar-domain" onclick="filterDomain(0,this)"><span class="dom-badge" style="background:#185FA5"></span>Productos (10)</button>
+        <button class="sidebar-domain" onclick="filterDomain(1,this)"><span class="dom-badge" style="background:#0F6E56"></span>Mercados (12)</button>
+        <button class="sidebar-domain" onclick="filterDomain(2,this)"><span class="dom-badge" style="background:#938565"></span>Analítica (8)</button>
+        <button class="sidebar-domain" onclick="filterDomain(3,this)"><span class="dom-badge" style="background:#3C3489"></span>Regulatorio (10)</button>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-stats" id="sidebar-stats"></div>
+      </div>
+    </div>
+    <div class="question-area" id="question-area"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RESULTS ═══════════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-wrap">
+    <div class="results-header">
+      <div class="res-brand">Liberty Finance · Resultados</div>
+      <div class="res-title" id="res-title">Evaluación de Conocimientos — PBA Executive</div>
+      <div class="res-meta" id="res-meta"></div>
+    </div>
+    <div class="results-body">
+      <div class="score-hero">
+        <div class="score-circle" id="score-circle">
+          <div class="score-pct" id="score-pct">—</div>
+          <div class="score-label" id="score-label">%</div>
+        </div>
+        <div class="score-details">
+          <div class="score-verdict" id="score-verdict"></div>
+          <div class="score-summary" id="score-summary"></div>
+          <div class="score-chips" id="score-chips"></div>
+        </div>
+      </div>
+      <div class="domains-breakdown">
+        <div class="breakdown-title">Rendimiento por dominio</div>
+        <div id="domains-chart"></div>
+      </div>
+      <div class="wrong-list" id="wrong-list"></div>
+      <div class="res-actions">
+        <button class="btn-print" onclick="window.print()">🖨 Imprimir</button>
+        <button class="btn-export" onclick="exportJSON()">⬇ Exportar JSON</button>
+        <button class="btn-restart" onclick="restartTest()" style="margin-left:auto">↩ Nueva evaluación</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">¿Finalizar evaluación?</div>
+    <div class="modal-text" id="modal-text">Hay preguntas sin responder. Una vez finalizado, no podrás volver a editar tus respuestas.</div>
+    <div class="modal-actions">
+      <button class="btn-modal-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-modal-ok" onclick="submitTest()">Finalizar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA — 40 questions
+// ══════════════════════════════════════════════
+const DOMAINS = [
+  {name:"Productos y Plataforma", color:"#185FA5", bg:"#E6F1FB", count:10},
+  {name:"Mercados y Análisis",    color:"#0F6E56", bg:"#E1F5EE", count:12},
+  {name:"Analítica y KPIs",       color:"#938565", bg:"#F5F0E8", count:8},
+  {name:"Regulatorio y Compliance", color:"#3C3489", bg:"#EEEDFE", count:10},
+];
+
+const QUESTIONS = [
+// ─── PRODUCTOS (0-9) ───
+{d:0,q:"¿Cuál es la principal diferencia operativa entre una cuenta Libertex estándar y una cuenta con condiciones VIP en términos de costos de trading?",
+ opts:["La cuenta VIP opera sin comisiones, mientras que la estándar cobra una comisión fija por lote","La cuenta VIP tiene spreads reducidos y mayor apalancamiento máximo disponible","La cuenta VIP aplica spreads menores y puede eliminar o reducir la comisión por operación según el volumen del cliente","La cuenta VIP solo está disponible para depósitos superiores a $100,000 USD"],
+ ans:2, fb:"Las cuentas VIP en Libertex ofrecen spreads más competitivos y estructuras de comisión adaptadas al volumen. El beneficio principal es la reducción de la comisión por operación, lo que impacta directamente la rentabilidad del cliente activo."},
+
+{d:0,q:"En MT5, un cliente tiene una orden de compra abierta en USD/JPY. El margen libre cae al 50% del margen requerido. ¿Qué evento se activa automáticamente en la plataforma?",
+ opts:["Stop Out: cierre automático de la posición más grande","Margin Call: notificación al cliente de que debe depositar más fondos","Stop Loss: activación del nivel de stop loss configurado en la orden","Margin Call: notificación al broker para iniciar el cierre forzado"],
+ ans:1, fb:"Al alcanzar el nivel de Margin Call (generalmente 50% del margen requerido), MT5 envía una alerta al cliente. El Stop Out (cierre forzado de posiciones) ocurre en un nivel de margen aún más bajo, típicamente 20-30% según el broker."},
+
+{d:0,q:"Un cliente tiene saldo de $5,000 y quiere abrir una posición de compra en EUR/USD por 0.5 lotes con apalancamiento 1:200. El precio actual es 1.0850. ¿Cuál es el margen requerido aproximado?",
+ opts:["$271.25","$108.50","$542.50","$1,085.00"],
+ ans:0, fb:"Margen = (tamaño lote × precio × unidades) / apalancamiento = (0.5 × 1.0850 × 100,000) / 200 = $54,250 / 200 = $271.25. Cálculo clave que un PBA Executive debe dominar para asesorar correctamente sobre gestión de riesgo."},
+
+{d:0,q:"¿Cuál es el argumento de venta más sólido para diferenciar un paquete Life Academy Premium de un paquete Basic ante un cliente HNWI?",
+ opts:["El paquete Premium incluye más videos y horas de contenido","El Premium da acceso a señales de trading en tiempo real, sesiones 1:1 con analistas y contenido de inversión avanzado no disponible en Basic","El Premium tiene un precio menor por sesión si se calcula en términos mensuales","El Premium incluye acceso a todas las plataformas de trading sin costo adicional"],
+ ans:1, fb:"Para un cliente HNWI, el valor diferencial del Premium es el acceso directo a análisis personalizado, señales en tiempo real y mentoring. El argumento de precio-hora solo funciona con clientes price-sensitive, no con HNWI."},
+
+{d:0,q:"Un cliente reporta que su depósito por tarjeta de crédito de $3,000 aparece como 'pendiente' hace 36 horas en Libertex. ¿Cuál es el procedimiento correcto de un PBA Executive?",
+ opts:["Pedirle al cliente que cancele la operación y reintente con otro método de pago","Verificar en el sistema si existe un registro de la transacción, contactar al equipo de soporte con el comprobante del cliente y hacer seguimiento hasta resolución, manteniendo al cliente informado","Indicar al cliente que espere 72 horas adicionales ya que es tiempo estándar para tarjetas internacionales","Solicitar al cliente que llame directamente al banco emisor para resolver el problema"],
+ ans:1, fb:"El PBA Executive no escala el problema al cliente — lo gestiona internamente. La clave es: (1) verificar internamente, (2) coordinar con soporte, (3) comunicar proactivamente al cliente el estado. La experiencia del cliente es responsabilidad del PBA."},
+
+{d:0,q:"En MT5, una orden 'Buy Limit' se activa cuando el precio alcanza el nivel especificado porque el trader espera que...",
+ opts:["El precio suba desde ese nivel (zona de soporte)","El precio baje desde ese nivel (zona de resistencia)","El precio rompa ese nivel con fuerza","El precio se consolide en ese rango por varios períodos"],
+ ans:0, fb:"Un Buy Limit se coloca por debajo del precio actual, anticipando que el precio baje hasta un nivel de soporte y desde allí suba. Es una orden de entrada a mejor precio, usada en estrategias de pullback."},
+
+{d:0,q:"¿Qué herramienta de análisis técnico está disponible nativamente en la plataforma Libertex web (no en MT5) y es usada frecuentemente por PBAs en conversaciones de asesoría?",
+ opts:["Fibonacci automático multi-timeframe","Gráficos básicos con indicadores como medias móviles, RSI y MACD integrados","Backtesting de estrategias algorítmicas","Order flow y volumen por precio (DOM)"],
+ ans:1, fb:"Libertex web incluye gráficos con indicadores técnicos básicos (MA, RSI, MACD, Bollinger) integrados. Para análisis avanzados (backtesting, DOM, multi-timeframe) se usa TradingView o MT5."},
+
+{d:0,q:"Un cliente quiere hacer un retiro de $8,000 USDT a una wallet externa. ¿Cuál es la secuencia correcta que debe seguir el PBA?",
+ opts:["Procesar el retiro directamente desde el panel de cliente sin validaciones adicionales","Verificar que el cliente haya cumplido los requisitos de trading mínimos, que la wallet esté registrada y verificada, y coordinar con el equipo de operaciones para el procesamiento","Solo solicitar el número de wallet y enviar la solicitud al equipo financiero","Indicar al cliente que los retiros en cripto no están disponibles en montos superiores a $5,000"],
+ ans:1, fb:"Los retiros en cripto requieren: (1) verificar cumplimiento de volumen de trading, (2) confirmar que la wallet esté registrada y verificada en el sistema KYC, (3) coordinar con operaciones. El PBA no procesa retiros directamente pero sí gestiona el flujo."},
+
+{d:0,q:"¿Cuál es la estrategia de cross-sell más efectiva cuando un cliente activo en Libertex con perfil moderado ya tiene un paquete Life Academy Basic?",
+ opts:["Ofrecerle inmediatamente el upgrade a Premium con descuento por tiempo limitado","Identificar primero cuál es el gap de conocimiento que está limitando su rendimiento en la plataforma, y luego vincular ese gap al contenido específico del Premium","Sugerirle abrir una segunda cuenta con mayor capital para aprovechar mejores condiciones","Recomendarle que primero complete el 100% del contenido Basic antes de considerar un upgrade"],
+ ans:1, fb:"El cross-sell más efectivo parte del diagnóstico, no del producto. Al identificar el gap del cliente (ej: 'noto que hacés muchas operaciones sin análisis técnico') y vincularlo al Premium, la conversión es orgánica y el cliente percibe valor, no presión de ventas."},
+
+{d:0,q:"Un cliente con saldo de $50,000 consulta las diferencias entre operar en Libertex vs operar directamente en un broker regulado por CMF. ¿Cuál es la respuesta más honesta y estratégica de un PBA Executive?",
+ opts:["Evitar la comparación y redirigir la conversación al rendimiento de los clientes actuales","Afirmar que Libertex tiene mejor tecnología que cualquier broker regulado local","Explicar las ventajas de Libertex en términos de acceso a instrumentos, spreads y plataforma, reconocer las diferencias regulatorias existentes, y posicionar el servicio Liberty Finance (asesoría + educación) como el valor diferencial","Indicar que ambas opciones son equivalentes y que la elección depende solo de preferencia personal"],
+ ans:2, fb:"Un PBA Executive nunca evita comparaciones difíciles — las transforma en oportunidades. La honestidad sobre las diferencias regulatorias genera confianza. El diferencial posicionable es el servicio de asesoría personalizada + Life Academy, no solo la plataforma."},
+
+// ─── MERCADOS (10-21) ───
+{d:1,q:"El BCCh sorprende con una baja de tasas de 25 bps cuando el mercado esperaba una pausa. ¿Cuál es el efecto más probable e inmediato sobre el USD/CLP?",
+ opts:["El USD/CLP sube (el peso chileno se deprecia), ya que menores tasas reducen el atractivo del peso","El USD/CLP baja (el peso se aprecia), ya que la baja de tasas estimula la economía y el consumo","El USD/CLP no se ve afectado porque el BCCh interviene activamente para estabilizarlo","El efecto depende exclusivamente del precio del cobre ese día"],
+ ans:0, fb:"Menores tasas reducen el diferencial de tasas con el USD, haciendo el peso menos atractivo para carry trade. El efecto inmediato es depreciación del CLP (USD/CLP sube). Esta relación es esencial para clientes con exposición en divisas LatAm."},
+
+{d:1,q:"El precio del cobre cae 8% en la semana ante datos de manufactura débiles en China. ¿Cuál es el efecto esperado sobre el portafolio de un cliente chileno con 60% en renta variable local (IPSA)?",
+ opts:["Efecto neutral — el IPSA está diversificado en múltiples sectores no relacionados al cobre","Efecto negativo significativo — empresas mineras tienen alta ponderación en el IPSA y el CLP tenderá a depreciarse","Efecto positivo — las empresas importadoras chilenas se benefician de la caída del cobre","Efecto negativo solo si el cliente tiene acciones directas de Codelco o Antofagasta"],
+ ans:1, fb:"Chile es el mayor productor de cobre del mundo. El IPSA tiene alta concentración en mining y sectores correlacionados. Una caída del 8% en el cobre implica: (1) baja del IPSA por peso de mineras, (2) depreciación del CLP (más USD/CLP), (3) menor crecimiento económico proyectado."},
+
+{d:1,q:"Un RSI de 14 períodos marca 82 en el gráfico diario de Bitcoin. ¿Qué interpretación técnica corresponde y qué recomendación le harías a un cliente con posición larga abierta?",
+ opts:["RSI en 82 confirma la fortaleza alcista — mantener y agregar a la posición","RSI en sobrecompra extrema — el impulso está agotándose. Considerar toma parcial de ganancias o ajuste de stop loss a niveles favorables","RSI en 82 es señal neutral hasta que cruce por encima de 90","RSI solo es válido como señal en timeframes de 1 hora o menos"],
+ ans:1, fb:"RSI > 70 indica sobrecompra. RSI > 80 en timeframe diario indica momentum extremo con alta probabilidad de corrección o consolidación. La recomendación profesional es gestión de riesgo (toma parcial o trailing stop), no entrada adicional. Nunca recomendar comprar en sobrecompra extrema."},
+
+{d:1,q:"¿Qué es el 'carry trade' y por qué es relevante para clientes con posiciones en pares de divisas de mercados emergentes (EM)?",
+ opts:["Es una estrategia de trading de alta frecuencia que aprovecha micro-diferenciales de precio entre exchanges","Es pedir prestado en monedas de baja tasa de interés para invertir en activos de mayor rendimiento — relevante porque las divisas EM ofrecen tasas más altas pero implican riesgo de volatilidad cambiaria","Es el proceso de transferir fondos entre diferentes cuentas para optimizar el margen disponible","Es una estrategia de cobertura que elimina el riesgo cambiario en posiciones cross-border"],
+ ans:1, fb:"El carry trade busca capturar el diferencial de tasas (ej: tomar USD al 5% e invertir en MXN al 11%). El riesgo principal es que una depreciación abrupta de la divisa EM puede eliminar todas las ganancias del diferencial. Es un concepto clave al asesorar sobre pares como USD/BRL, USD/MXN o USD/CLP."},
+
+{d:1,q:"Un patrón 'cabeza y hombros' completo en el gráfico semanal de una acción señala técnicamente...",
+ opts:["Continuación de la tendencia alcista vigente con objetivo en el máximo anterior","Reversión bajista — el precio probable romperá el neckline y bajará una distancia equivalente a la altura del patrón","Consolidación lateral sin tendencia clara por 4-6 semanas adicionales","Señal de sobrecompra equivalente a RSI > 70"],
+ ans:1, fb:"Cabeza y hombros es uno de los patrones de reversión más fiables en AT. La señal se confirma con el quiebre del neckline en volumen creciente. El objetivo de precio se mide desde la cabeza hasta el neckline, proyectado hacia abajo desde el punto de quiebre."},
+
+{d:1,q:"La Fed sube las tasas en 50 bps de forma inesperada. ¿Cuál es el impacto más probable e inmediato en los mercados de renta variable globales?",
+ opts:["Subida del S&P 500 por señal de fortaleza económica","Caída generalizada: el costo de capital sube, las valoraciones DCF se comprimen y aumenta el atractivo relativo de la renta fija","Impacto neutral porque los mercados ya lo tenían 'priced in'","Subida solo de bancos y financieras; caída solo de tecnología"],
+ ans:1, fb:"Subida de tasas inesperada = mayor tasa de descuento = menor valor presente de flujos futuros = compresión de múltiplos. El impacto es mayor en growth stocks (tecnología) que en value. También fortalece el USD, afectando commodities y EM. Este análisis es estándar en cualquier conversación de portafolio con HNWI."},
+
+{d:1,q:"Un cliente con perfil moderado pregunta qué diferencia al análisis fundamental del análisis técnico para decidir cuándo comprar una acción. ¿Cuál es la explicación más precisa y útil?",
+ opts:["El fundamental es más confiable y siempre debe prevalecer sobre el técnico","El técnico analiza gráficos y precios pasados para identificar patrones; el fundamental analiza variables financieras y macroeconómicas para estimar valor intrínseco. Ambos son complementarios","El análisis técnico es solo para trading de corto plazo; el fundamental solo para inversión de largo plazo","Solo el análisis técnico es válido para operaciones en plataformas como Libertex"],
+ ans:1, fb:"La respuesta correcta integra ambos enfoques. En la práctica de PBA: el fundamental determina QUÉ comprar (calidad del activo), el técnico determina CUÁNDO entrar (momento de precio). Para clientes HNWI que preguntan por metodología, mostrar conocimiento de ambas perspectivas genera confianza."},
+
+{d:1,q:"¿Cuál de las siguientes opciones describe mejor una estrategia de diversificación adecuada para un cliente HNWI chileno con $200,000 y perfil moderado-agresivo?",
+ opts:["100% en acciones tech de EE.UU. por su alto retorno histórico","Concentrar en renta fija chilena para proteger el patrimonio en pesos","Distribuir entre renta variable global (40%), commodities LatAm (20%), renta fija USD (25%) e instrumentos alternativos (15%)","Invertir exclusivamente en IPSA para aprovechar el conocimiento del mercado local"],
+ ans:2, fb:"La diversificación efectiva para HNWI moderado-agresivo requiere: exposición geográfica múltiple, mezcla de asset classes con baja correlación, y algo de alternativos para alpha descorrelacionado. Concentrar en un solo mercado o asset class va en contra de los principios básicos de gestión de riesgo patrimonial."},
+
+{d:1,q:"El precio del litio cae 35% en 6 meses ante exceso de oferta de productores australianos. ¿Cómo impacta esto a la economía de Chile y qué relevancia tiene para la asesoría de clientes?",
+ opts:["Impacto neutral — Chile exporta principalmente cobre, no litio","Impacto positivo — los costos de producción de vehículos eléctricos bajan, beneficiando al IPSA","Impacto negativo en ingresos fiscales y cotización del CLP; relevante para clientes con alta concentración en activos chilenos o inversiones en el sector minero","Impacto solo en las acciones de SQM listadas en NYSE, sin efecto en el mercado local"],
+ ans:2, fb:"Chile es el segundo mayor productor de litio del mundo. Una caída del 35% impacta: ingresos fiscales de CORFO/royalties, valor de SQM (componente del IPSA), y presiona el CLP a la baja. Para un PBA es clave monitorear commodities LatAm como driver macro de las carteras de clientes chilenos."},
+
+{d:1,q:"Un cliente ve que su posición en S&P 500 subió 12% en 3 meses y quiere saber si es buen momento para agregar capital. El VIX está en 28. ¿Qué análisis corresponde?",
+ opts:["VIX en 28 es bajo, confirmar la entrada adicional sin reservas","Subida del 12% es señal de momentum — siempre es buen momento para agregar","VIX en 28 indica elevada volatilidad implícita del mercado. Recomendable revisar si el rally fue impulsado por fundamentos sólidos o flujos especulativos antes de aumentar exposición","Nunca agregar capital después de una subida del 12% — la regla es comprar bajas únicamente"],
+ ans:2, fb:"VIX > 20 indica volatilidad elevada. Un rally del 12% en VIX alto puede indicar movimientos especulativos o short-covering, no necesariamente fortaleza fundamental. El PBA Executive debe analizar: composición del rally, valuación actual vs histórica, y context macro antes de recomendar aumentar exposición."},
+
+{d:1,q:"¿Qué son las 'Bandas de Bollinger' y cuál es su uso principal en la asesoría con clientes?",
+ opts:["Son indicadores de volumen que muestran la liquidez del activo en tiempo real","Son bandas calculadas con media móvil ± 2 desviaciones estándar que miden la volatilidad del precio; un precio tocando la banda superior o inferior puede indicar sobrecompra/sobreventa","Son niveles de soporte y resistencia automáticos calculados por el algoritmo de Libertex","Son herramientas de análisis fundamental para medir el riesgo de una empresa"],
+ ans:1, fb:"Bollinger Bands = MA(20) ± 2σ. Se amplían en alta volatilidad y se contraen en baja. Un precio tocando la banda superior no es automáticamente señal de venta — en tendencias fuertes puede 'caminar sobre la banda'. Se usan para identificar compresión de volatilidad (señal de breakout inminente) y zonas de reversión potencial."},
+
+{d:1,q:"Un cliente con posición larga en USD/MXN quiere saber cómo afectaría al par una victoria electoral de un candidato con propuestas de mayor gasto público y control de capitales en México. ¿Cuál es la respuesta más completa?",
+ opts:["Las elecciones no afectan el FX — solo los datos económicos duros mueven el tipo de cambio","Las propuestas de mayor gasto pueden generar expectativas de inflación y déficit fiscal, lo que presiona al MXN a la baja (USD/MXN sube). El riesgo de control de capitales generaría fuga de inversores, amplificando la depreciación","El MXN se apreciaría porque mayor gasto público estimula el crecimiento","El impacto es imposible de predecir antes de las elecciones"],
+ ans:1, fb:"El riesgo político-electoral es un factor macro fundamental para divisas EM. Políticas fiscales expansivas + riesgo de control de capitales = prima de riesgo soberana más alta = depreciación del MXN. Este tipo de análisis diferencia a un PBA Executive que asesora sobre riesgo cambiario HNWI."},
+
+// ─── ANALÍTICA Y KPIs (22-29) ───
+{d:2,q:"Un PBA Executive tiene 48 clientes activos (con actividad en los últimos 60 días) y 20 clientes inactivos. Según el estándar de cobertura de Liberty Finance, ¿cumple con el mínimo requerido?",
+ opts:["Sí — la cobertura es 70.6% activos, lo que supera el mínimo del 70%","No — el estándar exige 80% activos / 20% inactivos y tiene 70.6% activos","Sí — cualquier ratio activos/inactivos es aceptable si el ND mensual se cumple","No — el mínimo es 90% activos según el Sales Protocol PBA"],
+ ans:1, fb:"El estándar de Liberty Finance es 80% activos / 20% inactivos. Con 48 activos sobre 68 totales = 70.6%, el PBA está por debajo del mínimo. Acción requerida: identificar los clientes inactivos de mayor potencial y trabajarlos activamente para reactivación."},
+
+{d:2,q:"¿Qué representa el KPI 'Brokerage Fee' (BF) en el contexto del negocio de Liberty Finance y por qué es el indicador más importante para medir la rentabilidad de un PBA?",
+ opts:["Es el total de depósitos netos captados por el advisor en el mes","Es la comisión generada por el volumen de trading de los clientes del PBA — mide la actividad real y recurrente del portafolio, no solo captación","Es el salario variable del PBA calculado sobre el total de activos bajo gestión","Es la tasa de retención de clientes del advisor medida en porcentaje mensual"],
+ ans:1, fb:"El BF representa ingresos reales y recurrentes del negocio. Diferencia clave: el ND (net deposit) puede ser alto por captación nueva pero no sostenible; el BF alto indica que los clientes están activos operando, lo que es el núcleo del modelo de negocio. Por eso tiene una ponderación del 40% en el KPI del PBA Executive."},
+
+{d:2,q:"Según la fórmula de KPIs de Liberty Finance para PBA Executive (ND 0.4 | BF 0.4 | AUM 0.2), si un advisor tiene: ND = 80% del target, BF = 110% del target, AUM = 95% del target, ¿cuál es su KPI ponderado total?",
+ opts:["95.0%","97.0%","95.5%","93.0%"],
+ ans:1, fb:"KPI = (0.4 × 80%) + (0.4 × 110%) + (0.2 × 95%) = 32% + 44% + 19% = 95%... espera: 32+44=76, 76+19=95%. Revisando: (0.4×80)+(0.4×110)+(0.2×95) = 32+44+19 = 95%. La respuesta correcta es 95.0%. Un PBA Executive debe calcular esto de memoria para hacer seguimiento propio de su bonificación variable."},
+
+{d:2,q:"En CRM Zoho, el PBA detecta que el mismo cliente aparece registrado dos veces con emails diferentes pero mismo número de teléfono. ¿Cuál es el procedimiento correcto?",
+ opts:["Eliminar el registro más antiguo y mantener solo el nuevo","Marcar ambos registros como 'inactivos' hasta recibir instrucciones del supervisor","Reportar el clon al equipo de CRM/Quality para fusión de registros — nunca eliminar unilateralmente — y verificar que no haya duplicación de actividad o depósitos","Crear un tercer registro unificado y eliminar los dos anteriores"],
+ ans:2, fb:"La fusión de registros en CRM es un proceso controlado que requiere verificación de: historial de actividad, depósitos asociados, estado de KYC. Un PBA nunca elimina registros unilateralmente porque puede perder historial crítico de compliance. El procedimiento es reportar a Quality para fusión auditada."},
+
+{d:2,q:"Un PBA Executive analiza su reporte OLAP mensual y detecta que su BF bajó 30% respecto al mes anterior, aunque el ND subió 15%. ¿Cuál es la causa más probable y la acción correcta?",
+ opts:["Es una situación normal — ND y BF siempre se mueven en direcciones opuestas","Los clientes nuevos captados (alto ND) aún no están operando activamente (bajo BF). Acción: onboarding activo de los nuevos clientes hacia el trading, y refuerzo de activación de clientes existentes","El sistema OLAP tiene un error de cálculo — solicitar corrección al equipo técnico","El BF bajó porque el spread de Libertex se redujo ese mes"],
+ ans:1, fb:"Esta es una situación típica: captación exitosa pero activación insuficiente. El BF mide actividad de trading, no depósitos. Solución: plan de activación de los nuevos clientes (educación + señales + seguimiento) y reactivación de clientes existentes inactivos. El PBA debe tener KPIs de activación por cohorte."},
+
+{d:2,q:"Un PBA tiene en el día: 13 consultas exitosas, 195 minutos de talk time y 108 intentos de contacto. ¿Cumple con los tres mínimos operativos para PBA Executive?",
+ opts:["Sí — cumple los tres indicadores","No — le faltan 2 consultas exitosas (mínimo 15), aunque cumple talk time e intentos","Sí — supera talk time e intentos, y 13 consultas es suficiente para días de baja actividad","No — debe tener mínimo 17 consultas como todos los advisors de Liberty Finance"],
+ ans:1, fb:"Los mínimos PBA Executive son: 15 consultas exitosas / 170 min talk time / ~100 intentos/día. Con 13 consultas está por debajo del mínimo, aunque cumple talk time (195) e intentos (108). El foco de acción: mejorar la tasa de contacto efectivo (contactation rate). Los 17/170 son mínimos de CAM, no PBA."},
+
+{d:2,q:"¿Qué información específica debería revisar un PBA Executive en el reporte de OLAP/Kyubit antes de una llamada de seguimiento con un cliente de alto valor ($50,000+ AUM)?",
+ opts:["Solo el saldo actual de la cuenta y la última operación realizada","Historial de depósitos y retiros, posiciones abiertas y cerradas del período, P&L acumulado, productos utilizados, frecuencia de operaciones y cualquier cambio en el perfil de riesgo observable","Únicamente el BF generado por ese cliente en el mes actual","El reporte no es necesario — la información relevante está en la conversación directa con el cliente"],
+ ans:1, fb:"Una llamada de seguimiento con HNWI sin preparación previa es una señal de falta de profesionalismo. El PBA debe llegar con contexto completo: P&L (para validar decisiones pasadas), posiciones actuales (para agenda de conversación), y cambios en comportamiento (para anticipar necesidades o riesgos)."},
+
+{d:2,q:"El sistema muestra que un cliente de $80,000 AUM tiene P&L de -22% en 45 días con 8 posiciones abiertas en alta volatilidad. ¿Cuál es la acción prioritaria e inmediata del PBA Executive?",
+ opts:["Esperar a que el cliente llame — no es correcto intervenir en las decisiones de inversión del cliente","Cerrar todas las posiciones del cliente para proteger el capital restante","Contactar proactivamente al cliente, revisar juntos las posiciones abiertas, evaluar si corresponde reducir exposición o ajustar stops según el perfil de riesgo acordado, y documentar el contacto en CRM","Reportar la situación al supervisor y esperar instrucciones antes de contactar al cliente"],
+ ans:2, fb:"Un -22% en 45 días en un HNWI requiere intervención proactiva inmediata. El PBA Executive actúa con autonomía: contacta al cliente, revisa el portafolio juntos, y toma decisiones coordinadas. Esperar que llame el cliente es una falla de gestión de cartera. La documentación en CRM es obligatoria para compliance."},
+
+// ─── REGULATORIO (30-39) ───
+{d:3,q:"¿Qué significa KYC (Know Your Customer) y cuáles son los tres elementos mínimos que debe verificar un PBA antes de activar operativamente una relación con un cliente nuevo?",
+ opts:["KYC es un proceso opcional de marketing para personalizar la experiencia del cliente","KYC es el proceso de verificación de identidad obligatorio: los tres elementos mínimos son (1) identidad documentada (ID/pasaporte vigente), (2) origen y declaración de fuentes de fondos, y (3) perfil de riesgo e idoneidad financiera","KYC solo aplica a clientes con depósitos superiores a $10,000","KYC es responsabilidad exclusiva del equipo de compliance — el PBA solo debe registrar los datos en CRM"],
+ ans:1, fb:"KYC es una obligación regulatoria anti-lavado de activos. Los tres pilares: (1) Identidad — documento oficial vigente, (2) Fuente de fondos — declaración y evidencia del origen del capital, (3) Suitability — perfil de riesgo, objetivos de inversión, experiencia. El PBA es la primera línea de KYC — no puede delegarlo completamente."},
+
+{d:3,q:"¿Qué es una 'Persona Políticamente Expuesta' (PEP) y qué nivel de diligencia adicional requiere en el proceso de onboarding?",
+ opts:["Un cliente con activos superiores a $1 millón que tiene acceso a información privilegiada de mercado","Una persona que tiene o tuvo un cargo público prominente (gobierno, fuerzas armadas, empresas estatales), que por su posición tiene mayor riesgo de estar relacionada con corrupción o lavado de activos. Requiere aprobación de nivel superior, documentación adicional de fuente de fondos y monitoreo continuo reforzado","Solo aplica a presidentes y ministros en ejercicio, no a ex-funcionarios","Una PEP puede operar normalmente — la clasificación es solo informativa para el sistema"],
+ ans:1, fb:"Los PEPs representan mayor riesgo de blanqueo de capitales por su acceso a fondos públicos o influencia. La diligencia reforzada (Enhanced Due Diligence) incluye: aprobación de compliance, verificación exhaustiva de fuente de fondos, y monitoreo continuo de transacciones inusuales. Familiares directos y asociados cercanos de PEPs también califican como PEP."},
+
+{d:3,q:"Un cliente solicita un retiro de $45,000 cuando su promedio histórico mensual de retiros es $2,000 y no ha habido actividad de trading reciente. ¿Qué debe hacer el PBA Executive?",
+ opts:["Procesar el retiro inmediatamente — el cliente tiene derecho a retirar sus fondos cuando quiera","Negar el retiro — montos inusuales no están permitidos por política interna","Documentar el caso como transacción inusual, contactar al cliente para obtener explicación del propósito del retiro, escalar a compliance si la explicación no es satisfactoria, y nunca procesar el retiro sin debida diligencia completada","Solo preguntar informalmente al cliente el motivo y proceder si la respuesta parece razonable"],
+ ans:2, fb:"Una transacción inusual (22x el promedio histórico + sin actividad reciente) es una señal AML de alerta. El PBA tiene obligación de: (1) documentar, (2) solicitar explicación, (3) escalar a compliance. Procesar sin diligencia es un incumplimiento regulatorio que puede tener consecuencias legales para el PBA y la empresa."},
+
+{d:3,q:"FATCA (Foreign Account Tax Compliance Act) es una normativa de origen estadounidense. ¿Qué obligación práctica genera para Liberty Finance al atender clientes que son ciudadanos o residentes fiscales de EE.UU.?",
+ opts:["Ninguna — FATCA solo aplica a bancos y no a brokers de inversión","Obliga a identificar clientes con obligaciones fiscales en EE.UU., reportar sus cuentas y rendimientos a las autoridades fiscales estadounidenses (IRS), y en caso de no cumplimiento, aplicar retenciones del 30% sobre pagos de origen americano","FATCA solo aplica si el cliente tiene más de $1 millón en activos globales","FATCA es opcional para empresas latinoamericanas que no tienen operaciones en EE.UU."],
+ ans:1, fb:"FATCA tiene alcance extraterritorial. Toda institución financiera global debe identificar a U.S. Persons entre sus clientes y reportar al IRS. El incumplimiento genera retención del 30% en pagos de fuente americana. Para Liberty Finance, implica identificar y documentar correctamente la ciudadanía fiscal de todos los clientes en el onboarding."},
+
+{d:3,q:"¿Cuál es el organismo regulador del mercado de valores y los instrumentos financieros en Chile, y cuál es su relevancia para la operación de Liberty Finance?",
+ opts:["La Superintendencia de Bancos e Instituciones Financieras (SBIF)","La Comisión para el Mercado Financiero (CMF) — regula la oferta pública de valores, intermediarios de valores, fondos de inversión y el mercado financiero en general en Chile","El Banco Central de Chile (BCCh) regula todos los instrumentos financieros","La UAF (Unidad de Análisis Financiero) es el principal regulador del mercado de valores"],
+ ans:1, fb:"La CMF (ex-SVS + ex-SBIF fusionadas en 2019) es la autoridad supervisora del mercado de capitales en Chile. Regula a corredoras de bolsa, AGF, fondos mutuos y proveedores de servicios de inversión. La UAF se enfoca específicamente en prevención de lavado de activos. El BCCh regula política monetaria y cambiaria, no el mercado de valores directamente."},
+
+{d:3,q:"El CRS (Common Reporting Standard) es el estándar de intercambio automático de información fiscal entre países. ¿Qué información se intercambia y por qué es relevante para clientes HNWI de Liberty Finance?",
+ opts:["Solo se intercambia información sobre transacciones superiores a $100,000 USD","Se intercambia información de cuentas financieras (saldos, rendimientos, retiros) entre autoridades fiscales de países adherentes. Para HNWI con residencia fiscal en países CRS, sus cuentas en Liberty Finance pueden ser reportadas a su autoridad fiscal local","CRS solo aplica a cuentas bancarias, no a cuentas de inversión","El CRS es voluntario y solo aplica si el cliente lo autoriza explícitamente"],
+ ans:1, fb:"CRS (promovido por OCDE) obliga a instituciones financieras a reportar anualmente las cuentas de residentes fiscales de países adherentes (Chile, Ecuador, Perú incluidos). Para HNWI, esto significa que sus inversiones en Liberty Finance pueden ser visibles para sus autoridades tributarias locales. El PBA debe informar sobre esto en el onboarding para evitar sorpresas."},
+
+{d:3,q:"Un cliente ecuatoriano con perfil moderado quiere operar CFDs apalancados sobre índices europeos desde su cuenta en Liberty Finance. ¿Cuál es la verificación regulatoria prioritaria del PBA?",
+ opts:["Solo verificar que el cliente tenga fondos suficientes para cubrir el margen requerido","Verificar que el perfil de riesgo del cliente (suitability) sea compatible con los CFDs apalancados, que haya completado el cuestionario de idoneidad, y que comprenda los riesgos específicos de apalancamiento — especialmente para clientes de jurisdicciones con regulación más restrictiva para derivados","Los CFDs están disponibles para cualquier cliente sin restricciones regulatorias adicionales","Verificar solo que el cliente no sea ciudadano americano (FATCA)"],
+ ans:1, fb:"Los CFDs apalancados tienen restricciones específicas por perfil de inversor en múltiples jurisdicciones. El PBA debe asegurar: (1) suitability documentado (el cliente entiende el apalancamiento y las pérdidas potenciales), (2) cuestionario de experiencia en derivados completado, (3) advertencias de riesgo entregadas y firmadas. Operar sin suitability documentado es incumplimiento regulatorio."},
+
+{d:3,q:"¿Cuál es el plazo mínimo de conservación de registros de transacciones de clientes que exigen las mejores prácticas AML en América Latina (aplicable a Chile, Ecuador, Perú)?",
+ opts:["1 año desde la transacción","3 años desde el cierre de la relación comercial","5 años desde la transacción o desde el cierre de la relación comercial, lo que sea mayor","Los registros deben conservarse indefinidamente"],
+ ans:2, fb:"El estándar GAFI/FATF y las normativas locales de Chile (UAF), Ecuador y Perú exigen 5 años de conservación de registros de transacciones y documentos KYC. Este plazo permite investigaciones retroactivas por lavado de activos. En la práctica, muchas instituciones conservan 7-10 años por criterios de prudencia."},
+
+{d:3,q:"Un cliente solicita al PBA que registre una operación como ejecutada el día anterior (back-dating) porque perdió la oportunidad de entrada y quiere que 'aparezca en los registros de ayer'. ¿Cuál es la única respuesta correcta del PBA?",
+ opts:["Acceder si el cliente argumenta que era su intención original operar ayer","Intentar hacer la operación de forma manual sin dejar rastro en el sistema","Explicar al cliente que el back-dating es una práctica prohibida que viola normas de compliance y registro de transacciones, declinar categóricamente la solicitud, documentar el pedido en CRM y reportarlo al supervisor de compliance","Hacer una excepción si el cliente es de alto valor (HNWI) y tiene una buena relación con el advisor"],
+ ans:2, fb:"El back-dating es una violación grave de normas de integridad de registros financieros, equivalente a falsificación de documentos. No existe excepción basada en el valor del cliente o la relación personal. El PBA debe: (1) declinar, (2) documentar el pedido, (3) reportar. No hacerlo lo convierte en cómplice de una infracción regulatoria."},
+
+{d:3,q:"¿Qué es el 'Deber de Idoneidad' (Suitability) y cómo condiciona concretamente las recomendaciones de un PBA Executive a un cliente con perfil conservador?",
+ opts:["Es un principio ético opcional que sugiere alinear recomendaciones al perfil del cliente","Es la obligación regulatoria de que toda recomendación de inversión sea adecuada para el perfil de riesgo, experiencia, situación financiera y objetivos del cliente. Para un perfil conservador, el PBA no puede recomendar CFDs apalancados de alto riesgo aunque el cliente los solicite — debe explicar el riesgo y documentar que el cliente entiende la incompatibilidad con su perfil","Solo aplica a recomendaciones formales escritas, no a conversaciones verbales","El cliente siempre tiene el derecho de ignorar el suitability y operar lo que quiera sin restricciones"],
+ ans:1, fb:"Suitability es una obligación legal en la mayoría de jurisdicciones LatAm. Si un cliente conservador insiste en instrumentos de alto riesgo, el PBA debe: (1) explicar la incompatibilidad, (2) documentar que el cliente fue informado del riesgo, (3) obtener una declaración firmada si el cliente aún quiere proceder. Recomendar sin suitability es responsabilidad profesional y legal del PBA."},
+];
+
+// Fix answer 24 (KPI ponderado): recalculate
+// (0.4*80) + (0.4*110) + (0.2*95) = 32 + 44 + 19 = 95.0% → index 0
+QUESTIONS[24].ans = 0;
+
+// ══════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════
+let answers = new Array(40).fill(null);
+let revealed = new Array(40).fill(false);
+let flagged = new Array(40).fill(false);
+let currentQ = 0;
+let timerInterval = null;
+let timeLeft = 45 * 60;
+let candidateInfo = {};
+let startTime = null;
+let activeFilter = null;
+
+// ══════════════════════════════════════════════
+// INTRO
+// ══════════════════════════════════════════════
+document.getElementById('inp-date').value = new Date().toISOString().split('T')[0];
+
+function startTest() {
+  candidateInfo = {
+    name: document.getElementById('inp-name').value || 'Candidato',
+    role: document.getElementById('inp-role').value,
+    coach: document.getElementById('inp-coach').value,
+    date: document.getElementById('inp-date').value,
+  };
+  showScreen('test');
+  buildNavGrid();
+  updateStats();
+  renderQuestion(0);
+  startTimer();
+  startTime = Date.now();
+}
+
+// ══════════════════════════════════════════════
+// SCREENS
+// ══════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + id).classList.add('active');
+}
+
+// ══════════════════════════════════════════════
+// NAV GRID
+// ══════════════════════════════════════════════
+function buildNavGrid() {
+  const grid = document.getElementById('q-nav-grid');
+  grid.innerHTML = '';
+  QUESTIONS.forEach((q, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'q-btn' + (i === 0 ? ' active' : '');
+    btn.textContent = i + 1;
+    btn.id = 'qbtn-' + i;
+    btn.onclick = () => goToQ(i);
+    grid.appendChild(btn);
+  });
+}
+
+function updateNavBtn(i) {
+  const btn = document.getElementById('qbtn-' + i);
+  if (!btn) return;
+  btn.className = 'q-btn' +
+    (i === currentQ ? ' active' : '') +
+    (answers[i] !== null ? ' answered' : '') +
+    (flagged[i] ? ' flagged' : '');
+}
+
+function filterDomain(domIdx, el) {
+  document.querySelectorAll('.sidebar-domain').forEach(b => b.classList.remove('active-dom'));
+  el.classList.add('active-dom');
+  activeFilter = domIdx;
+  const firstQ = domIdx === null ? 0 : QUESTIONS.findIndex(q => q.d === domIdx);
+  if (firstQ >= 0) goToQ(firstQ);
+}
+
+// ══════════════════════════════════════════════
+// RENDER QUESTION
+// ══════════════════════════════════════════════
+function renderQuestion(idx) {
+  currentQ = idx;
+  const q = QUESTIONS[idx];
+  const dom = DOMAINS[q.d];
+  const area = document.getElementById('question-area');
+
+  // Update all nav buttons
+  QUESTIONS.forEach((_, i) => updateNavBtn(i));
+
+  // Progress
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('progress-bar').style.width = (answered / 40 * 100) + '%';
+
+  const keys = ['A', 'B', 'C', 'D'];
+  area.innerHTML = `
+    <div>
+      <div class="q-domain-badge" style="background:${dom.bg};color:${dom.color}">
+        <span style="width:6px;height:6px;border-radius:50%;background:${dom.color};display:inline-block"></span>
+        ${dom.name}
+      </div>
+      <div class="q-counter">Pregunta ${idx + 1} de 40</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options-list" id="opts-list">
+        ${q.opts.map((o, i) => `
+          <button class="option${answers[idx] === i ? ' selected' : ''}${revealed[idx] && i === q.ans ? ' reveal' : ''}${revealed[idx] && answers[idx] === i && i !== q.ans ? ' wrong' : ''}"
+            id="opt-${i}" onclick="selectOption(${i})" ${revealed[idx] ? 'disabled' : ''}>
+            <span class="opt-key">${keys[i]}</span>
+            <span>${o}</span>
+          </button>
+        `).join('')}
+      </div>
+      <div class="feedback-box ${revealed[idx] ? 'show ' + (answers[idx] === q.ans ? 'ok' : 'err') : ''}" id="feedback-box">
+        <div class="feedback-title">${revealed[idx] ? (answers[idx] === q.ans ? '✓ Correcto' : '✗ Incorrecto') : ''}</div>
+        ${q.fb}
+      </div>
+    </div>
+    <div class="q-actions">
+      <button class="btn-nav btn-prev" onclick="goToQ(${idx - 1})" ${idx === 0 ? 'disabled style="opacity:.4"' : ''}>← Anterior</button>
+      <button class="btn-nav btn-flag" onclick="toggleFlag(${idx})">${flagged[idx] ? '🚩 Marcada' : '⚐ Marcar'}</button>
+      ${!revealed[idx] ? `<button class="btn-nav btn-next" style="background:var(--gold);color:#fff" onclick="revealAnswer()" ${answers[idx] === null ? 'disabled style="opacity:.4"' : ''}>Ver respuesta</button>` : ''}
+      <button class="btn-nav btn-next" onclick="goToQ(${idx + 1})" ${idx === 39 ? 'disabled style="opacity:.4"' : ''}>Siguiente →</button>
+    </div>
+  `;
+  updateStats();
+}
+
+function selectOption(i) {
+  if (revealed[currentQ]) return;
+  answers[currentQ] = i;
+  updateNavBtn(currentQ);
+  renderQuestion(currentQ);
+}
+
+function revealAnswer() {
+  if (answers[currentQ] === null) return;
+  revealed[currentQ] = true;
+  renderQuestion(currentQ);
+}
+
+function goToQ(idx) {
+  if (idx < 0 || idx >= 40) return;
+  renderQuestion(idx);
+}
+
+function toggleFlag(idx) {
+  flagged[idx] = !flagged[idx];
+  updateNavBtn(idx);
+  renderQuestion(idx);
+}
+
+// ══════════════════════════════════════════════
+// STATS
+// ══════════════════════════════════════════════
+function updateStats() {
+  const tot = answers.filter(a => a !== null).length;
+  const fl = flagged.filter(Boolean).length;
+  const rem = 40 - tot;
+  document.getElementById('sidebar-stats').innerHTML =
+    `<strong>${tot}</strong> respondidas<br>
+     <strong>${rem}</strong> sin responder<br>
+     <strong>${fl}</strong> marcadas`;
+}
+
+// ══════════════════════════════════════════════
+// TIMER
+// ══════════════════════════════════════════════
+function startTimer() {
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60).toString().padStart(2, '0');
+    const s = (timeLeft % 60).toString().padStart(2, '0');
+    const el = document.getElementById('timer-display');
+    if (el) {
+      el.textContent = `${m}:${s}`;
+      el.className = 'timer-val' + (timeLeft < 300 ? ' crit' : timeLeft < 600 ? ' warn' : '');
+    }
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitTest();
+    }
+  }, 1000);
+}
+
+// ══════════════════════════════════════════════
+// SUBMIT
+// ══════════════════════════════════════════════
+function confirmSubmit() {
+  const unanswered = answers.filter(a => a === null).length;
+  document.getElementById('modal-text').textContent = unanswered > 0
+    ? `Tenés ${unanswered} pregunta${unanswered > 1 ? 's' : ''} sin responder. Una vez finalizado, no podrás editar las respuestas.`
+    : 'Respondiste todas las preguntas. ¿Confirmas la entrega?';
+  document.getElementById('modal-overlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('show');
+}
+
+function submitTest() {
+  clearInterval(timerInterval);
+  closeModal();
+  showResults();
+}
+
+// ══════════════════════════════════════════════
+// RESULTS
+// ══════════════════════════════════════════════
+function showResults() {
+  showScreen('results');
+
+  // Meta
+  const elapsed = Math.round((Date.now() - startTime) / 1000);
+  const em = Math.floor(elapsed / 60), es = elapsed % 60;
+  document.getElementById('res-meta').textContent =
+    `${candidateInfo.name} · ${candidateInfo.role} · Coach: ${candidateInfo.coach} · ${candidateInfo.date} · Tiempo: ${em}:${es.toString().padStart(2,'0')}`;
+
+  // Score
+  const correct = QUESTIONS.filter((q, i) => answers[i] === q.ans).length;
+  const pct = Math.round(correct / 40 * 100);
+
+  const circle = document.getElementById('score-circle');
+  const pctEl = document.getElementById('score-pct');
+  const lblEl = document.getElementById('score-label');
+  const verdEl = document.getElementById('score-verdict');
+  const sumEl = document.getElementById('score-summary');
+  const chipsEl = document.getElementById('score-chips');
+
+  pctEl.textContent = pct + '%';
+  lblEl.textContent = correct + '/40';
+  circle.style.setProperty('--pct', pct + '%');
+
+  if (pct >= 85) {
+    circle.className = 'score-circle score-pass';
+    verdEl.textContent = 'Excelente desempeño';
+    sumEl.textContent = `Respondiste correctamente ${correct} de 40 preguntas. Superás holgadamente el umbral de aprobación del 70%. Tu perfil de conocimientos es sólido a nivel Executive.`;
+    chipsEl.innerHTML = `<span class="sc sc-ok">✓ Aprobado</span><span class="sc sc-ok">${correct} correctas</span>`;
+  } else if (pct >= 70) {
+    circle.className = 'score-circle score-warn';
+    verdEl.textContent = 'Aprobado con oportunidades de mejora';
+    sumEl.textContent = `Superaste el umbral mínimo de 70%. Hay dominios específicos donde reforzar el conocimiento para operar plenamente al nivel Executive.`;
+    chipsEl.innerHTML = `<span class="sc sc-ok">✓ Aprobado</span><span class="sc sc-warn">${40 - correct} para revisar</span>`;
+  } else {
+    circle.className = 'score-circle score-fail';
+    verdEl.textContent = 'No alcanzó el puntaje mínimo';
+    sumEl.textContent = `El puntaje obtenido (${pct}%) está por debajo del 70% requerido. Se recomienda plan de estudio dirigido antes de la re-evaluación.`;
+    chipsEl.innerHTML = `<span class="sc sc-err">✗ No aprobado</span><span class="sc sc-err">Mínimo: 70%</span>`;
+  }
+
+  // Domain breakdown
+  const domChart = document.getElementById('domains-chart');
+  domChart.innerHTML = '';
+  DOMAINS.forEach((dom, di) => {
+    const qs = QUESTIONS.filter((q, i) => q.d === di);
+    const corr = qs.filter((q, qi) => {
+      const globalIdx = QUESTIONS.indexOf(q);
+      return answers[globalIdx] === q.ans;
+    }).length;
+    const total = qs.length;
+    const domPct = Math.round(corr / total * 100);
+    const barColor = domPct >= 80 ? '#1D9E75' : domPct >= 60 ? '#BA7517' : '#C04828';
+    domChart.innerHTML += `
+      <div class="domain-result">
+        <div class="dr-header">
+          <div class="dr-name"><span style="width:10px;height:10px;border-radius:50%;background:${dom.color};display:inline-block"></span>${dom.name}</div>
+          <div class="dr-score" style="color:${barColor}">${corr}/${total} (${domPct}%)</div>
+        </div>
+        <div class="dr-bar-outer"><div class="dr-bar-inner" style="width:${domPct}%;background:${barColor}"></div></div>
+      </div>
+    `;
+  });
+
+  // Wrong answers
+  const wrongEl = document.getElementById('wrong-list');
+  const wrongs = QUESTIONS.map((q, i) => ({q, i, answered: answers[i], correct: q.ans}))
+    .filter(x => x.answered !== x.correct);
+
+  if (wrongs.length === 0) {
+    wrongEl.innerHTML = '';
+    return;
+  }
+
+  wrongEl.innerHTML = `<div class="wl-title">Preguntas incorrectas o sin responder (${wrongs.length})</div>`;
+  wrongs.forEach(({q, i, answered, correct}) => {
+    const dom = DOMAINS[q.d];
+    wrongEl.innerHTML += `
+      <div class="wrong-item">
+        <div class="wi-q">P${i+1}. ${q.q}</div>
+        <div class="wi-row"><span class="wi-label">Tu respuesta:</span><span class="wi-val">${answered !== null ? q.opts[answered] : '— Sin responder'}</span></div>
+        <div class="wi-row"><span class="wi-label wi-correct">Correcta:</span><span class="wi-val wi-correct">${q.opts[correct]}</span></div>
+        <div class="wi-row"><span class="wi-label">Dominio:</span><span class="wi-val" style="color:${dom.color}">${dom.name}</span></div>
+        <div class="wi-row"><span class="wi-label">Concepto:</span><span class="wi-val">${q.fb.split('.')[0]}.</span></div>
+      </div>
+    `;
+  });
+}
+
+// ══════════════════════════════════════════════
+// EXPORT
+// ══════════════════════════════════════════════
+function exportJSON() {
+  const correct = QUESTIONS.filter((q, i) => answers[i] === q.ans).length;
+  const domainScores = DOMAINS.map((dom, di) => {
+    const qs = QUESTIONS.filter(q => q.d === di);
+    const corr = qs.filter(q => answers[QUESTIONS.indexOf(q)] === q.ans).length;
+    return {domain: dom.name, correct: corr, total: qs.length, pct: Math.round(corr/qs.length*100)};
+  });
+  const data = {
+    candidate: candidateInfo,
+    timestamp: new Date().toISOString(),
+    result: {total: 40, correct, pct: Math.round(correct/40*100), passed: correct/40 >= 0.7},
+    domainScores,
+    answers: answers.map((a, i) => ({q: i+1, answered: a, correct: QUESTIONS[i].ans, isCorrect: a === QUESTIONS[i].ans}))
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `LF_Test_Layer1_${candidateInfo.name.replace(/\s+/g,'_')}_${candidateInfo.date}.json`;
+  a.click();
+}
+
+function restartTest() {
+  answers = new Array(40).fill(null);
+  revealed = new Array(40).fill(false);
+  flagged = new Array(40).fill(false);
+  currentQ = 0;
+  timeLeft = 45 * 60;
+  if (timerInterval) clearInterval(timerInterval);
+  showScreen('intro');
+}
+</script>
+</body>
+</html>
