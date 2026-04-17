@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Formativo PBA — Liberty Finance</title>
+<style>
+  :root {
+    --navy: #0B2545;
+    --blue: #13315C;
+    --accent: #8DA9C4;
+    --gold: #C8A560;
+    --bg: #F7F8FA;
+    --text: #1A1A1A;
+    --muted: #6B7280;
+    --border: #D1D5DB;
+    --green: #1F7A3A;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    padding: 0;
+    line-height: 1.55;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 48px 80px;
+    background: #fff;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.04);
+  }
+  header {
+    border-bottom: 3px solid var(--navy);
+    padding-bottom: 24px;
+    margin-bottom: 32px;
+  }
+  .brand {
+    font-size: 13px;
+    letter-spacing: 2px;
+    color: var(--gold);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  h1 {
+    font-size: 28px;
+    color: var(--navy);
+    margin: 8px 0 4px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    color: var(--muted);
+    font-size: 14px;
+    margin: 4px 0 0;
+  }
+  .meta-box {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin: 24px 0 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    font-size: 14px;
+  }
+  .meta-box .field { display: flex; align-items: baseline; }
+  .meta-box label {
+    color: var(--muted);
+    font-weight: 600;
+    min-width: 95px;
+    font-size: 13px;
+  }
+  .meta-box .line {
+    flex: 1;
+    border-bottom: 1px solid var(--border);
+    min-height: 20px;
+    padding-left: 6px;
+  }
+  .instructions {
+    background: #FFF8E7;
+    border-left: 4px solid var(--gold);
+    padding: 14px 18px;
+    margin: 0 0 32px;
+    font-size: 14px;
+    border-radius: 2px;
+  }
+  .instructions strong { color: var(--navy); }
+  .phase {
+    margin-top: 36px;
+    padding-top: 18px;
+    border-top: 2px solid var(--navy);
+  }
+  .phase-title {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: var(--navy);
+    text-transform: uppercase;
+    font-weight: 700;
+    margin: 0 0 4px;
+  }
+  .module-header {
+    background: var(--navy);
+    color: #fff;
+    padding: 10px 16px;
+    margin: 28px 0 16px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .module-header .tag {
+    background: var(--gold);
+    color: var(--navy);
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+  }
+  .question {
+    margin: 18px 0 24px;
+    padding: 0 0 18px;
+    border-bottom: 1px dashed #E5E7EB;
+  }
+  .question:last-child { border-bottom: none; }
+  .q-head {
+    display: flex;
+    gap: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .q-num {
+    color: var(--gold);
+    font-weight: 700;
+    min-width: 30px;
+  }
+  .options {
+    list-style: none;
+    padding: 0 0 0 40px;
+    margin: 8px 0 0;
+  }
+  .options li {
+    padding: 6px 0 6px 28px;
+    position: relative;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .options li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--muted);
+    border-radius: 50%;
+    background: #fff;
+  }
+  .options li span.letter {
+    font-weight: 700;
+    color: var(--navy);
+    margin-right: 6px;
+  }
+  .open-q {
+    margin: 18px 0 32px;
+    padding: 0 0 20px;
+    border-bottom: 1px dashed #E5E7EB;
+  }
+  .open-q .q-head { margin-bottom: 12px; }
+  .open-q .scenario {
+    background: #F3F4F6;
+    border-left: 3px solid var(--accent);
+    padding: 10px 14px;
+    margin: 8px 0 12px 40px;
+    font-size: 13.5px;
+    color: #374151;
+    font-style: italic;
+    border-radius: 2px;
+  }
+  .answer-lines {
+    margin: 8px 0 0 40px;
+  }
+  .answer-lines .line {
+    border-bottom: 1px solid #D1D5DB;
+    height: 26px;
+    margin-bottom: 2px;
+  }
+  .footer-scoring {
+    margin-top: 48px;
+    padding-top: 20px;
+    border-top: 2px solid var(--navy);
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .footer-scoring strong { color: var(--navy); }
+  .footer-scoring table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+    font-size: 13px;
+  }
+  .footer-scoring th, .footer-scoring td {
+    padding: 7px 10px;
+    border: 1px solid var(--border);
+    text-align: left;
+  }
+  .footer-scoring th {
+    background: var(--bg);
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .signature-box {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 40px;
+    padding-top: 20px;
+  }
+  .signature-box .sig {
+    border-top: 1px solid var(--navy);
+    padding-top: 6px;
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+  }
+  .confidential {
+    text-align: center;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 2px;
+    margin-top: 40px;
+    text-transform: uppercase;
+  }
+  @media print {
+    body { background: #fff; }
+    .container { box-shadow: none; padding: 20px; max-width: 100%; }
+    .question, .open-q, .module-header { page-break-inside: avoid; }
+    .phase { page-break-before: auto; }
+  }
+  @media (max-width: 640px) {
+    .container { padding: 24px 20px 60px; }
+    .meta-box { grid-template-columns: 1fr; }
+    h1 { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="brand">Liberty Finance · Departamento Comercial</div>
+  <h1>Test Formativo PBA — Fases 1 & 2</h1>
+  <p class="subtitle">Evaluación diagnóstica de onboarding · Módulos M1–M8 · Versión 1.0 · Abril 2026</p>
+</header>
+
+<div class="meta-box">
+  <div class="field"><label>Nombre:</label><span class="line"></span></div>
+  <div class="field"><label>Track:</label><span class="line"></span></div>
+  <div class="field"><label>Fecha inicio:</label><span class="line"></span></div>
+  <div class="field"><label>Fecha test:</label><span class="line"></span></div>
+  <div class="field"><label>Coach:</label><span class="line"></span></div>
+  <div class="field"><label>Puntaje:</label><span class="line"></span></div>
+</div>
+
+<div class="instructions">
+  <strong>Instrucciones:</strong> Este es un <strong>test diagnóstico</strong> (no bloqueante). Cubre los Módulos 1–8 del programa PBA. Consta de <strong>20 preguntas de selección múltiple</strong> (2 pts c/u = 40 pts) y <strong>5 preguntas abiertas</strong> (12 pts c/u = 60 pts). <strong>Total: 100 pts.</strong> Duración estimada: 90 minutos. Sin material de apoyo. El objetivo es identificar áreas de refuerzo antes del Test de Certificación.
+</div>
+
+<!-- FASE 1: MÓDULOS 1-2 -->
+<div class="phase">
+  <div class="phase-title">Parte I · Fase 1 — Supervivencia y primeras llamadas</div>
+</div>
+
+<div class="module-header"><span class="tag">M1</span> Sistemas y orientación rápida</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">1.</span><span>En el flujo comercial de Liberty Finance, ¿cuál es la secuencia correcta de traspaso de un cliente desde la generación del lead hasta el soporte analítico?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> PBA → CAM → Analista → Cliente</li>
+    <li><span class="letter">B)</span> CAM → PBA → Equipo Analista (soporte indirecto)</li>
+    <li><span class="letter">C)</span> Call Center → Analista → PBA → CAM</li>
+    <li><span class="letter">D)</span> Marketing → PBA → CAM → Analista</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">2.</span><span>¿Cuál es la herramienta correcta para identificar los Top 5 clientes de tu portafolio ordenados por SOT / Brokerage Fee / AUM?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Zoho CRM, vista "Mis Contactos"</li>
+    <li><span class="letter">B)</span> FxBank, reporte de Statements</li>
+    <li><span class="letter">C)</span> OLAP / Kyubit — reporte TopN</li>
+    <li><span class="letter">D)</span> MicroSIP, historial de llamadas</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">3.</span><span>¿Cuáles son los tres sistemas operativos mínimos que deben estar funcionando antes de iniciar llamadas el Día 2?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Bloomberg, TradingView y Libertex</li>
+    <li><span class="letter">B)</span> CRM Zoho, MicroSIP (Compeak) y PeopleForce</li>
+    <li><span class="letter">C)</span> Gmail, Slack y Google Calendar</li>
+    <li><span class="letter">D)</span> Citrix, VPN y FxBank</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M2</span> Script básico, personas de cliente y primeras llamadas</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">4.</span><span>De las 5 personas de cliente PBA, ¿qué enfoque corresponde al perfil "Cliente Dormido 60+ días"?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Presión comercial inmediata con oferta promocional de depósito</li>
+    <li><span class="letter">B)</span> Empatía primero, luego oportunidad, luego pregunta suave — nunca culpar al cliente</li>
+    <li><span class="letter">C)</span> Pitch de Noble Portfolio en la primera llamada</li>
+    <li><span class="letter">D)</span> Enviar WhatsApp automático y esperar respuesta</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">5.</span><span>La estructura correcta del script básico de primer contacto FTD es:</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Producto → Cierre → Profiling → Siguiente paso</li>
+    <li><span class="letter">B)</span> Apertura → Intro → Profiling → Producto → Siguiente paso → Cierre</li>
+    <li><span class="letter">C)</span> Saludo → Venta directa → Objeciones → Cierre</li>
+    <li><span class="letter">D)</span> Intro → Cierre → Producto → Profiling</li>
+  </ul>
+</div>
+
+<!-- FASE 2: MÓDULOS 3-8 -->
+<div class="phase">
+  <div class="phase-title">Parte II · Fase 2 — Profundidad y calidad</div>
+</div>
+
+<div class="module-header"><span class="tag">M3</span> Productos: Libertex, Life Academy y ecosistema MT5</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">6.</span><span>Un cliente de $25.000 busca una cuenta premium con ejecución prioritaria, spreads reducidos y acceso a analítica exclusiva. ¿Qué producto le recomiendas?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Copy Trading básico</li>
+    <li><span class="letter">B)</span> Cuenta Swap-Free estándar</li>
+    <li><span class="letter">C)</span> Noble Portfolio (tier premium)</li>
+    <li><span class="letter">D)</span> Life Academy Suscripción Pro</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">7.</span><span>Un cliente dice: "No tengo tiempo para operar y analizar el mercado". ¿Cuál es la solución pasiva más adecuada dentro del ecosistema?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> MT5 con órdenes manuales</li>
+    <li><span class="letter">B)</span> Copy Trading con expertos verificados</li>
+    <li><span class="letter">C)</span> Libertex Core sin ajustes</li>
+    <li><span class="letter">D)</span> Retiro total y nuevo depósito cada mes</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">8.</span><span>¿Cuál es la sinergia correcta del ecosistema cross-sell Liberty?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> MT5 → Libertex → Life Academy (solo para HNWI)</li>
+    <li><span class="letter">B)</span> Life Academy (educa) → Libertex (opera) → MT5 (upgrade avanzado)</li>
+    <li><span class="letter">C)</span> Libertex → Noble Portfolio → retiro programado</li>
+    <li><span class="letter">D)</span> Copy Trading → EA → Social Trading, sin integración</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">9.</span><span>¿Cuál es la diferencia clave entre Copy Trading y Expert Advisor (EA)?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Copy Trading replica operaciones de un trader verificado; el EA ejecuta reglas automáticas programadas en MT5</li>
+    <li><span class="letter">B)</span> Copy Trading es manual; el EA es un curso en Life Academy</li>
+    <li><span class="letter">C)</span> Ambos son idénticos, solo cambia el nombre según la plataforma</li>
+    <li><span class="letter">D)</span> Copy Trading solo funciona para FX; el EA solo para acciones</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M4</span> Mercados, plataformas y macro LatAm</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">10.</span><span>El principal driver macro de la economía chilena, que representa más del 50% de las exportaciones, es:</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Petróleo crudo</li>
+    <li><span class="letter">B)</span> Cobre</li>
+    <li><span class="letter">C)</span> Soja</li>
+    <li><span class="letter">D)</span> Oro</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">11.</span><span>Un cliente ecuatoriano te pregunta por instrumentos locales. ¿Qué característica macro es clave mencionar sobre Ecuador?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Economía dolarizada; el petróleo es la principal exportación</li>
+    <li><span class="letter">B)</span> Moneda propia (Sucre) con alta volatilidad</li>
+    <li><span class="letter">C)</span> Economía basada en soja y carne como Paraguay</li>
+    <li><span class="letter">D)</span> Mercado accionario profundo como Chile (IPSA)</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">12.</span><span>En Bloomberg Terminal, ¿cuál es la función correcta para acceder a las principales noticias del día en los mercados?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> ECO</li>
+    <li><span class="letter">B)</span> FXIP</li>
+    <li><span class="letter">C)</span> TOP</li>
+    <li><span class="letter">D)</span> GP</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M5</span> Psicología de ventas, objeciones y confianza</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">13.</span><span>La objeción "Otro broker ofrece mejor spread" pertenece a qué categoría del framework de 10 objeciones PBA?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Financiera</li>
+    <li><span class="letter">B)</span> Confianza</li>
+    <li><span class="letter">C)</span> Competitiva</li>
+    <li><span class="letter">D)</span> Autonomía</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">14.</span><span>En la psicología del cliente LatAm, ¿cuál es el principio correcto para construir la relación comercial?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Primero negocio, después confianza</li>
+    <li><span class="letter">B)</span> Primero confianza, después negocio</li>
+    <li><span class="letter">C)</span> Evitar canales informales como WhatsApp</li>
+    <li><span class="letter">D)</span> Minimizar contacto personal y operar solo por email</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">15.</span><span>De las 7 estrategias de construcción de confianza PBA, ¿cuál describe correctamente la regla de velocidad?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Responder chats en menos de 15 minutos y emails el mismo día de trabajo</li>
+    <li><span class="letter">B)</span> Responder solo en horario bancario tradicional (9–17h)</li>
+    <li><span class="letter">C)</span> Ignorar mensajes hasta tener una respuesta perfecta</li>
+    <li><span class="letter">D)</span> Delegar las respuestas al equipo de Soporte</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M6</span> Gestión de portafolio y ciclo de vida del cliente</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">16.</span><span>La regla 80/20 de cobertura del portafolio PBA establece:</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> 80% del tiempo en inactivos, 20% en VIP</li>
+    <li><span class="letter">B)</span> 80% del tiempo en activos (incluye FTD y activos recientes) y 20% en inactivos/reactivación</li>
+    <li><span class="letter">C)</span> 80% en cold outreach, 20% en portafolio</li>
+    <li><span class="letter">D)</span> 80% en HNWI, 20% en el resto</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">17.</span><span>Cuando un nuevo FTD aparece asignado a tu portafolio, ¿cuál es la secuencia correcta del mismo día?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Esperar 48 horas y luego enviar un email</li>
+    <li><span class="letter">B)</span> 1 llamada + espera de una semana</li>
+    <li><span class="letter">C)</span> 4 intentos de llamada + 1 WhatsApp + 1 email, ejecutado en &lt;15 min desde asignación</li>
+    <li><span class="letter">D)</span> Transferir inmediatamente al equipo VIP</li>
+  </ul>
+</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">18.</span><span>Un cliente llama enojado porque su retiro se está demorando. ¿Cuál es el enfoque correcto?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Prometer un plazo exacto aunque no esté confirmado, para calmarlo</li>
+    <li><span class="letter">B)</span> Empatía primero, solución después — nunca prometer plazos que no controlas, escalar a Finance CS si corresponde</li>
+    <li><span class="letter">C)</span> Derivarlo inmediatamente al Director sin intentar resolver</li>
+    <li><span class="letter">D)</span> Ofrecerle un bono de compensación sin aprobación</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M7</span> Compliance, pagos y gestión de riesgo</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">19.</span><span>¿Cuál de las siguientes frases es una VIOLACIÓN clara de compliance?</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> "Históricamente este activo se ha movido en este rango"</li>
+    <li><span class="letter">B)</span> "Este producto tiene potencial de crecimiento en el escenario X"</li>
+    <li><span class="letter">C)</span> "Te garantizo un 15% de rentabilidad mensual si inviertes hoy"</li>
+    <li><span class="letter">D)</span> "Cada inversión implica riesgo, incluida la pérdida del capital"</li>
+  </ul>
+</div>
+
+<div class="module-header"><span class="tag">M8</span> Protocolo VIP, soporte departamental y ofertas</div>
+
+<div class="question">
+  <div class="q-head"><span class="q-num">20.</span><span>Según la tabla de frecuencia SOT, un cliente con SOT 47.500+ requiere:</span></div>
+  <ul class="options">
+    <li><span class="letter">A)</span> Contacto una vez al mes mínimo</li>
+    <li><span class="letter">B)</span> El más alto nivel de servicio premium (retiro prioritario, contacto semanal, ofertas exclusivas)</li>
+    <li><span class="letter">C)</span> Contacto automatizado únicamente por WhatsApp</li>
+    <li><span class="letter">D)</span> Transferencia obligatoria al Country Manager</li>
+  </ul>
+</div>
+
+<!-- PARTE III: PREGUNTAS ABIERTAS -->
+<div class="phase">
+  <div class="phase-title">Parte III · Preguntas abiertas (12 pts c/u)</div>
+</div>
+
+<div class="open-q">
+  <div class="q-head"><span class="q-num">21.</span><span>Redacta el guión inicial (apertura + 3 primeras frases) para reactivar a un cliente dormido hace 90+ días que en su última interacción perdió aproximadamente 20% del capital.</span></div>
+  <div class="scenario">Perfil: hombre, 42 años, Chile, último depósito USD 3.000 hace 4 meses, sin actividad desde entonces, última llamada con ex-CAM fue neutra.</div>
+  <div class="answer-lines">
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+  </div>
+</div>
+
+<div class="open-q">
+  <div class="q-head"><span class="q-num">22.</span><span>Construye un pitch de urgencia de mercado ("FOMO compliant") basado en una noticia real de esta semana (cobre, BCCh, Fed, BCE o una relevante de LatAm). Debe ser compliant: sin promesas de retorno, sin "te lo vas a perder".</span></div>
+  <div class="answer-lines">
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+  </div>
+</div>
+
+<div class="open-q">
+  <div class="q-head"><span class="q-num">23.</span><span>Un cliente potencial peruano te dice: <em>"Un amigo me dijo que Libertex es una estafa y que perdió todo su dinero."</em> Escribe tu respuesta completa manejando la objeción con empatía, sin ser defensivo y sin caer en compliance.</span></div>
+  <div class="answer-lines">
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+  </div>
+</div>
+
+<div class="open-q">
+  <div class="q-head"><span class="q-num">24.</span><span>Diseña un <strong>plan de construcción de confianza de 30 días</strong> para un FTD nuevo con depósito inicial de USD 5.000. Lista al menos 5 acciones concretas, con su semana de ejecución y objetivo.</span></div>
+  <div class="answer-lines">
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div>
+  </div>
+</div>
+
+<div class="open-q">
+  <div class="q-head"><span class="q-num">25.</span><span>Redacta la solicitud al Equipo Analista para pedir análisis prioritario sobre un cliente VIP (SOT 55.000) interesado en aumentar exposición a oro y cobre ante el escenario macro actual. Indica: canal, formato, datos del cliente requeridos y qué entregable esperas.</span></div>
+  <div class="answer-lines">
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div><div class="line"></div><div class="line"></div>
+    <div class="line"></div>
+  </div>
+</div>
+
+<!-- SCORING FOOTER -->
+<div class="footer-scoring">
+  <strong>Cuadro de calificación (a completar por el Coach):</strong>
+  <table>
+    <thead>
+      <tr><th>Sección</th><th>Puntos posibles</th><th>Obtenidos</th><th>Observaciones</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Selección múltiple (Q1–Q20)</td><td>40</td><td></td><td></td></tr>
+      <tr><td>Abierta 21 — Reactivación 90+</td><td>12</td><td></td><td></td></tr>
+      <tr><td>Abierta 22 — Pitch FOMO compliant</td><td>12</td><td></td><td></td></tr>
+      <tr><td>Abierta 23 — Objeción "estafa"</td><td>12</td><td></td><td></td></tr>
+      <tr><td>Abierta 24 — Plan confianza 30 días</td><td>12</td><td></td><td></td></tr>
+      <tr><td>Abierta 25 — Solicitud Equipo Analista</td><td>12</td><td></td><td></td></tr>
+      <tr><td><strong>TOTAL</strong></td><td><strong>100</strong></td><td><strong></strong></td><td></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:16px;"><strong>Referencia diagnóstica:</strong> ≥85 = excelente · 70–84 = sólido, con áreas a pulir · 55–69 = gaps importantes, refuerzo necesario antes de Certificación · &lt;55 = plan de recuperación con coach antes de avanzar a M9–M13.</p>
+</div>
+
+<div class="signature-box">
+  <div class="sig">Firma del asesor</div>
+  <div class="sig">Firma del Coach</div>
+</div>
+
+<p class="confidential">Confidencial · Liberty Finance · Asesorías y Servicios Academia Libertad SpA</p>
+
+</div>
+</body>
+</html>
