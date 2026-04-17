@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Formativo PBA — Liberty Finance</title>
+<style>
+  :root {
+    --navy: #0B2545;
+    --navy-deep: #071A33;
+    --blue: #13315C;
+    --accent: #8DA9C4;
+    --gold: #C8A560;
+    --gold-dark: #A8883F;
+    --bg: #F7F8FA;
+    --card: #FFFFFF;
+    --text: #111827;
+    --muted: #6B7280;
+    --border: #D1D5DB;
+    --border-soft: #E5E7EB;
+    --green: #1F7A3A;
+    --green-bg: #E8F5EC;
+    --red: #B23A48;
+    --red-bg: #FBEAEC;
+    --amber: #B45309;
+    --amber-bg: #FEF3C7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, textarea, select { font-family: inherit; }
+  .hidden { display: none !important; }
+
+  /* ============ WELCOME SCREEN ============ */
+  #welcome-screen {
+    min-height: 100vh;
+    background: linear-gradient(140deg, var(--navy-deep) 0%, var(--navy) 50%, var(--blue) 100%);
+    color: #fff;
+    padding: 32px 20px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .welcome-container { max-width: 1000px; width: 100%; }
+  .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .brand-mark {
+    width: 46px; height: 46px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 22px; color: var(--gold); font-weight: 700;
+  }
+  .brand-text { line-height: 1.15; }
+  .brand-text .name { font-size: 17px; letter-spacing: 4px; font-weight: 700; color: #fff; }
+  .brand-text .name-sub { font-size: 17px; letter-spacing: 4px; font-weight: 700; color: var(--gold); }
+  .tagline {
+    font-size: 12px; letter-spacing: 2px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .hero-title {
+    font-size: 42px; color: #fff; font-weight: 800;
+    letter-spacing: -1px; line-height: 1.1; margin: 0 0 12px;
+  }
+  .hero-sub { color: var(--accent); font-size: 15px; max-width: 640px; margin: 0 0 8px; }
+  .legacy-line {
+    font-family: Georgia, serif; font-style: italic; color: var(--gold);
+    font-size: 15px; margin: 0 0 28px;
+  }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(200,165,96,0.3);
+    padding: 8px 14px; border-radius: 20px;
+    font-size: 12px; color: #fff; letter-spacing: 0.3px;
+  }
+  .badge strong { color: var(--gold); font-weight: 700; }
+  .split-summary {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 44px; max-width: 720px;
+  }
+  .split-item {
+    background: rgba(255,255,255,0.05);
+    border-left: 3px solid var(--gold);
+    padding: 16px 18px; border-radius: 4px;
+  }
+  .split-item .big-num {
+    font-size: 38px; font-weight: 800; color: var(--gold);
+    line-height: 1; margin-bottom: 4px;
+  }
+  .split-item .big-num small { font-size: 22px; color: rgba(200,165,96,0.55); }
+  .split-item .big-lbl { font-size: 13px; color: #fff; font-weight: 600; }
+  .split-item .big-desc { font-size: 12px; color: var(--accent); margin-top: 2px; }
+  .role-prompt {
+    font-size: 13px; letter-spacing: 1.5px; color: var(--accent);
+    text-transform: uppercase; font-weight: 600; margin-bottom: 14px;
+  }
+  .role-cards {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; max-width: 720px;
+  }
+  .role-card {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(141,169,196,0.25);
+    border-radius: 10px; padding: 24px 24px;
+    cursor: pointer; transition: all 0.18s ease;
+    text-align: left; display: block; width: 100%;
+  }
+  .role-card:hover {
+    border-color: var(--gold);
+    background: rgba(200,165,96,0.06);
+    transform: translateY(-2px);
+  }
+  .role-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .role-card h3 { font-size: 17px; color: #fff; margin: 0 0 6px; font-weight: 700; }
+  .role-card p { font-size: 13px; color: var(--accent); margin: 0 0 12px; line-height: 1.5; }
+  .role-card .arrow { color: var(--gold); font-size: 18px; font-weight: 700; }
+  .results-link { margin-top: 20px; color: var(--accent); font-size: 13px; max-width: 720px; }
+  .results-link button {
+    color: var(--gold); text-decoration: underline;
+    font-size: 13px; padding: 0;
+  }
+
+  /* ============ FORM SCREEN ============ */
+  #form-screen, #coach-form-screen {
+    min-height: 100vh; background: var(--bg);
+    padding: 48px 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .form-card {
+    background: #fff; max-width: 520px; width: 100%;
+    padding: 36px 40px 32px; border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(11,37,69,0.08);
+  }
+  .form-card .back-link {
+    color: var(--muted); font-size: 13px; margin-bottom: 20px;
+    display: inline-block; cursor: pointer;
+  }
+  .form-card .back-link:hover { color: var(--navy); }
+  .form-card h2 { margin: 0 0 8px; color: var(--navy); font-size: 22px; font-weight: 700; }
+  .form-card .sub { color: var(--muted); font-size: 13.5px; margin: 0 0 24px; }
+  .form-field { margin-bottom: 16px; }
+  .form-field label {
+    display: block; font-size: 12.5px; font-weight: 600;
+    color: var(--navy); margin-bottom: 6px; letter-spacing: 0.3px;
+  }
+  .form-field input, .form-field select, .form-field textarea {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    font-size: 14px; color: var(--text); background: #fff;
+    transition: border-color 0.15s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline: none; border-color: var(--navy);
+  }
+  .form-buttons { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-primary {
+    background: var(--navy); color: #fff;
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 600; letter-spacing: 0.3px;
+    transition: background 0.15s; flex: 1;
+  }
+  .btn-primary:hover { background: var(--blue); }
+  .btn-primary:disabled { background: var(--muted); cursor: not-allowed; }
+  .btn-secondary {
+    background: #fff; color: var(--navy);
+    border: 1.5px solid var(--border);
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 600;
+  }
+  .btn-secondary:hover { border-color: var(--navy); }
+
+  /* ============ TEST SCREEN ============ */
+  #test-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .test-header {
+    background: var(--navy); color: #fff;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .th-left { display: flex; flex-direction: column; }
+  .th-title { font-size: 14px; font-weight: 700; color: #fff; }
+  .th-asesor { font-size: 12px; color: var(--accent); }
+  .th-center { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .progress-pill {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12.5px; color: #fff;
+  }
+  .progress-pill strong { color: var(--gold); font-weight: 700; }
+  .timer {
+    background: rgba(200,165,96,0.15);
+    border: 1px solid var(--gold);
+    padding: 6px 14px; border-radius: 6px;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 15px; font-weight: 700; letter-spacing: 1px;
+    color: var(--gold); min-width: 90px; text-align: center;
+  }
+  .timer.warning { background: rgba(180, 83, 9, 0.35); border-color: #F59E0B; color: #FEF3C7; }
+  .timer.critical { background: rgba(178, 58, 72, 0.45); border-color: var(--red); color: #FEE2E2; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.65; } }
+  .progress-rail { height: 3px; background: rgba(255,255,255,0.12); }
+  .progress-rail .fill { height: 100%; background: var(--gold); transition: width 0.3s ease; }
+  .section-tabs {
+    background: #fff; border-bottom: 1px solid var(--border-soft);
+    padding: 0 24px;
+    display: flex; gap: 2px; overflow-x: auto;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .section-tab {
+    padding: 14px 18px; border-bottom: 3px solid transparent;
+    font-size: 13.5px; font-weight: 600; color: var(--muted);
+    white-space: nowrap; transition: all 0.15s;
+  }
+  .section-tab:hover { color: var(--navy); }
+  .section-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .section-tab .count {
+    font-size: 11px; background: var(--bg);
+    padding: 1px 6px; border-radius: 10px;
+    color: var(--muted); margin-left: 6px; font-weight: 600;
+  }
+  .section-tab.active .count { background: var(--navy); color: #fff; }
+  .test-body {
+    flex: 1; max-width: 880px; margin: 0 auto; width: 100%;
+    padding: 28px 32px 140px;
+  }
+  .question-card {
+    background: #fff; border-radius: 10px;
+    padding: 24px 28px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(11,37,69,0.04);
+    border: 1px solid var(--border-soft);
+  }
+  .q-head-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .q-num-tag {
+    background: var(--navy); color: #fff;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .q-module-tag {
+    background: var(--gold); color: var(--navy);
+    padding: 3px 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  }
+  .q-points-tag {
+    background: var(--bg); color: var(--navy);
+    padding: 3px 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; margin-left: auto;
+  }
+  .q-text {
+    font-size: 16px; color: var(--text); font-weight: 500;
+    margin: 4px 0 16px; line-height: 1.5;
+  }
+  .q-scenario {
+    background: #EFF6FB; border-left: 3px solid var(--accent);
+    padding: 10px 14px; margin: 0 0 16px;
+    font-size: 13.5px; color: #1F2937;
+    font-style: italic; border-radius: 2px;
+  }
+  .options-list { list-style: none; padding: 0; margin: 0; }
+  .option {
+    padding: 13px 16px 13px 48px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; cursor: pointer;
+    position: relative; transition: all 0.12s;
+    font-size: 14.5px; line-height: 1.5; color: var(--text);
+  }
+  .option:hover { border-color: var(--accent); background: #FAFBFC; }
+  .option.selected {
+    border-color: var(--navy); background: #F0F4FA;
+    border-width: 2px; padding: 12px 15px 12px 47px;
+  }
+  .option::before {
+    content: ""; position: absolute;
+    left: 18px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px;
+    border: 2px solid var(--muted); border-radius: 50%;
+    background: #fff; transition: all 0.12s;
+  }
+  .option.selected::before {
+    border-color: var(--navy); background: var(--navy);
+    box-shadow: inset 0 0 0 3px #fff;
+  }
+  .option .letter { font-weight: 700; color: var(--navy); margin-right: 6px; }
+  .open-textarea {
+    width: 100%; min-height: 160px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14.5px; resize: vertical;
+    line-height: 1.55; color: var(--text);
+  }
+  .open-textarea:focus { outline: none; border-color: var(--navy); }
+  .textarea-meta {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--muted); margin-top: 6px;
+  }
+  .test-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; z-index: 10;
+    box-shadow: 0 -4px 12px rgba(11,37,69,0.06);
+  }
+  .footer-status { font-size: 13px; color: var(--muted); }
+  .footer-status strong { color: var(--navy); }
+  .btn-finish {
+    background: var(--gold); color: var(--navy);
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 700; letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+  .btn-finish:hover { background: var(--gold-dark); color: #fff; }
+  .btn-finish:disabled { background: var(--muted); color: #fff; cursor: not-allowed; }
+
+  /* ============ MODAL ============ */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(7,26,51,0.65);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal {
+    background: #fff; max-width: 480px; width: 100%;
+    padding: 28px 32px; border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .modal h3 { margin: 0 0 10px; color: var(--navy); font-size: 20px; }
+  .modal p { color: #374151; font-size: 14px; margin: 0 0 16px; }
+  .modal .status-list {
+    background: var(--bg); padding: 12px 14px;
+    border-radius: 6px; font-size: 13.5px; margin-bottom: 18px;
+  }
+  .modal .status-list div { padding: 2px 0; display: flex; justify-content: space-between; }
+  .modal .status-list strong { color: var(--navy); }
+  .modal-buttons { display: flex; gap: 10px; }
+  .modal-buttons button { flex: 1; padding: 11px 16px; }
+
+  /* ============ RESULT SCREEN ============ */
+  #result-screen { background: var(--bg); min-height: 100vh; padding: 36px 20px 80px; }
+  .result-wrap { max-width: 900px; margin: 0 auto; }
+  .result-card {
+    background: #fff; border-radius: 10px;
+    padding: 36px 44px; box-shadow: 0 1px 4px rgba(11,37,69,0.05);
+    margin-bottom: 20px;
+  }
+  .result-header {
+    text-align: center; padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-soft); margin-bottom: 28px;
+  }
+  .result-header .brand-mini {
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); font-weight: 700;
+  }
+  .result-header h1 { margin: 8px 0 4px; color: var(--navy); font-size: 24px; font-weight: 700; }
+  .result-header .meta-line { color: var(--muted); font-size: 14px; }
+  .score-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .score-big {
+    background: var(--navy); color: #fff;
+    border-radius: 10px; padding: 24px; text-align: center;
+  }
+  .score-big .lbl {
+    font-size: 11px; letter-spacing: 1.5px;
+    color: var(--accent); text-transform: uppercase; font-weight: 700;
+  }
+  .score-big .val {
+    font-size: 52px; font-weight: 800;
+    color: var(--gold); line-height: 1;
+    margin: 6px 0 2px; letter-spacing: -1.5px;
+  }
+  .score-big .val small { font-size: 22px; color: rgba(200,165,96,0.55); font-weight: 600; }
+  .score-big .pct { font-size: 16px; color: #fff; font-weight: 600; }
+  .score-tile {
+    background: #fff; border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 18px; text-align: center;
+  }
+  .score-tile .lbl {
+    font-size: 11px; letter-spacing: 1px; color: var(--muted);
+    text-transform: uppercase; font-weight: 700;
+  }
+  .score-tile .val { font-size: 28px; font-weight: 700; color: var(--navy); margin: 4px 0 0; }
+  .score-tile .sub { font-size: 12px; color: var(--muted); }
+  .score-tile.pending { background: var(--amber-bg); border-color: #FCD34D; }
+  .score-tile.pending .val { color: var(--amber); }
+  .diag-band {
+    margin-top: 4px; padding: 14px 18px;
+    border-radius: 8px; font-size: 14px;
+    border-left: 4px solid var(--gold); background: #FFFBF0;
+  }
+  .diag-band.ok { border-left-color: var(--green); background: var(--green-bg); color: #14532D; }
+  .diag-band.warn { border-left-color: var(--amber); background: var(--amber-bg); color: #78350F; }
+  .diag-band.bad { border-left-color: var(--red); background: var(--red-bg); color: #7F1D1D; }
+  .diag-band strong { font-weight: 700; }
+  .section-title {
+    font-size: 13px; letter-spacing: 1.5px;
+    color: var(--navy); text-transform: uppercase; font-weight: 700;
+    margin: 32px 0 14px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--navy);
+  }
+  .mcr {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-left: 4px solid var(--border-soft);
+    margin-bottom: 5px; background: #FAFBFC;
+    font-size: 13.5px; border-radius: 2px;
+  }
+  .mcr.ok { border-left-color: var(--green); background: var(--green-bg); }
+  .mcr.bad { border-left-color: var(--red); background: var(--red-bg); }
+  .mcr .qref { font-weight: 700; color: var(--navy); min-width: 44px; }
+  .mcr .tag {
+    font-size: 10.5px; background: var(--navy); color: #fff;
+    padding: 2px 6px; border-radius: 3px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .mcr .given { flex: 1; color: #374151; }
+  .mcr .given strong { color: var(--navy); }
+  .mcr .mark { font-weight: 700; font-size: 18px; }
+  .mcr.ok .mark { color: var(--green); }
+  .mcr.bad .mark { color: var(--red); }
+  .open-review {
+    background: #FFFBF0; border-left: 4px solid var(--gold);
+    padding: 16px 20px; border-radius: 4px; margin-bottom: 14px;
+  }
+  .open-review .head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+  }
+  .open-review .qref { font-weight: 700; color: var(--navy); font-size: 14px; }
+  .open-review .qtext {
+    color: #374151; font-size: 13.5px;
+    margin: 0 0 10px; font-style: italic;
+  }
+  .open-review .answer-box {
+    background: #fff; border: 1px solid var(--border-soft);
+    padding: 12px 14px; border-radius: 6px;
+    font-size: 13.5px; color: var(--text);
+    white-space: pre-wrap; line-height: 1.55;
+  }
+  .open-review .answer-box.empty { color: var(--muted); font-style: italic; }
+  .coach-score-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; font-size: 13px; flex-wrap: wrap;
+  }
+  .coach-score-row label { color: var(--navy); font-weight: 600; }
+  .coach-score-row input {
+    width: 70px; padding: 6px 8px;
+    border: 1.5px solid var(--border); border-radius: 5px;
+    font-size: 13px; text-align: center;
+  }
+  .coach-score-row .max { color: var(--muted); }
+  .coach-score-row .rubric-toggle {
+    color: var(--navy); font-size: 12px;
+    text-decoration: underline; cursor: pointer; margin-left: auto;
+  }
+  .rubric-panel {
+    background: #fff; border: 1px dashed var(--border);
+    padding: 10px 14px; border-radius: 6px;
+    margin-top: 8px; font-size: 12.5px; color: #374151;
+  }
+  .rubric-panel strong { color: var(--navy); }
+  .rubric-panel ul { margin: 6px 0 0; padding-left: 20px; }
+  .rubric-panel li { margin: 2px 0; }
+  .actions-row {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px;
+  }
+  .actions-row button {
+    padding: 11px 18px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+  }
+
+  /* ============ COACH IMPORT ============ */
+  .import-box {
+    background: var(--bg);
+    border: 2px dashed var(--border);
+    border-radius: 10px; padding: 28px;
+    text-align: center; margin: 18px 0;
+  }
+  .import-box textarea {
+    width: 100%; min-height: 140px;
+    padding: 12px;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px; background: #fff;
+  }
+  .import-box input[type=file] { margin: 10px 0; }
+
+  /* ============ RESPONSIVE ============ */
+  @media (max-width: 720px) {
+    .hero-title { font-size: 30px; }
+    .split-summary, .role-cards { grid-template-columns: 1fr; }
+    .score-grid { grid-template-columns: 1fr; }
+    .test-body { padding: 20px 16px 140px; }
+    .question-card { padding: 18px; }
+    .result-card { padding: 24px 20px; }
+    .test-header { padding: 12px 16px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .test-footer, .actions-row, .coach-score-row, .rubric-toggle, .section-tabs, .test-header { display: none !important; }
+    .question-card { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="modal-root"></div>
+
+<script>
+const QUESTIONS = [
+  { id: 1, section: 'S1', module: 'M1', type: 'mc',
+    text: 'En el flujo comercial de Liberty Finance, ¿cuál es la secuencia correcta de traspaso de un cliente desde la generación del lead hasta el soporte analítico?',
+    options: [
+      'PBA → CAM → Analista → Cliente',
+      'CAM → PBA → Equipo Analista (soporte indirecto)',
+      'Call Center → Analista → PBA → CAM',
+      'Marketing → PBA → CAM → Analista'
+    ], correct: 'B' },
+  { id: 2, section: 'S1', module: 'M1', type: 'mc',
+    text: '¿Cuál es la herramienta correcta para identificar los Top 5 clientes de tu portafolio ordenados por SOT / Brokerage Fee / AUM?',
+    options: [
+      'Zoho CRM, vista "Mis Contactos"',
+      'FxBank, reporte de Statements',
+      'OLAP / Kyubit — reporte TopN',
+      'MicroSIP, historial de llamadas'
+    ], correct: 'C' },
+  { id: 3, section: 'S1', module: 'M1', type: 'mc',
+    text: '¿Cuáles son los tres sistemas operativos mínimos que deben estar funcionando antes de iniciar llamadas el Día 2?',
+    options: [
+      'Bloomberg, TradingView y Libertex',
+      'CRM Zoho, MicroSIP (Compeak) y PeopleForce',
+      'Gmail, Slack y Google Calendar',
+      'Citrix, VPN y FxBank'
+    ], correct: 'B' },
+  { id: 4, section: 'S1', module: 'M2', type: 'mc',
+    text: 'De las 5 personas de cliente PBA, ¿qué enfoque corresponde al perfil "Cliente Dormido 60+ días"?',
+    options: [
+      'Presión comercial inmediata con oferta promocional de depósito',
+      'Empatía primero, luego oportunidad, luego pregunta suave — nunca culpar al cliente',
+      'Pitch de Noble Portfolio en la primera llamada',
+      'Enviar WhatsApp automático y esperar respuesta'
+    ], correct: 'B' },
+  { id: 5, section: 'S1', module: 'M2', type: 'mc',
+    text: 'La estructura correcta del script básico de primer contacto FTD es:',
+    options: [
+      'Producto → Cierre → Profiling → Siguiente paso',
+      'Apertura → Intro → Profiling → Producto → Siguiente paso → Cierre',
+      'Saludo → Venta directa → Objeciones → Cierre',
+      'Intro → Cierre → Producto → Profiling'
+    ], correct: 'B' },
+  { id: 6, section: 'S2', module: 'M3', type: 'mc',
+    text: 'Un cliente de $25.000 busca una cuenta premium con ejecución prioritaria, spreads reducidos y acceso a analítica exclusiva. ¿Qué producto le recomiendas?',
+    options: [
+      'Copy Trading básico',
+      'Cuenta Swap-Free estándar',
+      'Noble Portfolio (tier premium)',
+      'Life Academy Suscripción Pro'
+    ], correct: 'C' },
+  { id: 7, section: 'S2', module: 'M3', type: 'mc',
+    text: 'Un cliente dice: "No tengo tiempo para operar y analizar el mercado". ¿Cuál es la solución pasiva más adecuada dentro del ecosistema?',
+    options: [
+      'MT5 con órdenes manuales',
+      'Copy Trading con expertos verificados',
+      'Libertex Core sin ajustes',
+      'Retiro total y nuevo depósito cada mes'
+    ], correct: 'B' },
+  { id: 8, section: 'S2', module: 'M3', type: 'mc',
+    text: '¿Cuál es la sinergia correcta del ecosistema cross-sell Liberty?',
+    options: [
+      'MT5 → Libertex → Life Academy (solo para HNWI)',
+      'Life Academy (educa) → Libertex (opera) → MT5 (upgrade avanzado)',
+      'Libertex → Noble Portfolio → retiro programado',
+      'Copy Trading → EA → Social Trading, sin integración'
+    ], correct: 'B' },
+  { id: 9, section: 'S2', module: 'M3', type: 'mc',
+    text: '¿Cuál es la diferencia clave entre Copy Trading y Expert Advisor (EA)?',
+    options: [
+      'Copy Trading replica operaciones de un trader verificado; el EA ejecuta reglas automáticas programadas en MT5',
+      'Copy Trading es manual; el EA es un curso en Life Academy',
+      'Ambos son idénticos, solo cambia el nombre según la plataforma',
+      'Copy Trading solo funciona para FX; el EA solo para acciones'
+    ], correct: 'A' },
+  { id: 10, section: 'S2', module: 'M4', type: 'mc',
+    text: 'El principal driver macro de la economía chilena, que representa más del 50% de las exportaciones, es:',
+    options: ['Petróleo crudo', 'Cobre', 'Soja', 'Oro'], correct: 'B' },
+  { id: 11, section: 'S2', module: 'M4', type: 'mc',
+    text: 'Un cliente ecuatoriano te pregunta por instrumentos locales. ¿Qué característica macro es clave mencionar sobre Ecuador?',
+    options: [
+      'Economía dolarizada; el petróleo es la principal exportación',
+      'Moneda propia (Sucre) con alta volatilidad',
+      'Economía basada en soja y carne como Paraguay',
+      'Mercado accionario profundo como Chile (IPSA)'
+    ], correct: 'A' },
+  { id: 12, section: 'S2', module: 'M4', type: 'mc',
+    text: 'En Bloomberg Terminal, ¿cuál es la función correcta para acceder a las principales noticias del día en los mercados?',
+    options: ['ECO', 'FXIP', 'TOP', 'GP'], correct: 'C' },
+  { id: 13, section: 'S3', module: 'M5', type: 'mc',
+    text: 'La objeción "Otro broker ofrece mejor spread" pertenece a qué categoría del framework de 10 objeciones PBA?',
+    options: ['Financiera', 'Confianza', 'Competitiva', 'Autonomía'], correct: 'C' },
+  { id: 14, section: 'S3', module: 'M5', type: 'mc',
+    text: 'En la psicología del cliente LatAm, ¿cuál es el principio correcto para construir la relación comercial?',
+    options: [
+      'Primero negocio, después confianza',
+      'Primero confianza, después negocio',
+      'Evitar canales informales como WhatsApp',
+      'Minimizar contacto personal y operar solo por email'
+    ], correct: 'B' },
+  { id: 15, section: 'S3', module: 'M5', type: 'mc',
+    text: 'De las 7 estrategias de construcción de confianza PBA, ¿cuál describe correctamente la regla de velocidad?',
+    options: [
+      'Responder chats en menos de 15 minutos y emails el mismo día de trabajo',
+      'Responder solo en horario bancario tradicional (9–17h)',
+      'Ignorar mensajes hasta tener una respuesta perfecta',
+      'Delegar las respuestas al equipo de Soporte'
+    ], correct: 'A' },
+  { id: 16, section: 'S3', module: 'M6', type: 'mc',
+    text: 'La regla 80/20 de cobertura del portafolio PBA establece:',
+    options: [
+      '80% del tiempo en inactivos, 20% en VIP',
+      '80% del tiempo en activos (incluye FTD y activos recientes) y 20% en inactivos / reactivación',
+      '80% en cold outreach, 20% en portafolio',
+      '80% en HNWI, 20% en el resto'
+    ], correct: 'B' },
+  { id: 17, section: 'S3', module: 'M6', type: 'mc',
+    text: 'Cuando un nuevo FTD aparece asignado a tu portafolio, ¿cuál es la secuencia correcta del mismo día?',
+    options: [
+      'Esperar 48 horas y luego enviar un email',
+      '1 llamada + espera de una semana',
+      '4 intentos de llamada + 1 WhatsApp + 1 email, ejecutado en <15 min desde asignación',
+      'Transferir inmediatamente al equipo VIP'
+    ], correct: 'C' },
+  { id: 18, section: 'S3', module: 'M6', type: 'mc',
+    text: 'Un cliente llama enojado porque su retiro se está demorando. ¿Cuál es el enfoque correcto?',
+    options: [
+      'Prometer un plazo exacto aunque no esté confirmado, para calmarlo',
+      'Empatía primero, solución después — nunca prometer plazos que no controlas, escalar a Finance CS si corresponde',
+      'Derivarlo inmediatamente al Director sin intentar resolver',
+      'Ofrecerle un bono de compensación sin aprobación'
+    ], correct: 'B' },
+  { id: 19, section: 'S3', module: 'M7', type: 'mc',
+    text: '¿Cuál de las siguientes frases es una VIOLACIÓN clara de compliance?',
+    options: [
+      '"Históricamente este activo se ha movido en este rango"',
+      '"Este producto tiene potencial de crecimiento en el escenario X"',
+      '"Te garantizo un 15% de rentabilidad mensual si inviertes hoy"',
+      '"Cada inversión implica riesgo, incluida la pérdida del capital"'
+    ], correct: 'C' },
+  { id: 20, section: 'S4', module: 'M8', type: 'mc',
+    text: 'Según la tabla de frecuencia SOT, un cliente con SOT 47.500+ requiere:',
+    options: [
+      'Contacto una vez al mes mínimo',
+      'El más alto nivel de servicio premium (retiro prioritario, contacto semanal, ofertas exclusivas)',
+      'Contacto automatizado únicamente por WhatsApp',
+      'Transferencia obligatoria al Country Manager'
+    ], correct: 'B' },
+  { id: 21, section: 'S4', module: 'M2/M6', type: 'open', maxPoints: 12,
+    text: 'Redacta el guión inicial (apertura + 3 primeras frases) para reactivar a un cliente dormido hace 90+ días que en su última interacción perdió aproximadamente 20% del capital.',
+    scenario: 'Perfil: hombre, 42 años, Chile, último depósito USD 3.000 hace 4 meses, sin actividad desde entonces, última llamada con ex-CAM fue neutra.',
+    rubric: [
+      'Empatía explícita por la pérdida (3 pts)',
+      'Reconoce falta de acompañamiento sin culpar al cliente (3 pts)',
+      'No pide nada en la primera frase — ni depósito ni trading (3 pts)',
+      'Pregunta suave que abre conversación (2 pts)',
+      'Tono profesional en español LatAm natural (1 pt)',
+      'RED FLAG: pitch directo → resta 4 pts | promete recuperar pérdidas → resta 6 pts'
+    ] },
+  { id: 22, section: 'S4', module: 'M5/M9', type: 'open', maxPoints: 12,
+    text: 'Construye un pitch de urgencia de mercado ("FOMO compliant") basado en una noticia real de esta semana (cobre, BCCh, Fed, BCE o una relevante de LatAm). Debe ser compliant: sin promesas de retorno, sin "te lo vas a perder".',
+    scenario: 'Cliente activo $15K, perfil moderado, operando hace 8 meses, interesado en commodities.',
+    rubric: [
+      'Noticia real y verificable de la semana (3 pts)',
+      'Conecta la noticia con el portafolio del cliente (3 pts)',
+      'Lenguaje condicional: "puede", "potencial", "relevante" (2 pts)',
+      'Menciona explícitamente que no es garantía (2 pts)',
+      'Cierra con pregunta / acción concreta, sin presión (2 pts)',
+      'RED FLAG: "te lo vas a perder" / "garantizado" → resta 6 pts | promesa % → 0 pts'
+    ] },
+  { id: 23, section: 'S4', module: 'M5', type: 'open', maxPoints: 12,
+    text: 'Un cliente potencial peruano te dice: "Un amigo me dijo que Libertex es una estafa y que perdió todo su dinero." Escribe tu respuesta completa manejando la objeción con empatía, sin ser defensivo y sin caer en compliance.',
+    rubric: [
+      'Valida el miedo del cliente sin ser defensivo (3 pts)',
+      'Aporta hecho concreto verificable: regulación, años, transparencia (3 pts)',
+      'Reconoce el riesgo honestamente, sin minimizar (2 pts)',
+      'Posiciona el rol del asesor: educar, no vender (2 pts)',
+      'Cierra con acción de bajo compromiso (2 pts)'
+    ] },
+  { id: 24, section: 'S4', module: 'M5/M6', type: 'open', maxPoints: 12,
+    text: 'Diseña un plan de construcción de confianza de 30 días para un FTD nuevo con depósito inicial de USD 5.000. Lista al menos 5 acciones concretas, con su semana de ejecución y objetivo.',
+    rubric: [
+      'Al menos 5 acciones concretas con semana asignada (3 pts)',
+      'Incluye compartir mercado SIN pedir depósito — estrategia #3 (2 pts)',
+      'Incluye al menos 1 reunión estructurada (2 pts)',
+      'Incluye cross-sell educativo, p.ej. Life Academy (2 pts)',
+      'Ritmo de contacto realista y ejecutable dentro de SM (2 pts)',
+      'Objetivo claro para cada semana (1 pt)'
+    ] },
+  { id: 25, section: 'S4', module: 'M4/M8', type: 'open', maxPoints: 12,
+    text: 'Redacta la solicitud al Equipo Analista para pedir análisis prioritario sobre un cliente VIP (SOT 55.000) interesado en aumentar exposición a oro y cobre ante el escenario macro actual. Indica: canal, formato, datos del cliente requeridos y qué entregable esperas.',
+    rubric: [
+      'Canal y destinatarios correctos: Ignacio Mena + Country Manager (2 pts)',
+      'Datos del cliente completos y con protección de privacidad: ID, no nombre (2 pts)',
+      'Contexto y rationale macro claros (2 pts)',
+      'Solicitud estructurada con entregables concretos (3 pts)',
+      'Timing y urgencia definidos (2 pts)',
+      'Formato profesional (1 pt)'
+    ] }
+];
+
+const SECTIONS = [
+  { id: 'S1', label: 'Fundamentos', desc: 'M1–M2' },
+  { id: 'S2', label: 'Productos & Mercados', desc: 'M3–M4' },
+  { id: 'S3', label: 'Psicología & Compliance', desc: 'M5–M7' },
+  { id: 'S4', label: 'VIP & Abiertas', desc: 'M8 + Preguntas abiertas' }
+];
+
+const DURATION_MIN = 90;
+const STORAGE_KEY = 'lf_pba_formativo_v1';
+
+let state = {
+  screen: 'welcome', role: null,
+  student: { name: '', track: '', date: '' },
+  answers: {}, coachScores: {},
+  currentSection: 'S1',
+  startedAt: null, finishedAt: null, elapsed: 0,
+  timerExpired: false
+};
+let timerInterval = null;
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      ...state,
+      elapsed: state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0
+    }));
+  } catch (e) { console.warn('localStorage unavailable', e); }
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+function clearState() {
+  try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!state.startedAt) return;
+    const totalSecs = DURATION_MIN * 60;
+    const elapsedSecs = Math.floor((Date.now() - state.startedAt) / 1000);
+    const remaining = totalSecs - elapsedSecs;
+    const el = document.getElementById('timer-display');
+    if (el) {
+      if (remaining <= 0) {
+        el.textContent = '00:00';
+        el.classList.add('critical');
+        state.timerExpired = true;
+        clearInterval(timerInterval);
+        autoFinishTest();
+        return;
+      }
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      el.classList.toggle('warning', remaining < 600 && remaining >= 120);
+      el.classList.toggle('critical', remaining < 120);
+    }
+  }, 1000);
+}
+
+const LETTERS = ['A', 'B', 'C', 'D', 'E'];
+function esc(s) {
+  return (s == null ? '' : String(s)).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function countAnswered(section) {
+  const qs = QUESTIONS.filter(q => !section || q.section === section);
+  return qs.filter(q => {
+    const a = state.answers[q.id];
+    return q.type === 'mc' ? !!a : (a && a.trim().length > 10);
+  }).length;
+}
+function countTotal(section) {
+  return QUESTIONS.filter(q => !section || q.section === section).length;
+}
+function calcMCScore() {
+  let correct = 0, total = 0;
+  const details = [];
+  QUESTIONS.filter(q => q.type === 'mc').forEach(q => {
+    total++;
+    const given = state.answers[q.id];
+    const ok = given === q.correct;
+    if (ok) correct++;
+    details.push({ id: q.id, module: q.module, given: given || '—', correct: q.correct, ok });
+  });
+  return { correct, total, pointsEarned: correct * 2, pointsMax: total * 2, details };
+}
+function calcOpenScore() {
+  let earned = 0, max = 0, rated = 0;
+  const details = [];
+  QUESTIONS.filter(q => q.type === 'open').forEach(q => {
+    max += q.maxPoints;
+    const score = state.coachScores[q.id];
+    if (typeof score === 'number' && !isNaN(score)) { earned += score; rated++; }
+    details.push({ id: q.id, module: q.module, maxPoints: q.maxPoints, score });
+  });
+  const allRated = rated === QUESTIONS.filter(q => q.type === 'open').length;
+  return { earned, max, rated, total: QUESTIONS.filter(q => q.type === 'open').length, allRated, details };
+}
+function fmtDuration(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m} min ${String(s).padStart(2,'0')} s`;
+}
+
+function renderWelcome() {
+  const draft = loadState();
+  const hasDraft = draft && draft.screen === 'test' && draft.answers && Object.keys(draft.answers).length > 0;
+  document.getElementById('app').innerHTML = `
+    <div id="welcome-screen">
+      <div class="welcome-container">
+        <div class="brand-row">
+          <div class="brand-mark">L</div>
+          <div class="brand-text">
+            <div class="name">LIBERTY</div>
+            <div class="name-sub">FINANCE</div>
+          </div>
+        </div>
+        <div class="tagline">Test Formativo · M1–M8 · Diagnóstico Día 10</div>
+        <h1 class="hero-title">Test Formativo PBA</h1>
+        <p class="hero-sub">Evaluación diagnóstica del programa de onboarding Revenue-Driven. Cubre los módulos 1–8 (Fases 1 y 2) y se aplica alrededor del Día 10 para identificar áreas de refuerzo antes del Test de Certificación.</p>
+        <p class="legacy-line">A legacy with future</p>
+
+        <div class="hero-badges">
+          <span class="badge"><strong>No bloqueante</strong></span>
+          <span class="badge"><strong>20 preguntas MC + 5 abiertas</strong></span>
+          <span class="badge"><strong>90 minutos</strong></span>
+          <span class="badge"><strong>100 pts totales</strong></span>
+        </div>
+
+        <div class="split-summary">
+          <div class="split-item">
+            <div class="big-num">40<small> pts</small></div>
+            <div class="big-lbl">Selección múltiple</div>
+            <div class="big-desc">20 preguntas · corrección automática</div>
+          </div>
+          <div class="split-item">
+            <div class="big-num">60<small> pts</small></div>
+            <div class="big-lbl">Preguntas abiertas</div>
+            <div class="big-desc">5 preguntas · evaluadas por coach</div>
+          </div>
+        </div>
+
+        <div class="role-prompt">Seleccioná tu rol para continuar:</div>
+        <div class="role-cards">
+          <button class="role-card" onclick="goFormScreen()">
+            <div class="icon">📝</div>
+            <h3>Soy el PBA</h3>
+            <p>Rendir el test · 90 minutos · Ambiente controlado sin notas ni teléfono</p>
+            <div class="arrow">→</div>
+          </button>
+          <button class="role-card" onclick="goCoachImport()">
+            <div class="icon">📊</div>
+            <h3>Soy el Coach</h3>
+            <p>Cargar respuestas del asesor y calificar las preguntas abiertas con rúbrica</p>
+            <div class="arrow">→</div>
+          </button>
+        </div>
+
+        ${hasDraft ? `
+          <div class="results-link">
+            <strong style="color:#fff;">Hay un test en progreso</strong> — <button onclick="resumeDraft()">Continuar donde lo dejé →</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function goFormScreen() { state.role = 'pba'; state.screen = 'form'; render(); }
+function goCoachImport() { state.role = 'coach'; state.screen = 'coach-import'; render(); }
+function resumeDraft() {
+  const draft = loadState();
+  if (draft) {
+    state = { ...state, ...draft };
+    startTimer();
+    render();
+  }
+}
+
+function renderForm() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('app').innerHTML = `
+    <div id="form-screen">
+      <div class="form-card">
+        <span class="back-link" onclick="backToWelcome()">← Volver</span>
+        <h2>Identificación del asesor</h2>
+        <p class="sub">Completá tus datos antes de comenzar. El test dura 90 minutos y el cronómetro arranca al presionar "Comenzar".</p>
+
+        <div class="form-field">
+          <label>Nombre completo</label>
+          <input id="f-name" type="text" placeholder="Ariel Salazar · Nicolas Cruz..." autocomplete="off">
+        </div>
+        <div class="form-field">
+          <label>Track</label>
+          <select id="f-track">
+            <option value="">— Seleccioná —</option>
+            <option value="A">Track A · Interno (CAM→PBA / otro dept LF)</option>
+            <option value="B">Track B · Externo Junior sin experiencia WM</option>
+            <option value="C">Track C · Externo Executive / Senior WM</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Fecha inicio onboarding</label>
+          <input id="f-start" type="date" value="2026-04-01">
+        </div>
+        <div class="form-field">
+          <label>Fecha del test</label>
+          <input id="f-date" type="date" value="${today}">
+        </div>
+        <div class="form-field">
+          <label>Coach</label>
+          <input id="f-coach" type="text" placeholder="Nombre del coach evaluador" value="Karen Garcia">
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn-secondary" onclick="backToWelcome()">Cancelar</button>
+          <button class="btn-primary" onclick="startTest()">Comenzar test →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function backToWelcome() { state.screen = 'welcome'; render(); }
+
+function startTest() {
+  const name = document.getElementById('f-name').value.trim();
+  const track = document.getElementById('f-track').value;
+  const date = document.getElementById('f-date').value;
+  const startDate = document.getElementById('f-start').value;
+  const coach = document.getElementById('f-coach').value.trim();
+  if (!name || !track || !date) { alert('Completá tu nombre, track y fecha.'); return; }
+  state.student = { name, track, date, startDate, coach };
+  state.screen = 'test';
+  state.currentSection = 'S1';
+  state.startedAt = Date.now();
+  state.answers = {};
+  state.coachScores = {};
+  saveState();
+  startTimer();
+  render();
+}
+
+function renderTest() {
+  const total = QUESTIONS.length;
+  const answered = countAnswered();
+  const pctProgress = Math.round((answered / total) * 100);
+  const sectionQs = QUESTIONS.filter(q => q.section === state.currentSection);
+  const qsHTML = sectionQs.map(renderQuestionCard).join('');
+  const tabsHTML = SECTIONS.map(s => {
+    const done = countAnswered(s.id);
+    const tot = countTotal(s.id);
+    const cls = s.id === state.currentSection ? 'section-tab active' : 'section-tab';
+    return `<button class="${cls}" onclick="switchSection('${s.id}')">${s.id} · ${esc(s.label)} <span class="count">${done}/${tot}</span></button>`;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div id="test-screen">
+      <div class="test-header">
+        <div class="th-left">
+          <div class="th-title">Test Formativo PBA · M1–M8</div>
+          <div class="th-asesor">${esc(state.student.name)} · Track ${esc(state.student.track)}</div>
+        </div>
+        <div class="th-center">
+          <div class="progress-pill">Respondidas: <strong>${answered}</strong> / ${total}</div>
+          <div id="timer-display" class="timer">--:--</div>
+        </div>
+      </div>
+      <div class="progress-rail"><div class="fill" style="width:${pctProgress}%"></div></div>
+      <div class="section-tabs">${tabsHTML}</div>
+      <div class="test-body">${qsHTML}</div>
+      <div class="test-footer">
+        <div class="footer-status">Sección <strong>${state.currentSection}</strong> · ${countAnswered(state.currentSection)} / ${countTotal(state.currentSection)} respondidas · Total <strong>${answered}/${total}</strong></div>
+        <button class="btn-finish" onclick="confirmFinish()">Finalizar test →</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestionCard(q) {
+  if (q.type === 'mc') {
+    const answered = state.answers[q.id];
+    const opts = q.options.map((opt, i) => {
+      const letter = LETTERS[i];
+      const sel = answered === letter ? 'selected' : '';
+      return `<li class="option ${sel}" onclick="selectMC(${q.id},'${letter}')"><span class="letter">${letter})</span>${esc(opt)}</li>`;
+    }).join('');
+    return `
+      <div class="question-card" id="q-${q.id}">
+        <div class="q-head-row">
+          <span class="q-num-tag">Q${q.id}</span>
+          <span class="q-module-tag">${esc(q.module)}</span>
+          <span class="q-points-tag">2 pts</span>
+        </div>
+        <div class="q-text">${esc(q.text)}</div>
+        ${q.scenario ? `<div class="q-scenario">${esc(q.scenario)}</div>` : ''}
+        <ul class="options-list">${opts}</ul>
+      </div>
+    `;
+  }
+  const answer = state.answers[q.id] || '';
+  return `
+    <div class="question-card" id="q-${q.id}">
+      <div class="q-head-row">
+        <span class="q-num-tag">Q${q.id}</span>
+        <span class="q-module-tag">${esc(q.module)}</span>
+        <span class="q-points-tag">${q.maxPoints} pts</span>
+      </div>
+      <div class="q-text">${esc(q.text)}</div>
+      ${q.scenario ? `<div class="q-scenario">${esc(q.scenario)}</div>` : ''}
+      <textarea class="open-textarea" placeholder="Escribí tu respuesta aquí..." oninput="saveOpen(${q.id}, this.value)">${esc(answer)}</textarea>
+      <div class="textarea-meta">
+        <span>Calificación por el coach · máximo ${q.maxPoints} pts</span>
+        <span id="cc-${q.id}">${answer.length} caracteres</span>
+      </div>
+    </div>
+  `;
+}
+
+function selectMC(qId, letter) {
+  state.answers[qId] = letter;
+  saveState();
+  const q = QUESTIONS.find(x => x.id === qId);
+  const card = document.getElementById(`q-${qId}`);
+  if (card) {
+    card.outerHTML = renderQuestionCard(q);
+    updateHeaderCounters();
+  }
+}
+
+function saveOpen(qId, val) {
+  state.answers[qId] = val;
+  const cc = document.getElementById(`cc-${qId}`);
+  if (cc) cc.textContent = `${val.length} caracteres`;
+  clearTimeout(window.__openSaveTimer);
+  window.__openSaveTimer = setTimeout(() => { saveState(); updateHeaderCounters(); }, 400);
+}
+
+function updateHeaderCounters() {
+  const answered = countAnswered();
+  const total = QUESTIONS.length;
+  const pct = Math.round((answered / total) * 100);
+  const pill = document.querySelector('.progress-pill');
+  if (pill) pill.innerHTML = `Respondidas: <strong>${answered}</strong> / ${total}`;
+  const fill = document.querySelector('.progress-rail .fill');
+  if (fill) fill.style.width = `${pct}%`;
+  const footer = document.querySelector('.footer-status');
+  if (footer) footer.innerHTML = `Sección <strong>${state.currentSection}</strong> · ${countAnswered(state.currentSection)} / ${countTotal(state.currentSection)} respondidas · Total <strong>${answered}/${total}</strong>`;
+  SECTIONS.forEach(s => {
+    const done = countAnswered(s.id);
+    const tot = countTotal(s.id);
+    const btns = document.querySelectorAll('.section-tab');
+    btns.forEach(b => {
+      if (b.textContent.startsWith(s.id + ' ')) {
+        const c = b.querySelector('.count');
+        if (c) c.textContent = `${done}/${tot}`;
+      }
+    });
+  });
+}
+
+function switchSection(secId) {
+  state.currentSection = secId;
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function confirmFinish() {
+  const answered = countAnswered();
+  const total = QUESTIONS.length;
+  const mcUnans = QUESTIONS.filter(q => q.type === 'mc' && !state.answers[q.id]).length;
+  const openShort = QUESTIONS.filter(q => q.type === 'open' && (!state.answers[q.id] || state.answers[q.id].trim().length < 10)).length;
+  showModal(`
+    <h3>¿Finalizar el test?</h3>
+    <p>Una vez finalizado, las respuestas no se pueden modificar. Se calcula automáticamente el puntaje de selección múltiple; las preguntas abiertas las califica el coach después.</p>
+    <div class="status-list">
+      <div><span>Respondidas</span><strong>${answered} / ${total}</strong></div>
+      <div><span>Preguntas MC sin responder</span><strong>${mcUnans}</strong></div>
+      <div><span>Preguntas abiertas vacías / &lt;10 caracteres</span><strong>${openShort}</strong></div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeModal()">Seguir editando</button>
+      <button class="btn-primary" onclick="finishTest()">Finalizar ahora</button>
+    </div>
+  `);
+}
+
+function autoFinishTest() {
+  alert('Se agotó el tiempo. El test se finalizará automáticamente.');
+  finishTest();
+}
+
+function finishTest() {
+  closeModal();
+  if (timerInterval) clearInterval(timerInterval);
+  state.finishedAt = Date.now();
+  state.elapsed = Math.floor((state.finishedAt - state.startedAt) / 1000);
+  state.screen = 'result';
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderResult() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  const totalEarned = mc.pointsEarned + open.earned;
+  const totalMax = mc.pointsMax + open.max;
+  const pct = totalMax ? Math.round((totalEarned / totalMax) * 100) : 0;
+
+  let band = { cls: 'diag-band', label: 'Pendiente de calificación del coach', text: 'El puntaje final se conocerá cuando el coach complete las 5 preguntas abiertas.' };
+  if (open.allRated) {
+    if (pct >= 85) band = { cls: 'diag-band ok', label: 'Excelente', text: 'Avanzar a Fase 3 y Test de Certificación sin restricciones.' };
+    else if (pct >= 70) band = { cls: 'diag-band', label: 'Sólido con áreas a pulir', text: 'Refuerzo dirigido en las áreas débiles durante Recap 3 y Módulos M9–M12.' };
+    else if (pct >= 55) band = { cls: 'diag-band warn', label: 'Gaps importantes', text: 'Plan de refuerzo formal antes del Test de Certificación.' };
+    else band = { cls: 'diag-band bad', label: 'Plan de recuperación', text: 'Sesiones 1:1 con coach y re-evaluación antes de avanzar a M9–M13.' };
+  }
+
+  const mcHTML = mc.details.map(d => {
+    const cls = d.ok ? 'mcr ok' : 'mcr bad';
+    const mark = d.ok ? '✓' : '✗';
+    const msg = d.ok
+      ? `<strong>${d.given}</strong> — correcta`
+      : `Tu resp.: <strong>${d.given}</strong> · Correcta: <strong>${d.correct}</strong>`;
+    return `<div class="${cls}"><div class="qref">Q${d.id}</div><div class="tag">${esc(d.module)}</div><div class="given">${msg}</div><div class="mark">${mark}</div></div>`;
+  }).join('');
+
+  const openHTML = QUESTIONS.filter(q => q.type === 'open').map(q => {
+    const ans = state.answers[q.id] || '';
+    const score = state.coachScores[q.id];
+    const rubricList = q.rubric ? q.rubric.map(r => `<li>${esc(r)}</li>`).join('') : '';
+    const coachCtrl = state.role === 'coach'
+      ? `<div class="coach-score-row">
+          <label>Puntaje (0-${q.maxPoints})</label>
+          <input type="number" min="0" max="${q.maxPoints}" step="0.5" value="${typeof score === 'number' ? score : ''}" oninput="setCoachScore(${q.id}, this.value)">
+          <span class="max">/ ${q.maxPoints} pts</span>
+          <span class="rubric-toggle" onclick="toggleRubric(${q.id})">Ver rúbrica ▾</span>
+        </div>
+        <div class="rubric-panel hidden" id="rubric-${q.id}">
+          <strong>Rúbrica:</strong>
+          <ul>${rubricList}</ul>
+        </div>`
+      : `<div class="coach-score-row"><label>Puntaje del coach:</label><strong>${typeof score === 'number' ? `${score} / ${q.maxPoints} pts` : `Pendiente de calificación`}</strong></div>`;
+    return `
+      <div class="open-review">
+        <div class="head">
+          <span class="qref">Q${q.id} · ${esc(q.module)} <span style="color:var(--muted); font-weight:400;">(${q.maxPoints} pts)</span></span>
+        </div>
+        <p class="qtext">${esc(q.text)}</p>
+        ${q.scenario ? `<div class="q-scenario" style="margin-bottom:10px;">${esc(q.scenario)}</div>` : ''}
+        <div class="answer-box ${ans ? '' : 'empty'}">${ans ? esc(ans) : '(Sin respuesta)'}</div>
+        ${coachCtrl}
+      </div>
+    `;
+  }).join('');
+
+  document.getElementById('app').innerHTML = `
+    <div id="result-screen">
+      <div class="result-wrap">
+        <div class="result-card">
+          <div class="result-header">
+            <div class="brand-mini">LIBERTY FINANCE · TEST FORMATIVO PBA</div>
+            <h1>Resultado del test</h1>
+            <div class="meta-line">${esc(state.student.name)} · Track ${esc(state.student.track)} · ${esc(state.student.date)} · Duración ${fmtDuration(state.elapsed)}</div>
+          </div>
+
+          <div class="score-grid">
+            <div class="score-big">
+              <div class="lbl">Puntaje total</div>
+              <div class="val">${totalEarned}<small>/${totalMax}</small></div>
+              <div class="pct">${pct}%${open.allRated ? '' : ' · provisional'}</div>
+            </div>
+            <div class="score-tile">
+              <div class="lbl">Selección múltiple</div>
+              <div class="val">${mc.pointsEarned} / ${mc.pointsMax}</div>
+              <div class="sub">${mc.correct} de ${mc.total} correctas · auto</div>
+            </div>
+            <div class="score-tile ${open.allRated ? '' : 'pending'}">
+              <div class="lbl">Preguntas abiertas</div>
+              <div class="val">${open.earned} / ${open.max}</div>
+              <div class="sub">${open.rated} de ${open.total} calificadas por coach</div>
+            </div>
+          </div>
+
+          <div class="${band.cls}"><strong>${esc(band.label)}.</strong> ${esc(band.text)}</div>
+
+          <div class="section-title">Detalle selección múltiple</div>
+          ${mcHTML}
+
+          <div class="section-title">Preguntas abiertas ${state.role === 'coach' ? '(modo coach · calificar)' : '(vista PBA)'}</div>
+          ${openHTML}
+
+          <div class="actions-row">
+            <button class="btn-secondary" onclick="window.print()">🖨 Imprimir / PDF</button>
+            <button class="btn-secondary" onclick="downloadJSON()">⬇ Descargar JSON</button>
+            <button class="btn-secondary" onclick="downloadTXT()">⬇ Descargar TXT</button>
+            <button class="btn-primary" onclick="resetAll()">Cerrar y borrar datos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setCoachScore(qId, val) {
+  const q = QUESTIONS.find(x => x.id === qId);
+  let num = parseFloat(val);
+  if (isNaN(num)) { delete state.coachScores[qId]; }
+  else {
+    num = Math.max(0, Math.min(q.maxPoints, num));
+    state.coachScores[qId] = num;
+  }
+  saveState();
+  render();
+}
+
+function toggleRubric(qId) {
+  const el = document.getElementById(`rubric-${qId}`);
+  if (el) el.classList.toggle('hidden');
+}
+
+function renderCoachImport() {
+  document.getElementById('app').innerHTML = `
+    <div id="coach-form-screen">
+      <div class="form-card">
+        <span class="back-link" onclick="backToWelcome()">← Volver</span>
+        <h2>Modo Coach — cargar respuestas</h2>
+        <p class="sub">Pegá el JSON del test que entregó el asesor (archivo descargado con botón "Descargar JSON") o subí el archivo. Luego vas a calificar cada pregunta abierta con la rúbrica.</p>
+
+        <div class="import-box">
+          <label style="display:block; font-size:12.5px; font-weight:600; color:var(--navy); margin-bottom:8px; letter-spacing:0.3px;">Subir archivo .json</label>
+          <input type="file" accept="application/json,.json" onchange="loadJSONFile(event)">
+          <div style="margin:16px 0 8px; color:var(--muted); font-size:12px;">— o pegar el contenido —</div>
+          <textarea id="coach-json" placeholder='{"student":{...},"answers":{...},...}'></textarea>
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn-secondary" onclick="backToWelcome()">Cancelar</button>
+          <button class="btn-primary" onclick="loadCoachJSON()">Cargar y calificar →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function loadJSONFile(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('coach-json').value = e.target.result; };
+  reader.readAsText(f);
+}
+
+function loadCoachJSON() {
+  const txt = document.getElementById('coach-json').value.trim();
+  if (!txt) { alert('Pegá el JSON o subí el archivo primero.'); return; }
+  try {
+    const data = JSON.parse(txt);
+    if (!data.answers || !data.student) throw new Error('Formato inválido');
+    state.student = data.student;
+    state.answers = data.answers;
+    state.coachScores = data.coachScores || {};
+    state.startedAt = data.startedAt || null;
+    state.finishedAt = data.finishedAt || null;
+    state.elapsed = data.elapsed || 0;
+    state.role = 'coach';
+    state.screen = 'result';
+    saveState();
+    render();
+  } catch (e) {
+    alert('Error al parsear el JSON: ' + e.message);
+  }
+}
+
+function buildExportJSON() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  return {
+    meta: {
+      title: 'Test Formativo PBA',
+      version: 'v1.0',
+      company: 'Liberty Finance',
+      generatedAt: new Date().toISOString()
+    },
+    student: state.student,
+    startedAt: state.startedAt,
+    finishedAt: state.finishedAt,
+    elapsed: state.elapsed,
+    answers: state.answers,
+    coachScores: state.coachScores,
+    scoring: {
+      mc: { correct: mc.correct, total: mc.total, earned: mc.pointsEarned, max: mc.pointsMax, details: mc.details },
+      open: { earned: open.earned, max: open.max, rated: open.rated, total: open.total, details: open.details },
+      total: { earned: mc.pointsEarned + open.earned, max: mc.pointsMax + open.max, pct: Math.round(((mc.pointsEarned + open.earned) / (mc.pointsMax + open.max)) * 100) }
+    }
+  };
+}
+
+function downloadJSON() {
+  const data = buildExportJSON();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safe = (state.student.name || 'asesor').replace(/[^a-zA-Z0-9]+/g, '_');
+  a.download = `test_formativo_pba_${safe}_${state.student.date || 'sin_fecha'}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadTXT() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  const total = mc.pointsEarned + open.earned;
+  const max = mc.pointsMax + open.max;
+  const pct = Math.round((total/max)*100);
+
+  let txt = '';
+  txt += '================================================\n';
+  txt += '  TEST FORMATIVO PBA — LIBERTY FINANCE\n';
+  txt += '  Resultado · v1.0\n';
+  txt += '================================================\n\n';
+  txt += `Asesor:       ${state.student.name}\n`;
+  txt += `Track:        ${state.student.track}\n`;
+  txt += `Fecha inicio: ${state.student.startDate || '-'}\n`;
+  txt += `Fecha test:   ${state.student.date}\n`;
+  txt += `Coach:        ${state.student.coach || '-'}\n`;
+  txt += `Duración:     ${fmtDuration(state.elapsed)}\n\n`;
+  txt += '------------------------------------------------\n';
+  txt += `PUNTAJE TOTAL: ${total} / ${max} pts (${pct}%)${open.allRated ? '' : ' · PROVISIONAL'}\n`;
+  txt += `  Selección múltiple: ${mc.pointsEarned}/${mc.pointsMax} (${mc.correct}/${mc.total} correctas)\n`;
+  txt += `  Preguntas abiertas: ${open.earned}/${open.max} (${open.rated}/${open.total} calificadas)\n`;
+  txt += '------------------------------------------------\n\n';
+
+  txt += 'DETALLE — SELECCIÓN MÚLTIPLE\n';
+  mc.details.forEach(d => {
+    txt += `Q${String(d.id).padStart(2,'0')} [${d.module}] Tu resp: ${d.given}  Correcta: ${d.correct}  ${d.ok ? 'OK' : 'X'}\n`;
+  });
+  txt += '\n';
+
+  txt += 'PREGUNTAS ABIERTAS — RESPUESTAS\n\n';
+  QUESTIONS.filter(q => q.type === 'open').forEach(q => {
+    const ans = state.answers[q.id] || '(sin respuesta)';
+    const score = state.coachScores[q.id];
+    txt += `--- Q${q.id} [${q.module}] (${q.maxPoints} pts) ---\n`;
+    txt += `${q.text}\n\n`;
+    if (q.scenario) txt += `Escenario: ${q.scenario}\n\n`;
+    txt += `RESPUESTA:\n${ans}\n\n`;
+    txt += `Puntaje coach: ${typeof score === 'number' ? score + ' / ' + q.maxPoints : 'pendiente'}\n\n`;
+  });
+
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safe = (state.student.name || 'asesor').replace(/[^a-zA-Z0-9]+/g, '_');
+  a.download = `test_formativo_pba_${safe}_${state.student.date || 'sin_fecha'}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetAll() {
+  if (!confirm('¿Cerrar y borrar todos los datos locales? Esta acción no se puede deshacer.')) return;
+  clearState();
+  state = {
+    screen: 'welcome', role: null, student: { name: '', track: '', date: '' },
+    answers: {}, coachScores: {}, currentSection: 'S1',
+    startedAt: null, finishedAt: null, elapsed: 0, timerExpired: false
+  };
+  render();
+}
+
+function showModal(html) {
+  document.getElementById('modal-root').innerHTML = `<div class="modal-backdrop"><div class="modal">${html}</div></div>`;
+}
+function closeModal() {
+  document.getElementById('modal-root').innerHTML = '';
+}
+
+function render() {
+  switch (state.screen) {
+    case 'welcome': renderWelcome(); break;
+    case 'form': renderForm(); break;
+    case 'test': renderTest(); break;
+    case 'result': renderResult(); break;
+    case 'coach-import': renderCoachImport(); break;
+    default: renderWelcome();
+  }
+}
+
+(function init() {
+  render();
+  window.addEventListener('beforeunload', (e) => {
+    if (state.screen === 'test') {
+      e.preventDefault();
+      e.returnValue = '';
+    }
+  });
+})();
+</script>
+</body>
+</html>
