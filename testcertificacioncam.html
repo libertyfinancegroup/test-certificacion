@@ -1,0 +1,1668 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test de Certificación · Client Activation Manager (CAM) — Liberty Finance</title>
+<style>
+  :root {
+    --navy: #0B2545;
+    --navy-deep: #071A33;
+    --blue: #13315C;
+    --accent: #8DA9C4;
+    --gold: #C8A560;
+    --gold-dark: #A8883F;
+    --bg: #F7F8FA;
+    --card: #FFFFFF;
+    --text: #111827;
+    --muted: #6B7280;
+    --border: #D1D5DB;
+    --border-soft: #E5E7EB;
+    --green: #1F7A3A;
+    --green-bg: #E8F5EC;
+    --red: #B23A48;
+    --red-bg: #FBEAEC;
+    --amber: #B45309;
+    --amber-bg: #FEF3C7;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; min-height: 100%; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+  input, textarea, select { font-family: inherit; }
+  .hidden { display: none !important; }
+
+  /* WELCOME */
+  #welcome-screen {
+    min-height: 100vh;
+    background: linear-gradient(140deg, var(--navy-deep) 0%, var(--navy) 50%, var(--blue) 100%);
+    color: #fff;
+    padding: 32px 20px 60px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .welcome-container { max-width: 1000px; width: 100%; }
+  .brand-row { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+  .brand-mark {
+    width: 46px; height: 46px;
+    border: 2px solid var(--gold);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 22px; color: var(--gold); font-weight: 700;
+  }
+  .brand-text { line-height: 1.15; }
+  .brand-text .name { font-size: 17px; letter-spacing: 4px; font-weight: 700; color: #fff; }
+  .brand-text .name-sub { font-size: 17px; letter-spacing: 4px; font-weight: 700; color: var(--gold); }
+  .tagline {
+    font-size: 12px; letter-spacing: 2px; color: var(--accent);
+    text-transform: uppercase; margin-bottom: 8px;
+  }
+  .hero-title {
+    font-size: 42px; color: #fff; font-weight: 800;
+    letter-spacing: -1px; line-height: 1.1; margin: 0 0 12px;
+  }
+  .hero-sub { color: var(--accent); font-size: 15px; max-width: 640px; margin: 0 0 8px; }
+  .legacy-line {
+    font-family: Georgia, serif; font-style: italic; color: var(--gold);
+    font-size: 15px; margin: 0 0 28px;
+  }
+  .blocker-banner {
+    background: rgba(178, 58, 72, 0.18);
+    border: 1px solid rgba(178, 58, 72, 0.5);
+    color: #FEE2E2;
+    padding: 10px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 24px;
+    max-width: 720px;
+    letter-spacing: 0.3px;
+  }
+  .blocker-banner strong { color: #fff; }
+  .hero-badges { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+  .badge {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(200,165,96,0.3);
+    padding: 8px 14px; border-radius: 20px;
+    font-size: 12px; color: #fff; letter-spacing: 0.3px;
+  }
+  .badge strong { color: var(--gold); font-weight: 700; }
+  .split-summary {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 36px; max-width: 720px;
+  }
+  .split-item {
+    background: rgba(255,255,255,0.05);
+    border-left: 3px solid var(--gold);
+    padding: 16px 18px; border-radius: 4px;
+  }
+  .split-item .big-num {
+    font-size: 38px; font-weight: 800; color: var(--gold);
+    line-height: 1; margin-bottom: 4px;
+  }
+  .split-item .big-num small { font-size: 22px; color: rgba(200,165,96,0.55); }
+  .split-item .big-lbl { font-size: 13px; color: #fff; font-weight: 600; }
+  .split-item .big-desc { font-size: 12px; color: var(--accent); margin-top: 2px; }
+  .threshold-bar {
+    background: rgba(31, 122, 58, 0.15);
+    border-left: 3px solid var(--green);
+    padding: 14px 18px;
+    margin: 0 0 36px;
+    max-width: 720px;
+    font-size: 13.5px;
+    color: #DCFCE7;
+    border-radius: 4px;
+  }
+  .threshold-bar strong { color: #fff; }
+  .role-prompt {
+    font-size: 13px; letter-spacing: 1.5px; color: var(--accent);
+    text-transform: uppercase; font-weight: 600; margin-bottom: 14px;
+  }
+  .role-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 720px; }
+  .role-card {
+    background: rgba(255,255,255,0.04);
+    border: 1.5px solid rgba(141,169,196,0.25);
+    border-radius: 10px; padding: 24px;
+    cursor: pointer; transition: all 0.18s ease;
+    text-align: left; display: block; width: 100%;
+  }
+  .role-card:hover {
+    border-color: var(--gold);
+    background: rgba(200,165,96,0.06);
+    transform: translateY(-2px);
+  }
+  .role-card .icon { font-size: 28px; margin-bottom: 10px; }
+  .role-card h3 { font-size: 17px; color: #fff; margin: 0 0 6px; font-weight: 700; }
+  .role-card p { font-size: 13px; color: var(--accent); margin: 0 0 12px; line-height: 1.5; }
+  .role-card .arrow { color: var(--gold); font-size: 18px; font-weight: 700; }
+  .results-link { margin-top: 20px; color: var(--accent); font-size: 13px; max-width: 720px; }
+  .results-link button { color: var(--gold); text-decoration: underline; font-size: 13px; padding: 0; }
+
+  /* FORM */
+  #form-screen, #coach-form-screen {
+    min-height: 100vh; background: var(--bg);
+    padding: 48px 20px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .form-card {
+    background: #fff; max-width: 540px; width: 100%;
+    padding: 36px 40px 32px; border-radius: 10px;
+    box-shadow: 0 10px 40px rgba(11,37,69,0.08);
+  }
+  .form-card .back-link {
+    color: var(--muted); font-size: 13px; margin-bottom: 20px;
+    display: inline-block; cursor: pointer;
+  }
+  .form-card .back-link:hover { color: var(--navy); }
+  .form-card h2 { margin: 0 0 8px; color: var(--navy); font-size: 22px; font-weight: 700; }
+  .form-card .sub { color: var(--muted); font-size: 13.5px; margin: 0 0 24px; }
+  .form-field { margin-bottom: 16px; }
+  .form-field label {
+    display: block; font-size: 12.5px; font-weight: 600;
+    color: var(--navy); margin-bottom: 6px; letter-spacing: 0.3px;
+  }
+  .form-field input, .form-field select, .form-field textarea {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    font-size: 14px; color: var(--text); background: #fff;
+    transition: border-color 0.15s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline: none; border-color: var(--navy);
+  }
+  .modo-aplicacion {
+    background: var(--amber-bg);
+    border-left: 3px solid var(--amber);
+    padding: 10px 14px;
+    margin: 0 0 18px;
+    font-size: 13px;
+    color: #78350F;
+    border-radius: 3px;
+  }
+  .form-buttons { display: flex; gap: 10px; margin-top: 24px; }
+  .btn-primary {
+    background: var(--navy); color: #fff;
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 600; letter-spacing: 0.3px;
+    transition: background 0.15s; flex: 1;
+  }
+  .btn-primary:hover { background: var(--blue); }
+  .btn-primary:disabled { background: var(--muted); cursor: not-allowed; }
+  .btn-secondary {
+    background: #fff; color: var(--navy);
+    border: 1.5px solid var(--border);
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 600;
+  }
+  .btn-secondary:hover { border-color: var(--navy); }
+
+  /* TEST */
+  #test-screen { min-height: 100vh; display: flex; flex-direction: column; }
+  .test-header {
+    background: var(--navy); color: #fff;
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .th-left { display: flex; flex-direction: column; }
+  .th-title { font-size: 14px; font-weight: 700; color: #fff; }
+  .th-asesor { font-size: 12px; color: var(--accent); }
+  .th-mode {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-left: 6px;
+  }
+  .th-mode.simulacro { background: var(--amber); color: #fff; }
+  .th-mode.oficial { background: var(--red); color: #fff; }
+  .th-center { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .progress-pill {
+    background: rgba(255,255,255,0.1);
+    padding: 6px 14px; border-radius: 20px;
+    font-size: 12.5px; color: #fff;
+  }
+  .progress-pill strong { color: var(--gold); font-weight: 700; }
+  .timer {
+    background: rgba(200,165,96,0.15);
+    border: 1px solid var(--gold);
+    padding: 6px 14px; border-radius: 6px;
+    font-family: 'SF Mono', Consolas, Monaco, monospace;
+    font-size: 15px; font-weight: 700; letter-spacing: 1px;
+    color: var(--gold); min-width: 90px; text-align: center;
+  }
+  .timer.warning { background: rgba(180, 83, 9, 0.35); border-color: #F59E0B; color: #FEF3C7; }
+  .timer.critical { background: rgba(178, 58, 72, 0.45); border-color: var(--red); color: #FEE2E2; animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.65; } }
+  .progress-rail { height: 3px; background: rgba(255,255,255,0.12); }
+  .progress-rail .fill { height: 100%; background: var(--gold); transition: width 0.3s ease; }
+  .section-tabs {
+    background: #fff; border-bottom: 1px solid var(--border-soft);
+    padding: 0 24px;
+    display: flex; gap: 2px; overflow-x: auto;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .section-tab {
+    padding: 14px 18px; border-bottom: 3px solid transparent;
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    white-space: nowrap; transition: all 0.15s;
+  }
+  .section-tab:hover { color: var(--navy); }
+  .section-tab.active { color: var(--navy); border-bottom-color: var(--gold); }
+  .section-tab .count {
+    font-size: 11px; background: var(--bg);
+    padding: 1px 6px; border-radius: 10px;
+    color: var(--muted); margin-left: 6px; font-weight: 600;
+  }
+  .section-tab.active .count { background: var(--navy); color: #fff; }
+  .test-body { flex: 1; max-width: 880px; margin: 0 auto; width: 100%; padding: 28px 32px 140px; }
+  .question-card {
+    background: #fff; border-radius: 10px;
+    padding: 24px 28px; margin-bottom: 18px;
+    box-shadow: 0 1px 3px rgba(11,37,69,0.04);
+    border: 1px solid var(--border-soft);
+  }
+  .q-head-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; flex-wrap: wrap;
+  }
+  .q-num-tag {
+    background: var(--navy); color: #fff;
+    padding: 4px 10px; border-radius: 4px;
+    font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .q-module-tag {
+    background: var(--gold); color: var(--navy);
+    padding: 3px 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; letter-spacing: 1px;
+  }
+  .q-points-tag {
+    background: var(--bg); color: var(--navy);
+    padding: 3px 9px; border-radius: 3px;
+    font-size: 11px; font-weight: 700; margin-left: auto;
+  }
+  .q-v22-tag {
+    background: #DCFCE7; color: #14532D;
+    padding: 3px 9px; border-radius: 3px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .q-text {
+    font-size: 16px; color: var(--text); font-weight: 500;
+    margin: 4px 0 16px; line-height: 1.5;
+  }
+  .q-scenario {
+    background: #EFF6FB; border-left: 3px solid var(--accent);
+    padding: 10px 14px; margin: 0 0 16px;
+    font-size: 13.5px; color: #1F2937;
+    font-style: italic; border-radius: 2px;
+  }
+  .options-list { list-style: none; padding: 0; margin: 0; }
+  .option {
+    padding: 13px 16px 13px 48px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    margin-bottom: 8px; cursor: pointer;
+    position: relative; transition: all 0.12s;
+    font-size: 14.5px; line-height: 1.5; color: var(--text);
+  }
+  .option:hover { border-color: var(--accent); background: #FAFBFC; }
+  .option.selected {
+    border-color: var(--navy); background: #F0F4FA;
+    border-width: 2px; padding: 12px 15px 12px 47px;
+  }
+  .option::before {
+    content: ""; position: absolute;
+    left: 18px; top: 50%; transform: translateY(-50%);
+    width: 18px; height: 18px;
+    border: 2px solid var(--muted); border-radius: 50%;
+    background: #fff; transition: all 0.12s;
+  }
+  .option.selected::before {
+    border-color: var(--navy); background: var(--navy);
+    box-shadow: inset 0 0 0 3px #fff;
+  }
+  .option .letter { font-weight: 700; color: var(--navy); margin-right: 6px; }
+  .open-textarea {
+    width: 100%; min-height: 200px;
+    padding: 14px 16px;
+    border: 1.5px solid var(--border); border-radius: 8px;
+    font-size: 14.5px; resize: vertical;
+    line-height: 1.55; color: var(--text);
+  }
+  .open-textarea:focus { outline: none; border-color: var(--navy); }
+  .textarea-meta {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: var(--muted); margin-top: 6px;
+  }
+  .test-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: #fff; border-top: 1px solid var(--border);
+    padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; z-index: 10;
+    box-shadow: 0 -4px 12px rgba(11,37,69,0.06);
+  }
+  .footer-status { font-size: 13px; color: var(--muted); }
+  .footer-status strong { color: var(--navy); }
+  .btn-finish {
+    background: var(--gold); color: var(--navy);
+    padding: 11px 22px; border-radius: 6px;
+    font-size: 14.5px; font-weight: 700; letter-spacing: 0.3px;
+    transition: background 0.15s;
+  }
+  .btn-finish:hover { background: var(--gold-dark); color: #fff; }
+  .btn-finish:disabled { background: var(--muted); color: #fff; cursor: not-allowed; }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(7,26,51,0.65);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 100; padding: 20px;
+  }
+  .modal {
+    background: #fff; max-width: 480px; width: 100%;
+    padding: 28px 32px; border-radius: 10px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+  }
+  .modal h3 { margin: 0 0 10px; color: var(--navy); font-size: 20px; }
+  .modal p { color: #374151; font-size: 14px; margin: 0 0 16px; }
+  .modal .status-list {
+    background: var(--bg); padding: 12px 14px;
+    border-radius: 6px; font-size: 13.5px; margin-bottom: 18px;
+  }
+  .modal .status-list div { padding: 2px 0; display: flex; justify-content: space-between; }
+  .modal .status-list strong { color: var(--navy); }
+  .modal-buttons { display: flex; gap: 10px; }
+  .modal-buttons button { flex: 1; padding: 11px 16px; }
+
+  /* RESULT */
+  #result-screen { background: var(--bg); min-height: 100vh; padding: 36px 20px 80px; }
+  .result-wrap { max-width: 920px; margin: 0 auto; }
+  .result-card {
+    background: #fff; border-radius: 10px;
+    padding: 36px 44px; box-shadow: 0 1px 4px rgba(11,37,69,0.05);
+    margin-bottom: 20px;
+  }
+  .result-header {
+    text-align: center; padding-bottom: 24px;
+    border-bottom: 1px solid var(--border-soft); margin-bottom: 28px;
+  }
+  .result-header .brand-mini {
+    font-size: 11px; letter-spacing: 2px;
+    color: var(--gold); font-weight: 700;
+  }
+  .result-header h1 { margin: 8px 0 4px; color: var(--navy); font-size: 24px; font-weight: 700; }
+  .result-header .meta-line { color: var(--muted); font-size: 14px; }
+  .result-header .mode-badge {
+    display: inline-block; padding: 3px 10px;
+    border-radius: 3px; font-size: 11px;
+    font-weight: 700; letter-spacing: 1px;
+    margin-top: 8px;
+  }
+  .result-header .mode-badge.simulacro { background: var(--amber); color: #fff; }
+  .result-header .mode-badge.oficial { background: var(--red); color: #fff; }
+  .score-grid {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+    gap: 16px; margin-bottom: 28px;
+  }
+  .score-big {
+    background: var(--navy); color: #fff;
+    border-radius: 10px; padding: 24px; text-align: center;
+  }
+  .score-big .lbl {
+    font-size: 11px; letter-spacing: 1.5px;
+    color: var(--accent); text-transform: uppercase; font-weight: 700;
+  }
+  .score-big .val {
+    font-size: 52px; font-weight: 800;
+    color: var(--gold); line-height: 1;
+    margin: 6px 0 2px; letter-spacing: -1.5px;
+  }
+  .score-big .val small { font-size: 22px; color: rgba(200,165,96,0.55); font-weight: 600; }
+  .score-big .pct { font-size: 16px; color: #fff; font-weight: 600; }
+  .score-tile {
+    background: #fff; border: 1px solid var(--border-soft);
+    border-radius: 10px; padding: 18px; text-align: center;
+  }
+  .score-tile .lbl {
+    font-size: 11px; letter-spacing: 1px; color: var(--muted);
+    text-transform: uppercase; font-weight: 700;
+  }
+  .score-tile .val { font-size: 28px; font-weight: 700; color: var(--navy); margin: 4px 0 0; }
+  .score-tile .sub { font-size: 12px; color: var(--muted); }
+  .score-tile.pending { background: var(--amber-bg); border-color: #FCD34D; }
+  .score-tile.pending .val { color: var(--amber); }
+  .verdict-band {
+    margin-top: 4px; padding: 18px 22px;
+    border-radius: 8px;
+    border-left: 4px solid var(--gold); background: #FFFBF0;
+    font-size: 14.5px;
+  }
+  .verdict-band.pass { border-left-color: var(--green); background: var(--green-bg); color: #14532D; }
+  .verdict-band.borderline { border-left-color: var(--amber); background: var(--amber-bg); color: #78350F; }
+  .verdict-band.fail { border-left-color: var(--red); background: var(--red-bg); color: #7F1D1D; }
+  .verdict-band .verdict-title {
+    font-size: 16px; font-weight: 800; margin-bottom: 4px;
+    letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .verdict-band .verdict-detail { font-size: 14px; }
+  .strict-notice {
+    background: #FFF7ED;
+    border: 1px solid #FDBA74;
+    color: #9A3412;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin: 16px 0 0;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .strict-notice strong { color: #7C2D12; }
+  .section-title {
+    font-size: 13px; letter-spacing: 1.5px;
+    color: var(--navy); text-transform: uppercase; font-weight: 700;
+    margin: 32px 0 14px; padding-bottom: 6px;
+    border-bottom: 2px solid var(--navy);
+  }
+  .mcr {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px; border-left: 4px solid var(--border-soft);
+    margin-bottom: 5px; background: #FAFBFC;
+    font-size: 13.5px; border-radius: 2px;
+  }
+  .mcr.ok { border-left-color: var(--green); background: var(--green-bg); }
+  .mcr.bad { border-left-color: var(--red); background: var(--red-bg); }
+  .mcr .qref { font-weight: 700; color: var(--navy); min-width: 44px; }
+  .mcr .tag {
+    font-size: 10.5px; background: var(--navy); color: #fff;
+    padding: 2px 6px; border-radius: 3px; font-weight: 700; letter-spacing: 0.5px;
+  }
+  .mcr .given { flex: 1; color: #374151; }
+  .mcr .given strong { color: var(--navy); }
+  .mcr .mark { font-weight: 700; font-size: 18px; }
+  .mcr.ok .mark { color: var(--green); }
+  .mcr.bad .mark { color: var(--red); }
+  .open-review {
+    background: #FFFBF0; border-left: 4px solid var(--gold);
+    padding: 16px 20px; border-radius: 4px; margin-bottom: 14px;
+  }
+  .open-review .head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 8px; flex-wrap: wrap; gap: 8px;
+  }
+  .open-review .qref { font-weight: 700; color: var(--navy); font-size: 14px; }
+  .open-review .qtext {
+    color: #374151; font-size: 13.5px;
+    margin: 0 0 10px; font-style: italic;
+  }
+  .open-review .answer-box {
+    background: #fff; border: 1px solid var(--border-soft);
+    padding: 12px 14px; border-radius: 6px;
+    font-size: 13.5px; color: var(--text);
+    white-space: pre-wrap; line-height: 1.55;
+  }
+  .open-review .answer-box.empty { color: var(--muted); font-style: italic; }
+  .coach-score-row {
+    display: flex; align-items: center; gap: 10px;
+    margin-top: 10px; font-size: 13px; flex-wrap: wrap;
+  }
+  .coach-score-row label { color: var(--navy); font-weight: 600; }
+  .coach-score-row input {
+    width: 70px; padding: 6px 8px;
+    border: 1.5px solid var(--border); border-radius: 5px;
+    font-size: 13px; text-align: center;
+  }
+  .coach-score-row .max { color: var(--muted); }
+  .coach-score-row .rubric-toggle {
+    color: var(--navy); font-size: 12px;
+    text-decoration: underline; cursor: pointer; margin-left: auto;
+  }
+  .rubric-panel {
+    background: #fff; border: 1px dashed var(--border);
+    padding: 12px 16px; border-radius: 6px;
+    margin-top: 8px; font-size: 12.5px; color: #374151;
+  }
+  .rubric-panel strong { color: var(--navy); }
+  .rubric-panel ul { margin: 6px 0 0; padding-left: 20px; }
+  .rubric-panel li { margin: 3px 0; }
+  .rubric-panel .red-flags {
+    background: var(--red-bg);
+    border-left: 3px solid var(--red);
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 3px;
+    color: #7F1D1D;
+  }
+  .coach-banner {
+    background: var(--red-bg);
+    border: 1px solid var(--red);
+    color: #7F1D1D;
+    padding: 14px 18px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  .coach-banner strong { color: #5F1119; }
+  .actions-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+  .actions-row button {
+    padding: 11px 18px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+  }
+
+  /* COACH IMPORT */
+  .import-box {
+    background: var(--bg);
+    border: 2px dashed var(--border);
+    border-radius: 10px; padding: 28px;
+    text-align: center; margin: 18px 0;
+  }
+  .import-box textarea {
+    width: 100%; min-height: 140px;
+    padding: 12px;
+    border: 1.5px solid var(--border); border-radius: 6px;
+    font-family: 'SF Mono', Consolas, monospace;
+    font-size: 12px; background: #fff;
+  }
+  .import-box input[type=file] { margin: 10px 0; }
+
+  @media (max-width: 720px) {
+    .hero-title { font-size: 30px; }
+    .split-summary, .role-cards { grid-template-columns: 1fr; }
+    .score-grid { grid-template-columns: 1fr; }
+    .test-body { padding: 20px 16px 140px; }
+    .question-card { padding: 18px; }
+    .result-card { padding: 24px 20px; }
+    .test-header { padding: 12px 16px; }
+  }
+  @media print {
+    body { background: #fff; }
+    .test-footer, .actions-row, .coach-score-row, .rubric-toggle, .section-tabs, .test-header { display: none !important; }
+    .question-card { page-break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div id="modal-root"></div>
+
+<script>
+/* ============================================================
+   QUESTIONS — Test de Certificación CAM v2.2 · BUILD A
+   Client Activation Manager · Revenue-Driven Onboarding 30 días
+   25 MC × 1 pt + 4 abiertas × 5 pts = 45 pts
+   BLOQUEANTE: ≥70% (31.5/45)
+   Fuentes:
+   - CAM Onboarding Program v2.2 (curriculum master)
+   - CAM Onboarding Checklist v2.1 (56 items — lo que Karen realmente cubre)
+   - Sales Protocol CAM v3.2 + Reglamento Benchmarks v1.2
+   - Touch Cadence Guide CAM + Guía Segmentos + Guía Conversion + Reglamento Horario v3
+   ============================================================ */
+const QUESTIONS = [
+  // ===== S1 — FUNDAMENTOS & SISTEMAS (Días 1-2, items 1-16 checklist) =====
+  { id: 1, section: 'S1', module: 'Día 1', type: 'mc',
+    text: 'El rol del CAM (Client Activation Manager) en la estructura comercial de Liberty Finance consiste en:',
+    options: [
+      'Gestionar la cartera activa de clientes existentes (HNW/UHNW) con reuniones presenciales de portafolio',
+      'Convertir leads fríos/RNA a primer depósito (FTD) mediante alto volumen de contacto y luego traspasarlos al PBA para gestión de cartera',
+      'Producir análisis de mercados y briefings diarios para la fuerza comercial',
+      'Aprobar retiros y solicitudes VIP en coordinación con Finance CS'
+    ], correct: 'B' },
+  { id: 2, section: 'S1', module: 'Día 1', type: 'mc',
+    text: 'Los KPIs del CAM se organizan en 3 niveles temporales. ¿Cuál es la combinación correcta?',
+    options: [
+      'Diarios: FTD acumulados · Semanales: llamadas · Mensuales: 1200 leads',
+      'Diarios: llamadas + consultings + minutos · Semanales: FTD + pipeline · Mensuales: 1200 leads procesados',
+      'Diarios: reportes CRM · Semanales: reuniones internas · Mensuales: bono variable',
+      'Diarios: WhatsApp only · Semanales: llamadas · Mensuales: comisiones cobradas'
+    ], correct: 'B' },
+  { id: 3, section: 'S1', module: 'Día 1', type: 'mc',
+    text: 'Según Sales Protocol CAM, la regla operativa correcta para gestión de leads incluye:',
+    options: [
+      'Máximo 2 intentos por lead antes de descartar; sin obligación de reporte semanal',
+      'Trabajar con "leads 4-5", mínimo 4 intentos por lead antes de marcar como no responsivo, y reporte semanal obligatorio los viernes 13:00',
+      '1 intento por lead + WhatsApp masivo; reporte mensual únicamente',
+      'Sin regla fija de intentos; reporte cuando el CAM lo considere necesario'
+    ], correct: 'B' },
+  { id: 4, section: 'S1', module: 'Día 2', type: 'mc',
+    text: 'El pipeline en Zoho CRM para el CAM tiene la siguiente secuencia de estados:',
+    options: [
+      'Lead → Prospect → Client → Retention',
+      'New → Contacted → Consulting → FTD Pending → Deposited → Follow-up',
+      'Cold → Warm → Hot → Cerrado → Archivado',
+      'Ingreso → Análisis → Aprobación → Depósito → Retirado'
+    ], correct: 'B' },
+
+  // ===== S2 — SEGMENTOS DE LEADS & TOUCH CADENCES (5 tipos + 12 secuencias) =====
+  { id: 5, section: 'S2', module: 'Segmentos', type: 'mc',
+    text: 'De los 5 segmentos de leads que trabaja el CAM (Cold / RNA / Warm / Referido / Reactivación), ¿cuál tiene la conversión total esperada más alta y el ciclo más corto?',
+    options: [
+      'Cold Lead — 1-3%, ciclo 45-120 días',
+      'RNA (Inbound-Cold) — 3-8%, ciclo 20-60 días',
+      'Warm Lead — 10-20%, ciclo 14-45 días',
+      'Referido — 25-50%, ciclo 7-30 días'
+    ], correct: 'D' },
+  { id: 6, section: 'S2', module: 'Segmentos', type: 'mc',
+    text: 'Un lead RNA responde en el primer contacto: "Yo no me registré, no descargué nada". ¿Cuál es la respuesta correcta del CAM según la Guía de Segmentos?',
+    options: [
+      'Discutir con evidencia: "Pero señor, aquí en nuestro sistema aparece su registro con su email"',
+      'Colgar profesionalmente — el lead claramente no está interesado',
+      'Validar sin confrontar + reconducir: "Entiendo perfectamente, es posible que haya sido una descarga accidental. De todas formas, ¿me permite una pregunta rápida sobre sus opciones actuales de inversión?"',
+      'Insistir con datos: "¿Está seguro? Porque tenemos su teléfono y su email verificados"'
+    ], correct: 'C' },
+  { id: 7, section: 'S2', module: 'Touch Cadence', type: 'mc',
+    text: 'Según el Touch Cadence Guide CAM, ¿cuál es la variable más determinante para la conversión de un lead RNA?',
+    options: [
+      'Cantidad total de llamadas (mínimo 15 por lead)',
+      'Speed-to-lead: primer contacto en <15 minutos post-registro. Cada hora de delay reduce conversión 30-50%',
+      'Enviar 5 emails con material educativo antes de llamar',
+      'Esperar 48 horas para que el lead se "asiente" antes del primer contacto'
+    ], correct: 'B' },
+  { id: 8, section: 'S2', module: 'Touch Cadence', type: 'mc',
+    text: 'Sobre la mezcla de canales en la secuencia de touches CAM, ¿cuál es la regla de alternancia correcta?',
+    options: [
+      'Usar exclusivamente llamadas telefónicas — WhatsApp es solo apoyo secundario',
+      'Nunca 3 touches consecutivos del mismo canal — si hiciste 2 llamadas seguidas sin respuesta, el próximo touch DEBE ser WhatsApp',
+      'Alternar cada día: lunes llamadas, martes WhatsApp, miércoles emails',
+      'Mismo canal siempre para consistencia del lead'
+    ], correct: 'B' },
+  { id: 9, section: 'S2', module: 'Touch Cadence', type: 'mc',
+    text: 'Un lead no respondió después de 12 touches (secuencia completa Fase 1-2-3). Según el protocolo de reciclaje CAM:',
+    options: [
+      'Seguir tocando indefinidamente cada 3 días hasta que responda',
+      'Descartar permanentemente del CRM',
+      'Marcar "No responsivo" en CRM → queue de reactivación 30 días → volver a contactar con ángulo nuevo (dato de mercado, evento)',
+      'Escalar inmediatamente al Country Manager'
+    ], correct: 'C' },
+
+  // ===== S3 — SCRIPT, OBJECIONES & CIERRE (Días 3-5, items 17-31 checklist) =====
+  { id: 10, section: 'S3', module: 'Día 3', type: 'mc',
+    text: 'El framework de objeciones del CAM agrupa las objeciones en 5 categorías principales. ¿Cuáles son?',
+    options: [
+      'Buenas / Malas / Neutras / Urgentes / Ignorables',
+      'Financieras / Confianza / Tiempo / Familia / Riesgo',
+      'Cliente / Producto / Plataforma / Empresa / Mercado',
+      'Personal / Laboral / Educativa / Social / Cultural'
+    ], correct: 'B' },
+  { id: 11, section: 'S3', module: 'Día 3', type: 'mc',
+    text: 'Cliente dice: "Necesito pensarlo, después te aviso". ¿Cuál es la respuesta correcta del CAM según Guía de Conversión?',
+    options: [
+      '"Ok, cuando decidas llamame" — respetar la decisión y esperar',
+      '"Por supuesto. Para ayudarte a pensar mejor — ¿cuál es la principal duda que tienes en este momento?" — validar + destapar la objeción real no expresada',
+      '"Te doy 24 horas y te vuelvo a llamar mañana a las 9am estrictamente" — presión de tiempo',
+      '"Entonces no es para vos, gracias por tu tiempo" — descalificar'
+    ], correct: 'B' },
+  { id: 12, section: 'S3', module: 'Día 3 / Día 4', type: 'mc',
+    text: 'Sobre el uso de FOMO en las llamadas CAM, ¿cuál es la aplicación correcta según el checklist v2.1 (FOMO estructurado) y las reglas de compliance?',
+    options: [
+      '"Si no depositás hoy te vas a perder la oportunidad de tu vida" — urgencia máxima',
+      '"El contexto de mercado esta semana muestra una oportunidad interesante en [activo]; puede ser un momento a considerar según tu perfil" — FOMO estructurado con contexto real, sin promesa ni presión desmedida',
+      '"Nunca vas a tener un retorno tan bueno como el que te ofrezco ahora"',
+      'Nunca usar FOMO — está prohibido en todo contexto'
+    ], correct: 'B' },
+  { id: 13, section: 'S3', module: 'Guía Conversión', type: 'mc',
+    text: 'La "Regla de los 15 segundos" del CAM establece que:',
+    options: [
+      'La llamada no debe durar más de 15 segundos',
+      'Si en los primeros 15 segundos no enganchás la atención del lead, la probabilidad de conversión cae al 30%. La apertura no es presentación — es un gancho específico para el perfil',
+      'Hay que hacer 15 llamadas por hora sin pausa',
+      'El lead debe responder en 15 segundos o cuelga automáticamente'
+    ], correct: 'B' },
+
+  // ===== S4 — COMPLIANCE, PRODUCTOS & PAGOS (Días 4, 6, items 24-34 checklist) =====
+  { id: 14, section: 'S4', module: 'Día 4', type: 'mc',
+    text: 'Según las reglas de Compliance CAM, ¿cuál de las siguientes frases es PERMITIDA (compliant)?',
+    options: [
+      '"Te garantizo un retorno del 15% este mes"',
+      '"Con esta estrategia es imposible perder"',
+      '"Este activo históricamente se ha movido en este rango; podría ser una oportunidad de interés según el contexto actual"',
+      '"Si invertís hoy, mañana vas a tener ganancias seguras"'
+    ], correct: 'C' },
+  { id: 15, section: 'S4', module: 'Día 4', type: 'mc',
+    text: 'Sobre el lenguaje correcto en Compliance CAM (item 25 del checklist), la regla de "estrategia vs garantía" indica:',
+    options: [
+      'Se puede prometer garantía si el cliente tiene SOT alto',
+      'Usar "estrategia" para describir el enfoque de inversión; NUNCA usar "garantía", "seguro", "sin riesgo" o promesas de retorno específico',
+      'Ambos términos son intercambiables en la conversación',
+      'Solo el PBA puede usar "garantía", el CAM no'
+    ], correct: 'B' },
+  { id: 16, section: 'S4', module: 'Día 4', type: 'mc',
+    text: 'Sobre métodos de pago por país para acelerar el FTD, ¿cuál combinación es correcta según lo que se cubre en Día 4?',
+    options: [
+      'Chile: Khipu / transferencia CLP · Perú: Yape/Plin · Ecuador: transferencia USD (país dolarizado) · Paraguay: transferencia PYG',
+      'Todos los países usan tarjeta de crédito internacional únicamente',
+      'Los pagos solo se procesan en USD para todos los países',
+      'El método de pago lo elige el CAM sin considerar el país'
+    ], correct: 'A' },
+  { id: 17, section: 'S4', module: 'Día 6', type: 'mc',
+    text: 'Sobre los productos que trabaja el CAM (item 33 checklist), ¿cuál combinación describe correctamente el catálogo?',
+    options: [
+      'Solo Libertex Core, sin otros productos',
+      'Bonus / Life Academy / Libertex features / Copy Trading — combinables según perfil y ticket del cliente',
+      'Solo productos VIP de PBA — el CAM no ofrece productos',
+      'Únicamente cursos de Life Academy'
+    ], correct: 'B' },
+  { id: 18, section: 'S4', module: 'Día 6', type: 'mc',
+    text: 'Un cliente FTD nuevo deposita USD 1.500, sin experiencia previa en trading, busca aprender. Según la matriz producto-perfil-ticket (item 34 checklist), ¿cuál es la recomendación inicial correcta?',
+    options: [
+      'Noble Portfolio (tier premium) + presión para aumentar depósito a USD 25K',
+      'Libertex Core estándar + Life Academy cursos básicos para construir conocimiento antes de operar agresivamente',
+      'Copy Trading con high-yield experts sin filtrar',
+      'Servicios VIP + Analista dedicado'
+    ], correct: 'B' },
+
+  // ===== S5 — OPERACIONES, REPORTE & SM (Días 7-15, items 35-51 checklist) =====
+  { id: 19, section: 'S5', module: 'Día 7 / CQS', type: 'mc',
+    text: 'El Call Quality Score (CQS) del CAM se mide con 10 criterios ponderados. ¿Cuáles son los 3 criterios de mayor peso (15% cada uno)?',
+    options: [
+      'Apertura + Autoridad + Notas CRM',
+      'Profiling + Manejo de objeciones + Intento de cierre',
+      'Energía/Rapport + Compliance + Seguimiento',
+      'Claridad de valor + Notas CRM + Apertura'
+    ], correct: 'B' },
+  { id: 20, section: 'S5', module: 'Weekly Tracker', type: 'mc',
+    text: 'Sobre el Weekly Tracker del CAM (item 41, 49 checklist), ¿cuál es el protocolo correcto de llenado y reporte?',
+    options: [
+      'Karen llena todas las pestañas; el CAM solo lee su resultado semanal',
+      'El CAM llena 1 fila en su pestaña diariamente a las 17:00 (intentos, qualified, talk time, WA, cierres, nota del día); reporte semanal viernes 13:00 con formato 5-bloques (pipeline + segmentos + mandatory + self-check + análisis) enviado a Karen + Liza, CC Rubén + Vladimir',
+      'Se llena solo al final del mes, todo consolidado',
+      'Se llena solo cuando hay FTD; sin FTD no se registra actividad'
+    ], correct: 'B' },
+  { id: 21, section: 'S5', module: 'SM permanente', type: 'mc',
+    text: 'El Sales Minimum (SM) permanente CAM — obligatorio desde Level 2 (Semana 7 en adelante) — es:',
+    options: [
+      '15 consultings/día · 100 attempts · 150 min talk · CQS ≥80%',
+      '17 consultings/día · 120 attempts · 170 min talk · CQS ≥85% · incluye WA follow-up y conversaciones',
+      '20 consultings/día · 150 attempts · 200 min talk · CQS ≥90%',
+      '10 consultings/día · 80 attempts · 120 min talk · CQS ≥75%'
+    ], correct: 'B' },
+  { id: 22, section: 'S5', module: 'Reglamento Horario', type: 'mc',
+    text: 'La estructura horaria del CAM está organizada en 3 bloques Prime — momentos donde el cliente está más disponible. ¿Cuáles son?',
+    options: [
+      'PRIME 1: 9:00-11:00 · PRIME 2: 14:00-16:00 · PRIME 3: 20:00-22:00',
+      'PRIME 1: 7:30-9:00 · PRIME 2: 12:00-13:30 · PRIME 3: 18:00-20:00',
+      'PRIME 1: 6:00-8:00 · PRIME 2: 11:00-13:00 · PRIME 3: 17:00-19:00',
+      'PRIME 1: 8:00-10:00 · PRIME 2: 13:00-15:00 · PRIME 3: 19:00-21:00'
+    ], correct: 'B' },
+  { id: 23, section: 'S5', module: 'Reglamento Horario', type: 'mc',
+    text: 'Durante los bloques Prime, ¿qué actividades están PROHIBIDAS según el Reglamento Horario?',
+    options: [
+      'Solo se prohíben las pausas personales',
+      'Reuniones internas, coaching, formación, reportes administrativos, llamadas de equipo — cualquier actividad que no sea interacción directa con cliente o lead',
+      'Se prohíbe únicamente el uso de WhatsApp',
+      'No hay actividades prohibidas — el CAM decide su agenda'
+    ], correct: 'B' },
+  { id: 24, section: 'S5', module: 'Country specs', type: 'mc',
+    text: 'Según Reglamento Benchmarks v1.2, los horarios óptimos de llamada varían por país. ¿Cuál combinación es correcta?',
+    options: [
+      'Todos los países: 9:00-18:00 hora local, sin variación',
+      'Chile: AM+PM (10-13h, 16-19h) · Perú/Ecuador: PM predominante (WA voice recomendado) · Paraguay: AM con multiples toques',
+      'Solo llamar en la madrugada (5:00-7:00) — hora de mayor atención',
+      'Chile: solo noche · Perú: solo mañana · Ecuador: solo tarde · Paraguay: cualquier hora'
+    ], correct: 'B' },
+  { id: 25, section: 'S5', module: 'Red flags', type: 'mc',
+    text: 'De los red flags CAM, ¿cuál requiere escalación INMEDIATA a Karen → Liza → CEO (sin intermedios) según Reglamento Benchmarks?',
+    options: [
+      'Un día con menos de 100 attempts',
+      'Un lead que no contestó en 24 horas',
+      'Promesa de retornos (violación de compliance) por parte del CAM',
+      'Ausencia de 1 llamada agendada'
+    ], correct: 'C' },
+
+  // ===== ABIERTAS (4 × 5 pts = 20 pts) =====
+  { id: 26, section: 'OPEN', module: 'Segmentos / RNA', type: 'open', maxPoints: 5,
+    text: 'Sos CAM y llamás a un lead RNA 8 minutos después de su registro en Libertex. El lead atiende y dice: "Yo no me registré en nada, no descargué ninguna aplicación, ¿quién le dio mi número?". Redactá tu respuesta COMPLETA en 3 partes: (a) validación sin confrontar en <15 segundos, (b) reconducción hacia valor (pivot a la conversación real), (c) siguiente paso concreto si el lead acepta seguir hablando.',
+    scenario: 'Este escenario RNA representa el 40-60% de los primeros contactos. La negación NO es rechazo — es la apertura de la conversación. El CAM que discute o insiste sobre el registro destruye el lead. El objetivo es reconducir sin generar hostilidad, ofrecer valor, y avanzar hacia una conversación cualificada de >4 minutos.',
+    rubric: [
+      'Apertura en <15 segundos con validación genuina (no confrontar, no discutir sobre el registro) (1 pt)',
+      'Reconducción concreta hacia valor — pivot a pregunta abierta sobre situación financiera actual del lead (1 pt)',
+      'Lenguaje 100% compliant — sin promesa de retorno, sin "es una oportunidad única", sin presión (1 pt)',
+      'Siguiente paso claro y accionable si el lead engancha (agendar 2da llamada específica día+hora / enviar material por WA con follow-up definido) (1 pt)',
+      'Tono profesional pero cálido — respeta el estilo LATAM (no genérico corporativo) (1 pt)'
+    ],
+    redFlags: [
+      'Discutir con el lead sobre si se registró o no ("aquí aparece su email") → −2 pts',
+      'Colgar o descalificar al lead ("entonces no me interesa hablar con usted") → −2 pts',
+      'Promesa de retorno o "oportunidad única" → 0 pts automáticos',
+      'FOMO desmedido ("si no me escuchás ahora te vas a arrepentir") → −2 pts',
+      'Sin siguiente paso claro (deja la conversación abierta sin compromiso) → −1 pt'
+    ] },
+  { id: 27, section: 'OPEN', module: 'Objeciones', type: 'open', maxPoints: 5,
+    text: 'Cliente peruano (SOT 8.000, ha operado 3 meses) te llama muy alterado y dice: "Esto es una estafa como todas las demás. Ya me estafaron antes con otra plataforma. ¿Cómo sé que ustedes no son iguales?". Redactá tu respuesta COMPLETA en 3 partes: (a) validación empática de la desconfianza sin defensividad, (b) hechos verificables sobre Liberty Finance / Libertex (regulación, presencia, elementos institucionales concretos), (c) propuesta de siguiente paso que reduzca la ansiedad del cliente sin comprometer políticas.',
+    scenario: 'Escenario Perú — mercado con alta desconfianza hacia servicios financieros y experiencia común con estafas telefónicas. La objeción "¿es estafa?" es la más frecuente en este país. La respuesta correcta NO minimiza la desconfianza (validación primero) NI defiende agresivamente (genera más sospecha). La estrategia correcta es: escuchar, validar, mostrar hechos verificables, y proponer siguiente paso concreto (contacto con cliente peruano existente, revisión conjunta de documentación regulatoria, etc.).',
+    rubric: [
+      'Validación empática de la desconfianza — reconoce que su experiencia previa es real, no la minimiza ni la descalifica (1 pt)',
+      'Referencia a regulación verificable (SBS Perú si aplica, CMF Chile, presencia en LatAm, años operando) sin inventar datos (1 pt)',
+      'Sin promesa "con nosotros no le va a pasar lo mismo" o similar (1 pt)',
+      'Siguiente paso concreto que reduce ansiedad: hablar con cliente peruano existente, revisión conjunta de documentación regulatoria, propuesta de comenzar con depósito mínimo de prueba (1 pt)',
+      'Tono compasivo pero profesional — sin defensividad, sin descalificar al competidor previo, sin sobre-vender (1 pt)'
+    ],
+    redFlags: [
+      'Minimizar la experiencia previa del cliente ("esas empresas son ilegales, nosotros no") → −2 pts',
+      'Prometer que "aquí no le va a pasar lo mismo" o "estamos 100% seguros" → −2 pts',
+      'Defenderse agresivamente o descalificar al competidor por su nombre → −2 pts',
+      'Promesa de retorno de cualquier tipo → 0 pts automáticos',
+      'No proponer siguiente paso concreto — deja el miedo del cliente sin resolver → −1 pt'
+    ] },
+  { id: 28, section: 'OPEN', module: 'Cierre por perfil', type: 'open', maxPoints: 5,
+    text: 'Cliente chileno tipo "Ya-invertido" (SOT potencial USD 20K, tiene AGF Banco de Chile + AFP Cuprum, opera acciones locales via Banchile). Después de una llamada de 12 minutos donde te contó su situación y mostró interés real, llegás al momento de cierre. El cliente dice: "Mirá, me interesa lo que me contás pero ya tengo mi plata trabajando. No sé si vale la pena mover todo". Redactá tu propuesta de cierre COMPLETA en 4 partes: (a) reconocimiento estratégico de su situación actual, (b) propuesta de complementariedad (no reemplazo), (c) primer paso concreto con monto específico, (d) siguiente paso operativo (proceso de activación, timing).',
+    scenario: 'Escenario Chile — cliente sofisticado tipo "Ya-invertido". El error más común es pedirle que abandone lo que tiene o competir por precio con AGF/AFP. La estrategia correcta según Guía Conversión: cierre por complementariedad. No pedirle que mueva todo — pedirle una parte pequeña para diversificar. Chile mercado digital/rápido con clientes informados que comparan.',
+    rubric: [
+      'Reconocimiento estratégico — validar que ya tiene inversiones bien colocadas, sin descalificarlas (1 pt)',
+      'Propuesta de complementariedad clara — "no te pido que muevas todo, solo una parte para diversificar / tener otra fuente trabajando" (1 pt)',
+      'Primer paso con monto específico razonable — sugerir monto de prueba entre USD 2K–5K, no el máximo posible (1 pt)',
+      'Siguiente paso operativo claro con timing (activación 10 min ahora / agendar mañana / envío de documentación por WA + call de acompañamiento) (1 pt)',
+      'Sin competir por precio explícitamente vs AGF/AFP · sin promesa de retorno superior · lenguaje compliant (1 pt)'
+    ],
+    redFlags: [
+      'Pedirle que abandone/mueva TODO lo que tiene ("cerrá la AGF y traénos todo") → −2 pts',
+      'Competir por precio o rendimiento vs AGF/AFP con promesas ("acá vas a ganar más que en Cuprum") → −2 pts',
+      'Descalificar sus inversiones actuales ("las AFP no sirven para nada") → −2 pts',
+      'Promesa de retorno superior o "seguro te va mejor" → 0 pts automáticos',
+      'Sin propuesta de siguiente paso operativo concreto → −1 pt'
+    ] },
+  { id: 29, section: 'OPEN', module: 'Semana operativa CAM', type: 'open', maxPoints: 5,
+    text: 'Sos CAM cross-market (Chile + Perú principalmente, ocasional Ecuador) en Level 2 (Semana 8). Diseñá tu semana operativa completa lunes-viernes cumpliendo: (a) SM permanente CAM (17 cons/día, 120 attempts/día, 170 min talk/día, 50+ WA/día, CQS ≥85%), (b) los 3 bloques Prime protegidos como tiempo exclusivo de clientes, (c) Mandatory Reports viernes 13:00 con formato 5-bloques a Karen+Liza CC Rubén+Vladimir, (d) al menos 2 de los 3 Primes exclusivos, sin reuniones internas en Primes, coaching solo en slot 13:30-14:30, (e) manejo de country timing (Chile AM+PM, Perú PM predominante, Ecuador PM). No es necesario detallar minuto a minuto — mostrar bloques principales por día.',
+    scenario: 'Test de organización operativa. El CAM que no protege sus Primes o no cumple SM no puede sostenerse. Este ejercicio valida que Catalina entiende cómo estructurar sus días para alcanzar SM sin depender de horas extras, respetando estructura corporativa y country specs.',
+    rubric: [
+      'SM alcanzable en 5-6 horas efectivas — no diluye actividad en 13 horas de presencia (1 pt)',
+      'Los 3 Primes claramente identificados y protegidos (7:30-9 · 12-13:30 · 18-20) — al menos 2 exclusivos para cliente (1 pt)',
+      'Reuniones internas / coaching en slot 13:30-14:30 únicamente · viernes 9:00-11:00 pipeline+capacitación (1 pt)',
+      'Distribución country-aware: Chile calls AM+PM · Perú calls PM (WA voice recomendado) · reserva de WA follow-up para Ecuador si aplica (1 pt)',
+      'Mandatory Report viernes 13:00 explícito en agenda + formato 5-bloques mencionado (pipeline + segmentos + mandatory + self-check + análisis) (1 pt)'
+    ],
+    redFlags: [
+      'Programar reuniones internas o coaching en bloques Prime → −2 pts',
+      'Menos de 2 Primes exclusivos para cliente (rompe regla no negociable) → −2 pts',
+      'SM incompleto (menos de 17 cons/día o menos de 120 attempts/día) → −1 pt',
+      'Sin mención de Mandatory Reports viernes 13:00 → −1 pt',
+      'Sin diferenciación country-aware — trata Chile / Perú / Ecuador idéntico → −1 pt'
+    ] }
+];
+
+const SECTIONS = [
+  { id: 'S1', label: 'Fundamentos & Sistemas', desc: 'Días 1-2 · CRM/MicroSIP/KPI' },
+  { id: 'S2', label: 'Segmentos & Touch Cadences', desc: '5 tipos leads · 12 secuencias' },
+  { id: 'S3', label: 'Script, Objeciones & Cierre', desc: 'Días 3-5 · Framework 10 objeciones' },
+  { id: 'S4', label: 'Compliance, Productos & Pagos', desc: 'Días 4, 6 · AML, matriz productos' },
+  { id: 'S5', label: 'Operaciones, Reporte & SM', desc: 'Días 7-15 · CQS, Weekly Tracker, Primes' },
+  { id: 'OPEN', label: 'Preguntas Abiertas', desc: 'Casos prácticos CAM' }
+];
+
+const DURATION_MIN = 90;
+const STORAGE_KEY = 'lf_cam_certification_v22_a';
+const PASS_THRESHOLD = 0.70;
+const EXCELLENT_THRESHOLD = 0.85;
+
+let state = {
+  screen: 'welcome', role: null,
+  student: { name: '', track: '', level: '', date: '', mode: 'oficial' },
+  answers: {}, coachScores: {},
+  currentSection: 'S1',
+  startedAt: null, finishedAt: null, elapsed: 0,
+  timerExpired: false
+};
+let timerInterval = null;
+
+function saveState() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      ...state,
+      elapsed: state.startedAt ? Math.floor((Date.now() - state.startedAt) / 1000) : 0
+    }));
+  } catch (e) {}
+}
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) { return null; }
+}
+function clearState() { try { localStorage.removeItem(STORAGE_KEY); } catch (e) {} }
+
+function startTimer() {
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    if (!state.startedAt) return;
+    const totalSecs = DURATION_MIN * 60;
+    const elapsedSecs = Math.floor((Date.now() - state.startedAt) / 1000);
+    const remaining = totalSecs - elapsedSecs;
+    const el = document.getElementById('timer-display');
+    if (el) {
+      if (remaining <= 0) {
+        el.textContent = '00:00';
+        el.classList.add('critical');
+        state.timerExpired = true;
+        clearInterval(timerInterval);
+        autoFinishTest();
+        return;
+      }
+      const m = Math.floor(remaining / 60);
+      const s = remaining % 60;
+      el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+      el.classList.toggle('warning', remaining < 600 && remaining >= 120);
+      el.classList.toggle('critical', remaining < 120);
+    }
+  }, 1000);
+}
+
+const LETTERS = ['A','B','C','D','E'];
+function esc(s) {
+  return (s == null ? '' : String(s)).replace(/[&<>"']/g,
+    c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function countAnswered(section) {
+  const qs = QUESTIONS.filter(q => !section || q.section === section);
+  return qs.filter(q => {
+    const a = state.answers[q.id];
+    return q.type === 'mc' ? !!a : (a && a.trim().length > 10);
+  }).length;
+}
+function countTotal(section) { return QUESTIONS.filter(q => !section || q.section === section).length; }
+
+function calcMCScore() {
+  let correct = 0, total = 0;
+  const details = [];
+  QUESTIONS.filter(q => q.type === 'mc').forEach(q => {
+    total++;
+    const given = state.answers[q.id];
+    const ok = given === q.correct;
+    if (ok) correct++;
+    details.push({ id: q.id, module: q.module, given: given || '—', correct: q.correct, ok });
+  });
+  return { correct, total, pointsEarned: correct, pointsMax: total, details };
+}
+
+function calcOpenScore() {
+  let earned = 0, max = 0, rated = 0;
+  const details = [];
+  QUESTIONS.filter(q => q.type === 'open').forEach(q => {
+    max += q.maxPoints;
+    const score = state.coachScores[q.id];
+    if (typeof score === 'number' && !isNaN(score)) { earned += score; rated++; }
+    details.push({ id: q.id, module: q.module, maxPoints: q.maxPoints, score });
+  });
+  const allRated = rated === QUESTIONS.filter(q => q.type === 'open').length;
+  return { earned, max, rated, total: QUESTIONS.filter(q => q.type === 'open').length, allRated, details };
+}
+
+function fmtDuration(secs) {
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  return `${m} min ${String(s).padStart(2,'0')} s`;
+}
+
+/* RENDER WELCOME */
+function renderWelcome() {
+  const draft = loadState();
+  const hasDraft = draft && draft.screen === 'test' && draft.answers && Object.keys(draft.answers).length > 0;
+  document.getElementById('app').innerHTML = `
+    <div id="welcome-screen">
+      <div class="welcome-container">
+        <div class="brand-row">
+          <div class="brand-mark">L</div>
+          <div class="brand-text">
+            <div class="name">LIBERTY</div>
+            <div class="name-sub">FINANCE</div>
+          </div>
+        </div>
+        <div class="tagline">Test de Certificación · Client Activation Manager (CAM) · Cierre onboarding 30 días</div>
+        <h1 class="hero-title">Test de Certificación · CAM</h1>
+        <p class="hero-sub">Evaluación oficial bloqueante del programa Revenue-Driven CAM v2.2 — 30 días de onboarding con primer FTD en Día 3-5, 3 Fases + 4 Recap Days. Cubre los 5 dominios del programa: Fundamentos & Sistemas, Segmentos de Leads & Touch Cadences, Script & Objeciones, Compliance & Productos, Operaciones & SM.</p>
+        <p class="legacy-line">A legacy with future</p>
+
+        <div class="blocker-banner">
+          <strong>BLOQUEANTE</strong> — umbral mínimo de aprobación: <strong>70% (31.5 / 45 pts)</strong>. Si no se alcanza, re-test en 2 días. La certificación del rol CAM y el paso a producción autónoma dependen de aprobar este test.
+        </div>
+
+        <div class="hero-badges">
+          <span class="badge"><strong>v2.2 · Abril 2026</strong></span>
+          <span class="badge">25 MC + 4 abiertas</span>
+          <span class="badge">90 minutos</span>
+          <span class="badge">45 pts totales</span>
+        </div>
+
+        <div class="split-summary">
+          <div class="split-item">
+            <div class="big-num">25<small> pts</small></div>
+            <div class="big-lbl">Selección múltiple</div>
+            <div class="big-desc">25 preguntas × 1 pt · auto</div>
+          </div>
+          <div class="split-item">
+            <div class="big-num">20<small> pts</small></div>
+            <div class="big-lbl">Preguntas abiertas</div>
+            <div class="big-desc">4 preguntas × 5 pts · evaluadas por coach con criterio estricto</div>
+          </div>
+        </div>
+
+        <div class="threshold-bar">
+          <strong>Bandas de resultado:</strong>
+          ≥85% (38+/45) Excelente — autonomía total ·
+          70–84% (31.5–37/45) Aprobado — certificado con foco ·
+          &lt;70% NO CERTIFICA — re-test en 2 días.
+        </div>
+
+        <div class="role-prompt">Seleccioná tu rol para continuar:</div>
+        <div class="role-cards">
+          <button class="role-card" onclick="goFormScreen()">
+            <div class="icon">📝</div>
+            <h3>Soy el CAM</h3>
+            <p>Rendir el test · 90 minutos · Ambiente controlado, sin notas, sin teléfono, cámara encendida</p>
+            <div class="arrow">→</div>
+          </button>
+          <button class="role-card" onclick="goCoachImport()">
+            <div class="icon">📊</div>
+            <h3>Soy el Coach</h3>
+            <p>Cargar respuestas del asesor y calificar las preguntas abiertas con rúbrica estricta + RED FLAGS</p>
+            <div class="arrow">→</div>
+          </button>
+        </div>
+
+        ${hasDraft ? `
+          <div class="results-link">
+            <strong style="color:#fff;">Hay un test en progreso</strong> — <button onclick="resumeDraft()">Continuar donde lo dejé →</button>
+          </div>
+        ` : ''}
+      </div>
+    </div>
+  `;
+}
+
+function goFormScreen() { state.role = 'pba'; state.screen = 'form'; render(); }
+function goCoachImport() { state.role = 'coach'; state.screen = 'coach-import'; render(); }
+function resumeDraft() {
+  const draft = loadState();
+  if (draft) { state = { ...state, ...draft }; startTimer(); render(); }
+}
+
+/* RENDER FORM */
+function renderForm() {
+  const today = new Date().toISOString().slice(0,10);
+  document.getElementById('app').innerHTML = `
+    <div id="form-screen">
+      <div class="form-card">
+        <span class="back-link" onclick="backToWelcome()">← Volver</span>
+        <h2>Identificación del asesor</h2>
+        <p class="sub">Completá tus datos antes de comenzar. El cronómetro arranca al presionar "Comenzar".</p>
+
+        <div class="modo-aplicacion">
+          <strong>Tipo de aplicación:</strong> el simulacro (24 abr) tiene puntaje provisional con debrief abierto. La aplicación oficial (25 abr) determina certificación bloqueante.
+        </div>
+
+        <div class="form-field">
+          <label>Nombre completo</label>
+          <input id="f-name" type="text" placeholder="Ariel Salazar · Nicolas Cruz..." autocomplete="off">
+        </div>
+        <div class="form-field">
+          <label>Tipo de aplicación</label>
+          <select id="f-mode">
+            <option value="simulacro">Simulacro — 24 abril (provisional)</option>
+            <option value="oficial" selected>Certificación oficial — 25 abril (bloqueante)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Track de onboarding</label>
+          <select id="f-track">
+            <option value="">— Seleccioná —</option>
+            <option value="CAM">CAM Onboarding Program v2.2 (30 días, 3 Fases + 4 Recaps)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Rol / Nivel</label>
+          <select id="f-level">
+            <option value="">— Seleccioná —</option>
+            <option value="CAM">Client Activation Manager (CAM)</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Fecha del test</label>
+          <input id="f-date" type="date" value="${today}">
+        </div>
+        <div class="form-field">
+          <label>Coach evaluador</label>
+          <input id="f-coach" type="text" placeholder="Nombre del coach" value="Karen Garcia">
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn-secondary" onclick="backToWelcome()">Cancelar</button>
+          <button class="btn-primary" onclick="startTest()">Comenzar test →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function backToWelcome() { state.screen = 'welcome'; render(); }
+
+function startTest() {
+  const name = document.getElementById('f-name').value.trim();
+  const track = document.getElementById('f-track').value;
+  const level = document.getElementById('f-level').value;
+  const mode = document.getElementById('f-mode').value;
+  const date = document.getElementById('f-date').value;
+  const coach = document.getElementById('f-coach').value.trim();
+  if (!name || !track || !level || !date) { alert('Completá nombre, track, nivel y fecha.'); return; }
+  state.student = { name, track, level, mode, date, coach };
+  state.screen = 'test';
+  state.currentSection = 'S1';
+  state.startedAt = Date.now();
+  state.answers = {};
+  state.coachScores = {};
+  saveState();
+  startTimer();
+  render();
+}
+
+/* RENDER TEST */
+function renderTest() {
+  const total = QUESTIONS.length;
+  const answered = countAnswered();
+  const pctProgress = Math.round((answered / total) * 100);
+  const sectionQs = QUESTIONS.filter(q => q.section === state.currentSection);
+  const qsHTML = sectionQs.map(renderQuestionCard).join('');
+  const tabsHTML = SECTIONS.map(s => {
+    const done = countAnswered(s.id);
+    const tot = countTotal(s.id);
+    const cls = s.id === state.currentSection ? 'section-tab active' : 'section-tab';
+    return `<button class="${cls}" onclick="switchSection('${s.id}')">${s.id} · ${esc(s.label)} <span class="count">${done}/${tot}</span></button>`;
+  }).join('');
+  const modeLabel = state.student.mode === 'simulacro' ? 'SIMULACRO' : 'OFICIAL';
+  const modeCls = state.student.mode === 'simulacro' ? 'simulacro' : 'oficial';
+
+  document.getElementById('app').innerHTML = `
+    <div id="test-screen">
+      <div class="test-header">
+        <div class="th-left">
+          <div class="th-title">Test de Certificación · CAM <span class="th-mode ${modeCls}">${modeLabel}</span></div>
+          <div class="th-asesor">${esc(state.student.name)} · Track ${esc(state.student.track)} · Nivel ${esc(state.student.level)}</div>
+        </div>
+        <div class="th-center">
+          <div class="progress-pill">Respondidas: <strong>${answered}</strong> / ${total}</div>
+          <div id="timer-display" class="timer">--:--</div>
+        </div>
+      </div>
+      <div class="progress-rail"><div class="fill" style="width:${pctProgress}%"></div></div>
+      <div class="section-tabs">${tabsHTML}</div>
+      <div class="test-body">${qsHTML}</div>
+      <div class="test-footer">
+        <div class="footer-status">Sección <strong>${state.currentSection}</strong> · ${countAnswered(state.currentSection)} / ${countTotal(state.currentSection)} · Total <strong>${answered}/${total}</strong></div>
+        <button class="btn-finish" onclick="confirmFinish()">Finalizar test →</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderQuestionCard(q) {
+  const v22Tag = q.v22 ? '<span class="q-v22-tag">v2.2</span>' : '';
+  if (q.type === 'mc') {
+    const answered = state.answers[q.id];
+    const opts = q.options.map((opt, i) => {
+      const letter = LETTERS[i];
+      const sel = answered === letter ? 'selected' : '';
+      return `<li class="option ${sel}" onclick="selectMC(${q.id},'${letter}')"><span class="letter">${letter})</span>${esc(opt)}</li>`;
+    }).join('');
+    return `
+      <div class="question-card" id="q-${q.id}">
+        <div class="q-head-row">
+          <span class="q-num-tag">Q${q.id}</span>
+          <span class="q-module-tag">${esc(q.module)}</span>
+          ${v22Tag}
+          <span class="q-points-tag">1 pt</span>
+        </div>
+        <div class="q-text">${esc(q.text)}</div>
+        ${q.scenario ? `<div class="q-scenario">${esc(q.scenario)}</div>` : ''}
+        <ul class="options-list">${opts}</ul>
+      </div>
+    `;
+  }
+  const answer = state.answers[q.id] || '';
+  return `
+    <div class="question-card" id="q-${q.id}">
+      <div class="q-head-row">
+        <span class="q-num-tag">Q${q.id}</span>
+        <span class="q-module-tag">${esc(q.module)}</span>
+        ${v22Tag}
+        <span class="q-points-tag">${q.maxPoints} pts</span>
+      </div>
+      <div class="q-text">${esc(q.text)}</div>
+      ${q.scenario ? `<div class="q-scenario">${esc(q.scenario)}</div>` : ''}
+      <textarea class="open-textarea" placeholder="Escribí tu respuesta aquí..." oninput="saveOpen(${q.id}, this.value)">${esc(answer)}</textarea>
+      <div class="textarea-meta">
+        <span>Calificación por el coach con criterio estricto · máximo ${q.maxPoints} pts</span>
+        <span id="cc-${q.id}">${answer.length} caracteres</span>
+      </div>
+    </div>
+  `;
+}
+
+function selectMC(qId, letter) {
+  state.answers[qId] = letter;
+  saveState();
+  const q = QUESTIONS.find(x => x.id === qId);
+  const card = document.getElementById(`q-${qId}`);
+  if (card) { card.outerHTML = renderQuestionCard(q); updateHeaderCounters(); }
+}
+
+function saveOpen(qId, val) {
+  state.answers[qId] = val;
+  const cc = document.getElementById(`cc-${qId}`);
+  if (cc) cc.textContent = `${val.length} caracteres`;
+  clearTimeout(window.__openSaveTimer);
+  window.__openSaveTimer = setTimeout(() => { saveState(); updateHeaderCounters(); }, 400);
+}
+
+function updateHeaderCounters() {
+  const answered = countAnswered();
+  const total = QUESTIONS.length;
+  const pct = Math.round((answered / total) * 100);
+  const pill = document.querySelector('.progress-pill');
+  if (pill) pill.innerHTML = `Respondidas: <strong>${answered}</strong> / ${total}`;
+  const fill = document.querySelector('.progress-rail .fill');
+  if (fill) fill.style.width = `${pct}%`;
+  const footer = document.querySelector('.footer-status');
+  if (footer) footer.innerHTML = `Sección <strong>${state.currentSection}</strong> · ${countAnswered(state.currentSection)} / ${countTotal(state.currentSection)} · Total <strong>${answered}/${total}</strong>`;
+  SECTIONS.forEach(s => {
+    const done = countAnswered(s.id);
+    const tot = countTotal(s.id);
+    document.querySelectorAll('.section-tab').forEach(b => {
+      if (b.textContent.startsWith(s.id + ' ')) {
+        const c = b.querySelector('.count');
+        if (c) c.textContent = `${done}/${tot}`;
+      }
+    });
+  });
+}
+
+function switchSection(secId) {
+  state.currentSection = secId;
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function confirmFinish() {
+  const answered = countAnswered();
+  const total = QUESTIONS.length;
+  const mcUnans = QUESTIONS.filter(q => q.type === 'mc' && !state.answers[q.id]).length;
+  const openShort = QUESTIONS.filter(q => q.type === 'open' && (!state.answers[q.id] || state.answers[q.id].trim().length < 10)).length;
+  showModal(`
+    <h3>¿Finalizar el test?</h3>
+    <p>Una vez finalizado las respuestas no se pueden modificar. El puntaje MC se calcula automáticamente; las preguntas abiertas las califica el coach con criterio estricto y aplicación de RED FLAGS.</p>
+    <div class="status-list">
+      <div><span>Respondidas</span><strong>${answered} / ${total}</strong></div>
+      <div><span>MC sin responder</span><strong>${mcUnans}</strong></div>
+      <div><span>Abiertas vacías / &lt;10 caracteres</span><strong>${openShort}</strong></div>
+      <div><span>Tipo</span><strong>${state.student.mode === 'simulacro' ? 'SIMULACRO' : 'OFICIAL (BLOQUEANTE)'}</strong></div>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn-secondary" onclick="closeModal()">Seguir editando</button>
+      <button class="btn-primary" onclick="finishTest()">Finalizar ahora</button>
+    </div>
+  `);
+}
+
+function autoFinishTest() { alert('Se agotó el tiempo. El test se finalizará automáticamente.'); finishTest(); }
+
+function finishTest() {
+  closeModal();
+  if (timerInterval) clearInterval(timerInterval);
+  state.finishedAt = Date.now();
+  state.elapsed = Math.floor((state.finishedAt - state.startedAt) / 1000);
+  state.screen = 'result';
+  saveState();
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* RENDER RESULT */
+function renderResult() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  const totalEarned = mc.pointsEarned + open.earned;
+  const totalMax = mc.pointsMax + open.max;
+  const pct = totalMax ? totalEarned / totalMax : 0;
+  const pctDisplay = Math.round(pct * 100);
+
+  let verdict;
+  if (!open.allRated) {
+    verdict = { cls: '', title: 'Pendiente de calificación', detail: 'El veredicto final se conocerá cuando el coach califique las 4 preguntas abiertas con criterio estricto.' };
+  } else if (pct >= EXCELLENT_THRESHOLD) {
+    verdict = { cls: 'pass', title: '✓ CERTIFICA — Excelente', detail: 'Autonomía total. Pase a producción habilitado. Portafolio asignado, supervisión mínima.' };
+  } else if (pct >= PASS_THRESHOLD) {
+    verdict = { cls: 'borderline', title: '✓ CERTIFICA — Aprobado', detail: 'Pase habilitado. Áreas débiles requieren foco en checkpoints D15 / D30. Coaching reforzado las primeras 4 semanas.' };
+  } else {
+    verdict = { cls: 'fail', title: '✗ NO CERTIFICA', detail: `Puntaje ${pctDisplay}% bajo umbral 70% (BLOQUEANTE). Re-test en 2 días con plan de recuperación específico sobre áreas falladas. Sin acceso a portafolio asignado hasta certificar.` };
+  }
+
+  const isSimulacro = state.student.mode === 'simulacro';
+
+  const mcHTML = mc.details.map(d => {
+    const cls = d.ok ? 'mcr ok' : 'mcr bad';
+    const mark = d.ok ? '✓' : '✗';
+    const msg = d.ok
+      ? `<strong>${d.given}</strong> — correcta`
+      : `Tu resp.: <strong>${d.given}</strong> · Correcta: <strong>${d.correct}</strong>`;
+    return `<div class="${cls}"><div class="qref">Q${d.id}</div><div class="tag">${esc(d.module)}</div><div class="given">${msg}</div><div class="mark">${mark}</div></div>`;
+  }).join('');
+
+  const openHTML = QUESTIONS.filter(q => q.type === 'open').map(q => {
+    const ans = state.answers[q.id] || '';
+    const score = state.coachScores[q.id];
+    const rubricList = q.rubric ? q.rubric.map(r => `<li>${esc(r)}</li>`).join('') : '';
+    const redFlagsList = q.redFlags ? q.redFlags.map(r => `<li>${esc(r)}</li>`).join('') : '';
+    const coachCtrl = state.role === 'coach'
+      ? `<div class="coach-score-row">
+          <label>Puntaje (0-${q.maxPoints})</label>
+          <input type="number" min="0" max="${q.maxPoints}" step="0.5" value="${typeof score === 'number' ? score : ''}" oninput="setCoachScore(${q.id}, this.value)">
+          <span class="max">/ ${q.maxPoints} pts</span>
+          <span class="rubric-toggle" onclick="toggleRubric(${q.id})">Ver rúbrica + RED FLAGS ▾</span>
+        </div>
+        <div class="rubric-panel hidden" id="rubric-${q.id}">
+          <strong>Rúbrica (criterios suman):</strong>
+          <ul>${rubricList}</ul>
+          ${redFlagsList ? `<div class="red-flags"><strong>⚠ RED FLAGS (descontar):</strong><ul>${redFlagsList}</ul></div>` : ''}
+        </div>`
+      : `<div class="coach-score-row"><label>Puntaje:</label><strong>${typeof score === 'number' ? `${score} / ${q.maxPoints} pts` : `Pendiente`}</strong></div>`;
+    const v22Mark = q.v22 ? ' · v2.2' : '';
+    return `
+      <div class="open-review">
+        <div class="head">
+          <span class="qref">Q${q.id} · ${esc(q.module)}${v22Mark} <span style="color:var(--muted); font-weight:400;">(${q.maxPoints} pts)</span></span>
+        </div>
+        <p class="qtext">${esc(q.text)}</p>
+        ${q.scenario ? `<div class="q-scenario" style="margin-bottom:10px;">${esc(q.scenario)}</div>` : ''}
+        <div class="answer-box ${ans ? '' : 'empty'}">${ans ? esc(ans) : '(Sin respuesta)'}</div>
+        ${coachCtrl}
+      </div>
+    `;
+  }).join('');
+
+  const coachBanner = state.role === 'coach' ? `
+    <div class="coach-banner">
+      <strong>Modo Coach · Criterio estricto activado.</strong> Aplicá la rúbrica al pie de la letra. RED FLAGS NO se interpretan a favor del asesor — descuentan automáticamente. En caso de duda, siempre en contra del asesor. Cada respuesta vale 5 pts y cada penalización pesa significativamente sobre el % final.
+    </div>
+  ` : '';
+
+  document.getElementById('app').innerHTML = `
+    <div id="result-screen">
+      <div class="result-wrap">
+        <div class="result-card">
+          <div class="result-header">
+            <div class="brand-mini">LIBERTY FINANCE · TEST DE CERTIFICACIÓN PBA · v2.2</div>
+            <h1>Resultado del test</h1>
+            <div class="meta-line">${esc(state.student.name)} · Track ${esc(state.student.track)} · Nivel ${esc(state.student.level)} · ${esc(state.student.date)} · Duración ${fmtDuration(state.elapsed)}</div>
+            <div class="mode-badge ${isSimulacro ? 'simulacro' : 'oficial'}">${isSimulacro ? 'SIMULACRO' : 'OFICIAL · BLOQUEANTE'}</div>
+          </div>
+
+          ${coachBanner}
+
+          <div class="score-grid">
+            <div class="score-big">
+              <div class="lbl">Puntaje total</div>
+              <div class="val">${totalEarned}<small>/${totalMax}</small></div>
+              <div class="pct">${pctDisplay}%${open.allRated ? '' : ' · provisional'}</div>
+            </div>
+            <div class="score-tile">
+              <div class="lbl">Selección múltiple</div>
+              <div class="val">${mc.pointsEarned} / ${mc.pointsMax}</div>
+              <div class="sub">${mc.correct} de ${mc.total} correctas · auto</div>
+            </div>
+            <div class="score-tile ${open.allRated ? '' : 'pending'}">
+              <div class="lbl">Preguntas abiertas</div>
+              <div class="val">${open.earned} / ${open.max}</div>
+              <div class="sub">${open.rated} de ${open.total} calificadas (estricto)</div>
+            </div>
+          </div>
+
+          <div class="verdict-band ${verdict.cls}">
+            <div class="verdict-title">${esc(verdict.title)}</div>
+            <div class="verdict-detail">${esc(verdict.detail)}</div>
+          </div>
+
+          ${isSimulacro && open.allRated ? `
+            <div class="strict-notice">
+              <strong>Recordatorio simulacro:</strong> el resultado de hoy NO es la certificación oficial. La aplicación oficial es el 25 abr y se evalúa con el mismo criterio estricto. Si en simulacro el resultado fue ≥75%, luz verde para el oficial. Si fue menor, se evalúa correr la fecha.
+            </div>
+          ` : ''}
+
+          <div class="section-title">Detalle selección múltiple (25 × 1 pt)</div>
+          ${mcHTML}
+
+          <div class="section-title">Preguntas abiertas (4 × 5 pts) ${state.role === 'coach' ? '— modo coach · calificar con criterio estricto' : '— vista PBA'}</div>
+          ${openHTML}
+
+          <div class="actions-row">
+            <button class="btn-secondary" onclick="window.print()">🖨 Imprimir / PDF</button>
+            <button class="btn-secondary" onclick="downloadJSON()">⬇ Descargar JSON</button>
+            <button class="btn-secondary" onclick="downloadTXT()">⬇ Descargar TXT</button>
+            <button class="btn-primary" onclick="resetAll()">Cerrar y borrar datos</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function setCoachScore(qId, val) {
+  const q = QUESTIONS.find(x => x.id === qId);
+  let num = parseFloat(val);
+  if (isNaN(num)) { delete state.coachScores[qId]; }
+  else { num = Math.max(0, Math.min(q.maxPoints, num)); state.coachScores[qId] = num; }
+  saveState();
+  render();
+}
+
+function toggleRubric(qId) {
+  const el = document.getElementById(`rubric-${qId}`);
+  if (el) el.classList.toggle('hidden');
+}
+
+/* COACH IMPORT */
+function renderCoachImport() {
+  document.getElementById('app').innerHTML = `
+    <div id="coach-form-screen">
+      <div class="form-card">
+        <span class="back-link" onclick="backToWelcome()">← Volver</span>
+        <h2>Modo Coach — cargar respuestas</h2>
+        <p class="sub">Pegá el JSON del test que entregó el asesor (descargado con "Descargar JSON") o subí el archivo. Vas a calificar las 4 abiertas con criterio estricto + aplicación de RED FLAGS.</p>
+
+        <div class="import-box">
+          <label style="display:block; font-size:12.5px; font-weight:600; color:var(--navy); margin-bottom:8px; letter-spacing:0.3px;">Subir archivo .json</label>
+          <input type="file" accept="application/json,.json" onchange="loadJSONFile(event)">
+          <div style="margin:16px 0 8px; color:var(--muted); font-size:12px;">— o pegar el contenido —</div>
+          <textarea id="coach-json" placeholder='{"student":{...},"answers":{...},...}'></textarea>
+        </div>
+
+        <div class="form-buttons">
+          <button class="btn-secondary" onclick="backToWelcome()">Cancelar</button>
+          <button class="btn-primary" onclick="loadCoachJSON()">Cargar y calificar →</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function loadJSONFile(ev) {
+  const f = ev.target.files[0];
+  if (!f) return;
+  const reader = new FileReader();
+  reader.onload = e => { document.getElementById('coach-json').value = e.target.result; };
+  reader.readAsText(f);
+}
+
+function loadCoachJSON() {
+  const txt = document.getElementById('coach-json').value.trim();
+  if (!txt) { alert('Pegá el JSON o subí el archivo primero.'); return; }
+  try {
+    const data = JSON.parse(txt);
+    if (!data.answers || !data.student) throw new Error('Formato inválido');
+    state.student = data.student;
+    state.answers = data.answers;
+    state.coachScores = data.coachScores || {};
+    state.startedAt = data.startedAt || null;
+    state.finishedAt = data.finishedAt || null;
+    state.elapsed = data.elapsed || 0;
+    state.role = 'coach';
+    state.screen = 'result';
+    saveState();
+    render();
+  } catch (e) { alert('Error al parsear el JSON: ' + e.message); }
+}
+
+/* EXPORT */
+function buildExportJSON() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  const total = mc.pointsEarned + open.earned;
+  const max = mc.pointsMax + open.max;
+  const pct = max ? total / max : 0;
+  let verdict = 'pendiente';
+  if (open.allRated) {
+    if (pct >= EXCELLENT_THRESHOLD) verdict = 'certifica_excelente';
+    else if (pct >= PASS_THRESHOLD) verdict = 'certifica_aprobado';
+    else verdict = 'no_certifica';
+  }
+  return {
+    meta: {
+      title: 'Test de Certificación · Client Activation Manager (CAM)',
+      version: 'v2.2',
+      build: 'A',
+      programVersion: 'CAM Onboarding Program v2.2 (Abril 2026) — Revenue-Driven 30 días',
+      company: 'Liberty Finance',
+      generatedAt: new Date().toISOString()
+    },
+    student: state.student,
+    startedAt: state.startedAt,
+    finishedAt: state.finishedAt,
+    elapsed: state.elapsed,
+    answers: state.answers,
+    coachScores: state.coachScores,
+    scoring: {
+      mc: { correct: mc.correct, total: mc.total, earned: mc.pointsEarned, max: mc.pointsMax, details: mc.details },
+      open: { earned: open.earned, max: open.max, rated: open.rated, total: open.total, details: open.details },
+      total: { earned: total, max: max, pct: Math.round(pct * 1000) / 10 },
+      verdict: verdict,
+      thresholds: { pass: '70%', excellent: '85%' }
+    }
+  };
+}
+
+function downloadJSON() {
+  const data = buildExportJSON();
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safe = (state.student.name || 'asesor').replace(/[^a-zA-Z0-9]+/g, '_');
+  const modeTag = state.student.mode === 'simulacro' ? 'simulacro' : 'oficial';
+  a.download = `test_certificacion_pba_v22_${modeTag}_${safe}_${state.student.date || 'sin_fecha'}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function downloadTXT() {
+  const mc = calcMCScore();
+  const open = calcOpenScore();
+  const total = mc.pointsEarned + open.earned;
+  const max = mc.pointsMax + open.max;
+  const pct = Math.round((total/max)*100);
+  let verdictTxt = 'PENDIENTE';
+  if (open.allRated) {
+    if (pct >= 85) verdictTxt = '✓ CERTIFICA — EXCELENTE';
+    else if (pct >= 70) verdictTxt = '✓ CERTIFICA — APROBADO';
+    else verdictTxt = '✗ NO CERTIFICA — RE-TEST EN 2 DÍAS';
+  }
+
+  let txt = '';
+  txt += '================================================\n';
+  txt += '  TEST DE CERTIFICACIÓN PBA — LIBERTY FINANCE\n';
+  txt += '  v2.2 — Programa de Onboarding Abril 2026\n';
+  txt += '================================================\n\n';
+  txt += `Asesor:       ${state.student.name}\n`;
+  txt += `Track:        ${state.student.track}\n`;
+  txt += `Nivel:        ${state.student.level}\n`;
+  txt += `Tipo:         ${state.student.mode === 'simulacro' ? 'SIMULACRO' : 'OFICIAL (BLOQUEANTE)'}\n`;
+  txt += `Fecha:        ${state.student.date}\n`;
+  txt += `Coach:        ${state.student.coach || '-'}\n`;
+  txt += `Duración:     ${fmtDuration(state.elapsed)}\n\n`;
+  txt += '------------------------------------------------\n';
+  txt += `PUNTAJE TOTAL: ${total} / ${max} pts (${pct}%)\n`;
+  txt += `VEREDICTO: ${verdictTxt}\n`;
+  txt += `  Selección múltiple: ${mc.pointsEarned}/${mc.pointsMax} (${mc.correct}/${mc.total} correctas)\n`;
+  txt += `  Preguntas abiertas: ${open.earned}/${open.max} (${open.rated}/${open.total} calificadas estricto)\n`;
+  txt += `Umbrales: ≥70% aprueba · ≥85% excelente · <70% no certifica (BLOQUEANTE)\n`;
+  txt += '------------------------------------------------\n\n';
+
+  txt += 'DETALLE — SELECCIÓN MÚLTIPLE\n';
+  mc.details.forEach(d => {
+    txt += `Q${String(d.id).padStart(2,'0')} [${d.module}] Tu resp: ${d.given}  Correcta: ${d.correct}  ${d.ok ? 'OK' : 'X'}\n`;
+  });
+  txt += '\n';
+
+  txt += 'PREGUNTAS ABIERTAS — RESPUESTAS\n\n';
+  QUESTIONS.filter(q => q.type === 'open').forEach(q => {
+    const ans = state.answers[q.id] || '(sin respuesta)';
+    const score = state.coachScores[q.id];
+    txt += `--- Q${q.id} [${q.module}${q.v22 ? ' · v2.2' : ''}] (${q.maxPoints} pts) ---\n`;
+    txt += `${q.text}\n\n`;
+    if (q.scenario) txt += `Escenario: ${q.scenario}\n\n`;
+    txt += `RESPUESTA:\n${ans}\n\n`;
+    txt += `Puntaje coach (estricto): ${typeof score === 'number' ? score + ' / ' + q.maxPoints : 'pendiente'}\n\n`;
+  });
+
+  const blob = new Blob([txt], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const safe = (state.student.name || 'asesor').replace(/[^a-zA-Z0-9]+/g, '_');
+  const modeTag = state.student.mode === 'simulacro' ? 'simulacro' : 'oficial';
+  a.download = `test_certificacion_pba_v22_${modeTag}_${safe}_${state.student.date || 'sin_fecha'}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function resetAll() {
+  if (!confirm('¿Cerrar y borrar todos los datos locales? Esta acción no se puede deshacer.')) return;
+  clearState();
+  state = {
+    screen: 'welcome', role: null,
+    student: { name: '', track: '', level: '', date: '', mode: 'oficial' },
+    answers: {}, coachScores: {}, currentSection: 'S1',
+    startedAt: null, finishedAt: null, elapsed: 0, timerExpired: false
+  };
+  render();
+}
+
+function showModal(html) {
+  document.getElementById('modal-root').innerHTML = `<div class="modal-backdrop"><div class="modal">${html}</div></div>`;
+}
+function closeModal() { document.getElementById('modal-root').innerHTML = ''; }
+
+function render() {
+  switch (state.screen) {
+    case 'welcome': renderWelcome(); break;
+    case 'form': renderForm(); break;
+    case 'test': renderTest(); break;
+    case 'result': renderResult(); break;
+    case 'coach-import': renderCoachImport(); break;
+    default: renderWelcome();
+  }
+}
+
+(function init() {
+  render();
+  window.addEventListener('beforeunload', (e) => {
+    if (state.screen === 'test') { e.preventDefault(); e.returnValue = ''; }
+  });
+})();
+</script>
+</body>
+</html>
